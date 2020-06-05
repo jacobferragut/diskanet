@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine, Column, types, MetaData, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.sql import func
 meta = MetaData()
 base_app = declarative_base(meta)
 
@@ -11,9 +12,10 @@ class User(base_app):
     name = Column(types.String(length=25), nullable=False)
     
     password = Column(types.Text, nullable=False)
-    account_age = Column(types.String(length=25), nullable=False)
+    creation_date = Column(types.DateTime(timezone=True), default=func.now(), nullable=False)
     email = Column(types.String(length=25), nullable=False)
-
+    pass_salt = Column(types.String(length=50), nullable=False)
+    email_confirmation = Column(types.Boolean, nullable=False, default=False)
 #create user credential table later
 
 class Site(base_app):
