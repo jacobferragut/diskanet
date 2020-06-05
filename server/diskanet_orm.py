@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine, Column, types, MetaData, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 meta = MetaData()
 base_app = declarative_base(meta)
@@ -35,7 +36,7 @@ class Site(base_app):
     #owner of site
     owner = relationship("User", back_populates="sites")
     #user id of who owns the site
-    owner_id = Column(types.Integer, ForeignKey('users.id'), nullable=False)
+    owner_id = Column(types.Integer, ForeignKey('users.user_id'), nullable=False)
     #other members of the site (implement later)
    # members = relationship("User", back_populates="site")
     #potential other fields
