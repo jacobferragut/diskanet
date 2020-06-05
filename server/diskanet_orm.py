@@ -16,6 +16,11 @@ class User(base_app):
     email = Column(types.String(length=25), nullable=False)
     pass_salt = Column(types.String(length=50), nullable=False)
     email_confirmation = Column(types.Boolean, nullable=False, default=False)
+    #sites relationship with owner (user owner owns sites)
+    sites = relationship("Site", back_populates="owner")
+    #site is for members of a site (user is member of site)
+    #implement later with association table
+    #site = relationship("Site", back_populates="members")
 #create user credential table later
 
 class Site(base_app):
@@ -28,11 +33,15 @@ class Site(base_app):
     title = Column(types.String(length=50), nullable=False)
     body = Column(types.Text(length=500), nullable=False)
     #owner of site
-    owner = Column(types.String(length=25), nullable=False)
+    owner = relationship("User", back_populates="sites")
+    #user id of who owns the site
+    owner_id = Column(types.Integer, ForeignKey('users.id'), nullable=False)
+    #other members of the site (implement later)
+   # members = relationship("User", back_populates="site")
     #potential other fields
-    title_font = Column(types.String)
-    body_font = Column(types.String)
-    body_font_size = Column(types.String)
-    title_font_size = Column(types.String)
-    background_color = Column(types.String)
+    title_font = Column(types.String(length=25))
+    body_font = Column(types.String(length=25))
+    body_font_size = Column(types.Integer)
+    title_font_size = Column(types.Integer)
+    background_color = Column(types.String(length=25))
     
