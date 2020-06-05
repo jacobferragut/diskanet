@@ -44,4 +44,7 @@ class Site(base_app):
     body_font_size = Column(types.Integer)
     title_font_size = Column(types.Integer)
     background_color = Column(types.String(length=25))
-    
+    genre_music = Column(types.Boolean, default=False)
+    genre_art = Column(types.Boolean, default=False)
+    genre_film = Column(types.Boolean, default=False)
+    genre_writing = Column(types.Boolean, default=False)
