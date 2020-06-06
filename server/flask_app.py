@@ -28,7 +28,7 @@ class User(Resource):
         '''delete user's account'''
         return ""
 
-@api.route('site/<user_id>')
+@api.route('/site/<user_id>')
 class Sites(Resource):
     def post(self):
         '''site creation'''
@@ -36,7 +36,7 @@ class Sites(Resource):
     def get(self, user_id):
         '''get user's sites'''
         return ''
-@api.route('site/<user_id>/<site_id>')
+@api.route('/site/<user_id>/<site_id>')
 class Site(Resource):
     def get(self, user_id, site_id):
         '''get a site's info'''
@@ -56,3 +56,16 @@ class Discover(Resource):
     def get(self):
         '''see discover results'''
         return ''
+
+@api.before_request
+def init_db():
+    '''start db by creating global db_session'''
+    if not hasattr(g, 'db'):
+        db = create_engine(app.config['dev_lite'])
+        g.db = sessionmaker(db)()
+@app.teardown_request
+def close_db(exception):
+    '''close db connection'''
+    if hasattr(g, 'db'):
+        g.db.close()
+        _ = g.pop('db')

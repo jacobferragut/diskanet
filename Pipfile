@@ -11,6 +11,7 @@ sqlalchemy = "*"
 flask-restplus = "*"
 pyyaml = "*"
 flask-cors = "*"
+flask-restx = "*"
 
 [requires]
 python_version = "3.8"
