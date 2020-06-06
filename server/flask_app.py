@@ -28,7 +28,7 @@ class User(Resource):
         '''delete user's account'''
         return ""
 
-@api.route('site/<user_id>')
+@api.route('/site/<user_id>')
 class Sites(Resource):
     def post(self):
         '''site creation'''
@@ -36,7 +36,7 @@ class Sites(Resource):
     def get(self, user_id):
         '''get user's sites'''
         return ''
-@api.route('site/<user_id>/<site_id>')
+@api.route('/site/<user_id>/<site_id>')
 class Site(Resource):
     def get(self, user_id, site_id):
         '''get a site's info'''
