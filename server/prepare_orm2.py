@@ -38,3 +38,21 @@ def init_db():
         print('Adding', len(data), 'rows to Usage table')
         session.add_all(data)
         session.commit()
+
+    if session.query(Sites).count() <= 100:
+        siteData = []
+        ROWS = csv.reader(open('server/users.csv', encoding='utf8'))
+        for row in ROWS:
+            data.append( Sites(
+                site_id = int(row[0]),
+                name    = row[1],
+                title   = row[2],
+                body    = row[3],
+                owner   = row[4],
+                owner_id = row[5],
+                title_font = row[6],
+                body_font = row[7],
+                body_font_size = row[8]
+                title_font_size = row[9]
+            ))
+
