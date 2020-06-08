@@ -1,9 +1,12 @@
 from flask import Flask, g
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from .diskanet_orm import User, Site
+from .diskanet_orm import User as duser
+from .diskanet_orm import Site
 from flask_restx import Resource, Api
-
+import os
+from .util import get_config
+from datetime import datetime
 app = Flask(__name__)
 api = Api(app)
 
@@ -20,7 +23,10 @@ class Users(Resource):
 class User(Resource):
     def get(self,user_id):
         '''retreives user information'''
-        return ""
+        k = ['user_id','name','password','creation_date','email','pass_salt','email_confirmation']
+        u = g.db.query(duser).filter(duser.user_id == user_id).one()
+        return str({ff: getattr(u, ff) for ff in k })
+        
     def put(self, user_id):
         '''update user's information'''
         return ""
@@ -57,11 +63,12 @@ class Discover(Resource):
         '''see discover results'''
         return ''
 
-@api.before_request
+@app.before_request
 def init_db():
     '''start db by creating global db_session'''
     if not hasattr(g, 'db'):
-        db = create_engine(app.config['dev_lite'])
+        config = get_config(os.environ['FLASK_ENV'], open('server/config.yaml'))
+        db = create_engine(config['DB'])
         g.db = sessionmaker(db)()
 @app.teardown_request
 def close_db(exception):
