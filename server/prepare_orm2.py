@@ -15,8 +15,8 @@ app = Flask(__name__)
 @app.cli.command('init-db')
 def init_db():
     config = get_config(os.environ['FLASK_ENV'], open('server/config.yaml'))
-    db = create_engine(config['dev_lite'])
-    db.metadata.create_all(db)
+    db = create_engine(config['DB'])
+    base_app.metadata.create_all(db)
     
     Session = sessionmaker(db)
     session = Session()
