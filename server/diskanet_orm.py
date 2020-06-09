@@ -38,7 +38,7 @@ class Site(base_app):
     #user id of who owns the site
     owner_id = Column(types.Integer, ForeignKey('users.user_id'), nullable=False)
     #other members of the site (implement later)
-   # members = relationship("User", back_populates="site")
+    # members = relationship("User", back_populates="site")
     #potential other fields
     title_font = Column(types.String(length=25))
     body_font = Column(types.String(length=25))
