@@ -41,9 +41,9 @@ def init_db():
 
     if session.query(Sites).count() <= 100:
         siteData = []
-        ROWS = csv.reader(open('server/users.csv', encoding='utf8'))
+        ROWS = csv.reader(open('server/sites.csv', encoding='utf8'))
         for row in ROWS:
-            data.append( Sites(
+            siteData.append( Sites(
                 site_id = int(row[0]),
                 name    = row[1],
                 title   = row[2],
@@ -55,4 +55,5 @@ def init_db():
                 body_font_size = row[8]
                 title_font_size = row[9]
             ))
-
+        session.add_all(siteData)
+        session.commit()
