@@ -2,7 +2,7 @@ import hashlib
 
 from sqlalchemy import Column, types
 from sqlalchemy.ext.declarative import declarative_base
-
+###########
 base = declarative_base()
 
 class Auth(base):
