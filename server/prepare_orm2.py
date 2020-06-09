@@ -20,7 +20,7 @@ def init_db():
     
     Session = sessionmaker(db)
     session = Session()
-    if session.query(User).count() <= 100:
+    if session.query(User).count() == 0:
         data = []
         R = csv.reader(open('server/users.csv', encoding='utf8'))
         for row in R:
@@ -39,20 +39,20 @@ def init_db():
         session.add_all(data)
         session.commit()
 
-    if session.query(Sites).count() <= 100:
+    if session.query(Site).count() <= 100:
         siteData = []
         ROWS = csv.reader(open('server/sites.csv', encoding='utf8'))
         for row in ROWS:
-            siteData.append( Sites(
+            siteData.append( Site(
                 site_id = int(row[0]),
                 name    = row[1],
                 title   = row[2],
                 body    = row[3],
-                owner   = row[4],
-                owner_id = row[5],
+                #owner   = row[4],
+                owner_id = int(row[5]),
                 title_font = row[6],
                 body_font = row[7],
-                body_font_size = row[8]
+                body_font_size = int(row[8]),
                 title_font_size = row[9]
             ))
         session.add_all(siteData)
