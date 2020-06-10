@@ -13,6 +13,7 @@ pyyaml = "*"
 flask-cors = "*"
 flask-restx = "*"
 ipython = "*"
+flask-jwt-extended = "*"
 
 [requires]
 python_version = "3.8"

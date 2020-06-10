@@ -29,7 +29,24 @@ class User(Resource):
         
     def put(self, user_id):
         '''update user's information'''
-        return ""
+        
+        #gets user changes
+        d = api.payload
+        
+        #grabs user from database
+        user = g.db.query(duser).filter(duser.user_id == user_id)
+        
+        #for each change for user
+        for k,v in d.items():
+            setattr(user, k, v)
+            
+        #commit the changes
+        g.db.commit()
+        
+        #returns changes
+        return g.db.query(duser).get(user_id)
+        
+        
     def delete(self, user_id):
         '''delete user's account'''
         return ""
