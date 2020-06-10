@@ -12,10 +12,10 @@ class User(base_app):
     #user name
     name = Column(types.String(length=25), nullable=False)
     
-    password = Column(types.Text, nullable=False)
+    # password = Column(types.Text, nullable=False)
+    # pass_salt = Column(types.String(length=50), nullable=False)
     creation_date = Column(types.DateTime(timezone=True), default=func.now(), nullable=False)
     email = Column(types.String(length=25), nullable=False)
-    pass_salt = Column(types.String(length=50), nullable=False)
     email_confirmation = Column(types.Boolean, nullable=False, default=False)
     #sites relationship with owner (user owner owns sites)
     sites = relationship("Site", back_populates="owner")

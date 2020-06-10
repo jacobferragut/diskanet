@@ -24,7 +24,9 @@ class User(Resource):
     def get(self,user_id):
         '''retreives user information'''
         k = ['user_id','name','password','creation_date','email','pass_salt','email_confirmation']
-        u = g.db.query(duser).filter(duser.user_id == user_id).one()
+        u = g.db.query(duser).get(user_id)
+        if u is None:
+            return {'msg': 'No user found'}
         return str({ff: getattr(u, ff) for ff in k })
         
     def put(self, user_id):
