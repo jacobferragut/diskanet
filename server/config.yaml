@@ -1,2 +1,3 @@
 dev_lite:
     DB: sqlite:///server/diskanet.db
+    AUTH_DB: sqlite:///server/authenticate.db
