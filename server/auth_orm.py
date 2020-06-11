@@ -30,6 +30,7 @@ class Auth(base):
             Used for new users. Does not commit.
         '''
         self.pass_hash = self._compute_hash(password)
+    
     def _check_password(self, password):
         '''
             check if password agrees with pass_hash and pass_salt

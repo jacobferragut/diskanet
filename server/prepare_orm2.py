@@ -8,10 +8,16 @@ import click
 from flask import Flask
 
 from .diskanet_orm import base_app, User, Site
-#from .auth_orm import base as base_auth
+from .auth_orm import base as base_auth
 from .util import get_config
 
 app = Flask(__name__)
+
+@app.cli.command('init-auth')
+def init_auth():
+    config = get_config(os.environ['FLASK_ENV'], open('server/config.yaml'))
+    db = create_engine(config['AUTH_DB'])
+    base_auth.metadata.create_all(db)
 
 @app.cli.command('init-db')
 def init_db():
