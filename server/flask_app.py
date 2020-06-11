@@ -102,7 +102,7 @@ class Users(Resource):
 class User(Resource):
     def get(self,user_id):
         '''retreives user information'''
-        k = ['user_id','name','password','creation_date','email','pass_salt','email_confirmation']
+        k = ['user_id','name','password','creation_date','email','pass_salt','email_confirmation']        
         u = g.db.query(duser).get(user_id)
         if u is None:
             return {'msg': 'No user found'}
@@ -172,7 +172,9 @@ class Sites(Resource):
         
         #first do required column entries...
         #and do allowed columns
-        allowed = ['title_font','title_font_size','body_font','body_font_size','background_color','genre_music','genre_art','genre_film','genre_writing']
+        allowed = ['title_font','title_font_size','body_font','body_font_size',
+                   'background_color','genre_music','genre_art','genre_film',
+                   'genre_writing']
         required = ['site_id','name','title','body','owner_id']
         reqNum = 0
         for k,v in d.items():
@@ -183,7 +185,8 @@ class Sites(Resource):
                 setattr(site, k, v)
         if reqNum != len(required):
             return {'msg': 'ERROR: more fields required'}
-        
+
+        # EMF: probably leave out setting site.owner
         #user id of who owns the site
         site.owner = g.db.query(duser).get(user_id)#use JWT authentication to get user creating the site
         #commit the changes
@@ -257,8 +260,9 @@ class Discover(Resource):
     def post(self):
         '''use filter'''
         return ''
+    
     def get(self):
-        '''see discover results'''
+        '''see discover (unfiltered) results'''
         return ''
 
 @app.before_request
@@ -273,6 +277,7 @@ def init_db():
         config = get_config(os.environ['FLASK_ENV'], open('server/config.yaml'))
         auth_db = create_engine(config['AUTH_DB'])
         g.auth_db = sessionmaker(auth_db)()
+        
 @app.teardown_request
 def close_db(exception):
     '''close db connection'''
