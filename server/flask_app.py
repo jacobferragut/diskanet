@@ -1,25 +1,40 @@
+import os
+from datetime import datetime
+import hashlib
+
 from flask import Flask, g
+from flask_restx import Resource, Api
+# from flask_cors import CORS
+import flask_jwt_extended as JWT
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import delete
 from sqlalchemy import func
+from sqlalchemy import Column, types
+from sqlalchemy.ext.declarative import declarative_base
 
 from .diskanet_orm import User as duser
 from .diskanet_orm import Site as sites
 from .auth_orm import Auth
-
-from flask_restx import Resource, Api
-import os
 from .util import get_config
-from datetime import datetime
+
 app = Flask(__name__)
+app.config.update(
+    get_config(app.config['ENV'], app.open_resource('config.yaml'))
+)
+# CORS(app)
 api = Api(app)
 
-import hashlib
+if 'JWT_SECRET_KEY' not in app.config:
+    app.config['JWT_SECRET_KEY'] = 'very secret'
 
-from sqlalchemy import Column, types
-from sqlalchemy.ext.declarative import declarative_base
-
+print('Secret key: ', app.config['JWT_SECRET_KEY'])
+    
+if 'JWT_ACCESS_TOKEN_EXPIRES' not in app.config:
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600
+    
+jwt = JWT.JWTManager(app)
 
 #routes before auth, no discover
 @api.route('/user')
@@ -81,7 +96,16 @@ class Users(Resource):
         g.auth_db.commit()
         
         
-        return {'msg': f'user: {user.name} successfully created (email unverified)'}
+        return {
+            'msg': f'user: {user.name} successfully created',
+            'jwt': JWT.create_access_token(
+                identity=user.user_id,
+                user_claims={
+                    'access':'user',
+                    'name':user.name
+                }
+            )
+        }
 
     def put(self):
         '''logs in an existing user'''
@@ -102,7 +126,16 @@ class Users(Resource):
         
         #see if payload information matches grabbed user
         if fake._check_password(d['password']):
-            return {'msg': f'user: {auth.user_name} successfully logged in'}
+            return {
+                'msg': f'user: {auth.user_name} successfully logged in',
+                'jwt': JWT.create_access_token(
+                    identity=auth.user_id,
+                    user_claims={
+                        'access':'user',
+                        'name':auth.user_name
+                    }
+                )
+            }
          
         
 @api.route('/user/<int:user_id>')
@@ -276,12 +309,14 @@ class Discover(Resource):
 def init_db():
     '''start db by creating global db_session'''
     if not hasattr(g, 'db'):
-        config = get_config(os.environ['FLASK_ENV'], open('server/config.yaml'))
+        config = get_config(os.environ['FLASK_ENV'],
+                            open('server/config.yaml'))
         db = create_engine(config['DB'])
         g.db = sessionmaker(db)()
     # create auth_db
     if not hasattr(g, 'auth_db'):
-        config = get_config(os.environ['FLASK_ENV'], open('server/config.yaml'))
+        config = get_config(os.environ['FLASK_ENV'],
+                            open('server/config.yaml'))
         auth_db = create_engine(config['AUTH_DB'])
         g.auth_db = sessionmaker(auth_db)()
         
