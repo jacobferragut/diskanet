@@ -6,6 +6,13 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
+flask = "*"
+sqlalchemy = "*"
+flask-restx = "*"
+pyyaml = "*"
+flask-cors = "*"
+ipython = "*"
+flask-jwt-extended = "*"
 
 [requires]
 python_version = "3.8"

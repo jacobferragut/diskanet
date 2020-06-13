@@ -22,6 +22,16 @@ class User(base_app):
     #site is for members of a site (user is member of site)
     #implement later with association table
     #site = relationship("Site", back_populates="members")
+
+    def _to_dict(self):
+        skips = ['sites']
+        to_str = ['creation_date']
+        return {
+            k: str(v) if k in to_str else v
+            for k,v in self.__dict__
+            if k[0] != '_' or k in skips
+        }
+
 #create user credential table later
 
 class Site(base_app):

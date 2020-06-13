@@ -1,25 +1,40 @@
+import os
+from datetime import datetime
+import hashlib
+
 from flask import Flask, g
+from flask_restx import Resource, Api
+# from flask_cors import CORS
+import flask_jwt_extended as JWT
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import delete
 from sqlalchemy import func
+from sqlalchemy import Column, types
+from sqlalchemy.ext.declarative import declarative_base
 
 from .diskanet_orm import User as duser
 from .diskanet_orm import Site as sites
 from .auth_orm import Auth
-
-from flask_restx import Resource, Api
-import os
 from .util import get_config
-from datetime import datetime
+
 app = Flask(__name__)
+app.config.update(
+    get_config(app.config['ENV'], app.open_resource('config.yaml'))
+)
+# CORS(app)
 api = Api(app)
 
-import hashlib
+if 'JWT_SECRET_KEY' not in app.config:
+    app.config['JWT_SECRET_KEY'] = 'very secret'
 
-from sqlalchemy import Column, types
-from sqlalchemy.ext.declarative import declarative_base
-
+print('Secret key: ', app.config['JWT_SECRET_KEY'])
+    
+if 'JWT_ACCESS_TOKEN_EXPIRES' not in app.config:
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600
+    
+jwt = JWT.JWTManager(app)
 
 #routes before auth, no discover
 @api.route('/user')
@@ -81,7 +96,16 @@ class Users(Resource):
         g.auth_db.commit()
         
         
-        return {'msg': f'user: {user.name} successfully created (email unverified)'}
+        return {
+            'msg': f'user: {user.name} successfully created',
+            'jwt': JWT.create_access_token(
+                identity=user.user_id,
+                user_claims={
+                    'access':'user',
+                    'name':user.name
+                }
+            )
+        }
 
     def put(self):
         '''logs in an existing user'''
@@ -102,14 +126,23 @@ class Users(Resource):
         
         #see if payload information matches grabbed user
         if fake._check_password(d['password']):
-            return {'msg': f'user: {auth.user_name} successfully logged in'}
+            return {
+                'msg': f'user: {auth.user_name} successfully logged in',
+                'jwt': JWT.create_access_token(
+                    identity=auth.user_id,
+                    user_claims={
+                        'access':'user',
+                        'name':auth.user_name
+                    }
+                )
+            }
          
         
 @api.route('/user/<int:user_id>')
 class User(Resource):
     def get(self,user_id):
         '''retreives user information'''
-        k = ['user_id','name','password','creation_date','email','pass_salt','email_confirmation']
+        k = ['user_id','name','password','creation_date','email','pass_salt','email_confirmation']        
         u = g.db.query(duser).get(user_id)
         if u is None:
             return {'msg': 'No user found'}
@@ -179,7 +212,9 @@ class Sites(Resource):
         
         #first do required column entries...
         #and do allowed columns
-        allowed = ['title_font','title_font_size','body_font','body_font_size','background_color','genre_music','genre_art','genre_film','genre_writing']
+        allowed = ['title_font','title_font_size','body_font','body_font_size',
+                   'background_color','genre_music','genre_art','genre_film',
+                   'genre_writing']
         required = ['site_id','name','title','body','owner_id']
         reqNum = 0
         for k,v in d.items():
@@ -190,7 +225,8 @@ class Sites(Resource):
                 setattr(site, k, v)
         if reqNum != len(required):
             return {'msg': 'ERROR: more fields required'}
-        
+
+        # EMF: probably leave out setting site.owner
         #user id of who owns the site
         site.owner = g.db.query(duser).get(user_id)#use JWT authentication to get user creating the site
         #commit the changes
@@ -264,69 +300,35 @@ class Discover(Resource):
     def post(self):
         '''use filter'''
         return ''
+    
     def get(self):
-        '''see discover results'''
+        '''see discover (unfiltered) results'''
         return ''
 
 @app.before_request
 def init_db():
     '''start db by creating global db_session'''
     if not hasattr(g, 'db'):
-        config = get_config(os.environ['FLASK_ENV'], open('server/config.yaml'))
+        config = get_config(os.environ['FLASK_ENV'],
+                            open('server/config.yaml'))
         db = create_engine(config['DB'])
         g.db = sessionmaker(db)()
-    #create auth_db
+    # create auth_db
     if not hasattr(g, 'auth_db'):
-        config = get_config(os.environ['FLASK_ENV'], open('server/config.yaml'))
+        config = get_config(os.environ['FLASK_ENV'],
+                            open('server/config.yaml'))
         auth_db = create_engine(config['AUTH_DB'])
         g.auth_db = sessionmaker(auth_db)()
+        
 @app.teardown_request
 def close_db(exception):
     '''close db connection'''
+    # close db
     if hasattr(g, 'db'):
         g.db.close()
         _ = g.pop('db')
 
-
-
-base = declarative_base()
-
-class Auth(base):
-    '''
-        user name: max str length = 80 and primary key
-        pass_hash: md5 hash of user_name, salt, and 
-        pass_salt: arbitrary string to harden  
-    '''
-    __tablename__ = 'auth'
-    user_id = Column(types.String(length=38), primary_key=True)
-    user_name = Column(types.String(length=80))
-    pass_hash = Column(types.String(length=32))
-    pass_salt = Column(types.String(length=40), default='')
-
-    def _compute_hash(self, password):
-        '''
-            Hash user_name, pass_salt, and password
-        '''
-        return hashlib.md5((self.user_name + '|' + self.pass_salt + '|' +
-               password).encode()).hexdigest()
-
-    def _set_hash(self, password):
-       '''
-          given knowns: user_name and pass_salt (compute and store pass_hash)
-          Used for new users. Does not commit.
-       '''
-       self.pass_hash = self._compute_hash(password)
-    
-    def _check_password(self, password):
-        '''
-            check if password agrees with pass_hash and pass_salt
-        '''
-        return self.pass_hash == self._compute_hash(password)
-
-
-
-
-    #close authentication db
+    # close authentication db
     if hasattr(g, 'auth_db'):
         g.auth_db.close()
         _ = g.pop('auth_db')

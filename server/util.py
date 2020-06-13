@@ -13,6 +13,7 @@ def get_config(env, config_resource):
     for key, value in config_dict.items():
         if key.startswith('FLASK_'):
             config_dict[key[6:]] = value
+            
     #load values from env
     for key, value in config_dict.items():
         if isinstance(value, str) and value.startswith('env:'):
