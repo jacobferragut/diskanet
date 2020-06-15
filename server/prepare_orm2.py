@@ -18,7 +18,8 @@ def init_auth():
     config = get_config(os.environ['FLASK_ENV'], open('server/config.yaml'))
     db = create_engine(config['AUTH_DB'])
     base_auth.metadata.create_all(db)
-
+    
+#in p.81 the session is made in diskanet_orm.py and not here.
 @app.cli.command('init-db')
 def init_db():
     config = get_config(os.environ['FLASK_ENV'], open('server/config.yaml'))
