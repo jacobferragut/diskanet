@@ -116,7 +116,8 @@ class Users(Resource):
         d = api.payload
         
         #error if they send something other than username and password
-        if list(d.keys()).sort() != ['name','password'].sort(): return {'error':'username and password required' }
+        if d['name'] is None or d['password'] is None: return { 'error':'username and password are required' }
+      
         
         #grab user
         auth = g.auth_db.execute(f"select * from auth where user_name='{d['name']}'").first()
@@ -147,9 +148,14 @@ class User(Resource):
         if u is None:
             return {'msg': 'No user found'}
         return str({ff: getattr(u, ff) for ff in k })
-        
+    
+    @JWT.jwt_required    
     def put(self, user_id):
         '''update user's information'''
+        #user must be logged (to change their info)
+        if JWT.get_jwt_identity() != user_id or JWT.get_jwt_claims()['access'] != 'mod':
+            return {'msg': f'You are not authorized to edit user: {g.db.query(duser).get(user_id).name}'}
+        
         #gets user changes
         d = api.payload
         if d is None: return {'msg': 'No change submitted'}
