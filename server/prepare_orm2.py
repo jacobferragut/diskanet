@@ -55,7 +55,7 @@ def init_db():
                 name    = row[1],
                 title   = row[2],
                 body    = row[3],
-                #owner   = row[4],
+                owner   = session.execute(f"select * from users where name={row[4]};").first(),
                 owner_id = int(row[5]),
                 title_font = row[6],
                 body_font = row[7],

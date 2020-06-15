@@ -51,8 +51,6 @@ class Users(Resource):
         auth = Auth() #creates new authentication object
         
         #user_id supposed to be uuid but for now im just incrementing
-        #max = int(g.db.execute("SELECT MAX(user_id) FROM users;")[0])
-        #max = g.db.execute("SELECT * from users ORDER BY user_id DESC LIMIT 1").user_id
         max = g.db.query(duser).order_by(duser.user_id.desc()).first().user_id
         #user id is the same for user and auth table object
         user.user_id = auth.user_id = max+1
@@ -152,9 +150,6 @@ class User(Resource):
     @JWT.jwt_required    
     def put(self, user_id):
         '''update user's information'''
-        #user must be logged (to change their info)
-        if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
-            return {'msg': f'You are not authorized to edit user: {g.db.query(duser).get(user_id).name}'}
         
         #gets user changes
         d = api.payload
@@ -165,6 +160,10 @@ class User(Resource):
         if user is None:
             return {'msg': 'No user found'}
             
+        #user must be logged (to change their info)
+        if int(JWT.get_jwt_identity()) != user_id:# or JWT.get_jwt_claims()['access'] != 'mod':
+            return {'msg': f'You are not authorized to edit user: {user.name}'}
+        
         #users can only change:
         #name, email
         allowed = ['name','email']
@@ -185,17 +184,22 @@ class User(Resource):
         #returns changes
         return str({ff: getattr(user, ff) for ff in d })
         
-        
+    @JWT.jwt_required
     def delete(self, user_id):
         '''delete user's account'''
-        #do user JWT authentication so users cant delete each other
+        #get user
         user = g.db.query(duser).get(user_id)
+        #see if user is found
+        if user is None: return {'msg': 'No user found with that user_id'}
         name = user.name
-        if user is None: return {'msg': 'No user found'}
+        #check authentication
+        if int(JWT.get_jwt_identity()) != user_id:
+            return {'msg': f'You are not authorized to delete user: {name}'}
+        #delete user and submit changes
         g.db.delete(user)
         g.db.commit()
         
-        return {'msg': 'user: {name}'}
+        return {'msg': f'user {name} deleted'}
 
 @api.route('/site/<int:user_id>')
 class Sites(Resource):
@@ -280,6 +284,8 @@ class Site(Resource):
         for k,v in d.items():
             if k in allowed:
                 setattr(site, k, v)
+                if v == 'True' and k[0] == 'g':
+                    setattr(site,k,True)
             else:
                 return {'msg': f'ERROR: you cannot change {k}'}
         
@@ -305,11 +311,35 @@ class Site(Resource):
 class Discover(Resource):
     def post(self):
         '''use filter'''
-        return ''
+        filterArgs = api.payload
+        results={}
+        
+        #genres art,film,music,writing
+        
+        
+        #if no filter submitted
+        if filterArgs is None: return self.get()
+        
+        results = {}
+        
+        for row in g.db.execute(f"select * from sites where genre_music={filterArgs['genre_music']} genre_art={filterArgs['genre_art']} genre_film={filterArgs['genre_film']} genre_writing={filterArgs['genre_writing']} limit 5;"):
+            temp = dict(row)
+            temp.pop('_sa_instance_state', None)
+            results[temp['site_id']] = temp
+        
+        return results
+        
     
     def get(self):
         '''see discover (unfiltered) results'''
-        return ''
+        results = {}
+        
+        for row in g.db.execute('select * from sites limit 5;'):
+            temp = dict(row)
+            temp.pop('_sa_instance_state', None)
+            results[temp['site_id']] = temp
+        
+        return results
 
 @app.before_request
 def init_db():
