@@ -143,7 +143,7 @@ class Users(Resource):
 class User(Resource):
     def get(self,user_id):
         '''retreives user information'''
-        k = ['user_id','name','password','creation_date','email','pass_salt','email_confirmation']        
+        k = ['user_id','name','creation_date','email','email_confirmation']        
         u = g.db.query(duser).get(user_id)
         if u is None:
             return {'msg': 'No user found'}
@@ -153,7 +153,7 @@ class User(Resource):
     def put(self, user_id):
         '''update user's information'''
         #user must be logged (to change their info)
-        if JWT.get_jwt_identity() != user_id or JWT.get_jwt_claims()['access'] != 'mod':
+        if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
             return {'msg': f'You are not authorized to edit user: {g.db.query(duser).get(user_id).name}'}
         
         #gets user changes
