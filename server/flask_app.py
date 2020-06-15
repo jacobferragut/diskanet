@@ -203,10 +203,12 @@ class User(Resource):
 
 @api.route('/site/<int:user_id>')
 class Sites(Resource):
+	@JWT.jwt_required 
     def post(self, user_id):
         '''site creation'''
         #Use JWT authentication to verify user is logged in to post a site
-        
+        if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
+            return {'msg': f'You are not authorized to create site'}
         
         #grabs fields to create site
         d = api.payload
@@ -256,8 +258,10 @@ class Sites(Resource):
         
 @api.route('/site/<int:user_id>/<int:site_id>')
 class Site(Resource):
+
     def get(self, user_id, site_id):
         '''get a site's info'''
+
         #u = g.db.query(duser).get(user_id)
         #n = u.name
         #gets the site
@@ -265,10 +269,12 @@ class Site(Resource):
         #returns site name title and body
         return { s.name: {s.title: s.body} }
         
+	@JWT.jwt_required         
     def put(self, user_id, site_id):
         '''update a site's info'''
         #Use JWT authentication to verify user is logged in to post a site
-        
+        if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
+            return {'msg': f'You are not authorized to edit site'}        
         
         #grabs fields to create site
         d = api.payload
@@ -296,10 +302,12 @@ class Site(Resource):
         
         return {'msg': f'site {site.name} has been updated'} 
         
-        
+	@JWT.jwt_required                 
     def delete(self,user_id, site_id):
         '''delete a user's site'''
         #jwt auth b4 del
+        if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
+            return {'msg': f'You are not authorized to delete site'}        
         
         ret = g.db.query(sites).get(site_id)
         if ret is None: return {'error':'no site found'}
@@ -314,6 +322,7 @@ class Discover(Resource):
         filterArgs = api.payload
         results={}
         
+
         #genres art,film,music,writing
         
         
