@@ -63,11 +63,11 @@ def init_db():
                 body_font = row[7],
                 body_font_size = int(row[8]),
                 title_font_size = row[9],
-    			background_color = row[10],
-    			genre_music = bool(row[11]),
-    			genre_art = bool(row[12]),
-    			genre_film = bool(row[13]),
-    			genre_writing = bool(row[14])
+    		background_color = row[10],
+    		genre_music = bool(row[11]),
+    		genre_art = bool(row[12]),
+    	        genre_film = bool(row[13]),
+    		genre_writing = bool(row[14])
             ))
         session.add_all(siteData)
         session.commit()
