@@ -59,3 +59,13 @@ class Site(base_app):
     genre_art = Column(types.Boolean, default=False)
     genre_film = Column(types.Boolean, default=False)
     genre_writing = Column(types.Boolean, default=False)
+
+    def _to_dict(self):
+        skips = []
+        to_str = []
+        return {
+            k: str(v) if k in to_str else v
+            for k,v in self.__dict__
+            if k[0] != '_' or k in skips
+        }
+    
