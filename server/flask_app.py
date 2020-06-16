@@ -219,15 +219,13 @@ class SitesResource(Resource):
         ###########
         site = Site()
         ##############
-        
-        #are we making site_id UUID or not??? For now im assuming we arent    
-        
+                
         #first do required column entries...
         #and do allowed columns
         allowed = ['title_font','title_font_size','body_font','body_font_size',
                    'background_color','genre_music','genre_art','genre_film',
                    'genre_writing']
-        required = ['site_id','name','title','body','owner_id']
+        required = ['name','title','body']
         reqNum = 0
         for k,v in d.items():
             if k in required:
@@ -241,6 +239,8 @@ class SitesResource(Resource):
         # EMF: probably leave out setting site.owner
         #user id of who owns the site
         site.owner = g.db.query(User).get(user_id)#use JWT authentication to get user creating the site
+        site.owner_id = site.owner.name
+        site.site_id = g.db.query(Site).order_by(Site.site_id.desc()).first().site_id + 1
         #commit the changes
         g.db.add(site)
         g.db.commit()
@@ -307,8 +307,8 @@ class SiteResource(Resource):
         #jwt auth b4 del
         if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
             return {'msg': f'You are not authorized to delete site'}
-        
-        ret = g.db.query(Site).get(site_id)
+        ret = None
+        #ret = g.db.query(Site).filter(
         if ret is None: return {'error':'no site found'}
         g.db.delete(ret)
         g.db.commit()

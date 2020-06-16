@@ -10,9 +10,16 @@ pipenv install flask-restplus flask-cors
 pipenv run ipython
 pipenv run flask run
 
-export FLASK_APP=flask_app.py
-export FLASK_ENV=development
-flask run
+#run prepare_orm2
+export FLASK_APP=server/prepare_orm2.py
+export FLASK_ENV=dev_lite
+pipenv run flask init-db
+pipenv run flask init-auth
+
+#run flask app
+export FLASK_APP=server/flask_app.py
+export FLASK_ENV=dev_lite
+pipenv run flask run
 
 http GET localhost:5000/my-api/4
 
