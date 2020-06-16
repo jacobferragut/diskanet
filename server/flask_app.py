@@ -150,7 +150,7 @@ class UserResource(Resource):
     @JWT.jwt_required
     def put(self, user_id):
         '''update user's information'''
-        
+            
         #gets user changes
         d = api.payload
         if d is None: return {'msg': 'No change submitted'}
