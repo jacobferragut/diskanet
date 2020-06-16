@@ -189,6 +189,7 @@ class UserResource(Resource):
         '''delete user's account'''
         #get user
         user = g.db.query(User).get(user_id)
+        auth = g.auth_db.query(Auth).get(user_id)
         #see if user is found
         if user is None: return {'msg': 'No user found with that user_id'}
         name = user.name
@@ -197,8 +198,9 @@ class UserResource(Resource):
             return {'msg': f'You are not authorized to delete user: {name}'}
         #delete user and submit changes
         g.db.delete(user)
+        g.auth_db.delete(auth)
         g.db.commit()
-        
+        g.auth_db.commit()
         return {'msg': f'user {name} deleted'}
 
 @api.route('/site/<int:user_id>')
@@ -236,11 +238,20 @@ class SitesResource(Resource):
         if reqNum != len(required):
             return {'msg': 'ERROR: more fields required'}
 
+
+        #inc site id
+        max = g.db.query(Site).order_by(Site.site_id.desc()).first()
+        #print(max.site_id)
+        if max is None:
+            site.site_id = 1
+        else:
+            site.site_id = max.site_id + 1
+        
         # EMF: probably leave out setting site.owner
         #user id of who owns the site
         site.owner = g.db.query(User).get(user_id)#use JWT authentication to get user creating the site
-        site.owner_id = site.owner.name
-        site.site_id = g.db.query(Site).order_by(Site.site_id.desc()).first().site_id + 1
+        site.owner_id = user_id
+        
         #commit the changes
         g.db.add(site)
         g.db.commit()
@@ -307,8 +318,7 @@ class SiteResource(Resource):
         #jwt auth b4 del
         if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
             return {'msg': f'You are not authorized to delete site'}
-        ret = None
-        #ret = g.db.query(Site).filter(
+        ret = g.db.query(Site).filter(Site.owner_id == user_id, Site.site_id == site_id).first()
         if ret is None: return {'error':'no site found'}
         g.db.delete(ret)
         g.db.commit()
