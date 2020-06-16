@@ -49,23 +49,25 @@ def init_db():
     if session.query(Site).count() == 0:
         siteData = []
         ROWS = csv.reader(open('server/sites.csv', encoding='utf8'))
+        
         for row in ROWS:
+            #print(row)
             siteData.append( Site(
                 site_id = int(row[0]),
                 name    = row[1],
                 title   = row[2],
                 body    = row[3],
-                owner   = session.execute(f"select * from users where name={row[4]};").first(),
                 owner_id = int(row[5]),
+                owner   = session.query(User).get(int(row[5])),
                 title_font = row[6],
                 body_font = row[7],
                 body_font_size = int(row[8]),
                 title_font_size = row[9],
-    			background_color = Column(types.String(length=25)),
-    			genre_music = Column(types.Boolean, default=False),
-    			genre_art = Column(types.Boolean, default=False),
-    			genre_film = Column(types.Boolean, default=False),
-    			genre_writing = Column(types.Boolean, default=False)
+    			background_color = row[10],
+    			genre_music = bool(row[11]),
+    			genre_art = bool(row[12]),
+    			genre_film = bool(row[13]),
+    			genre_writing = bool(row[14])
             ))
         session.add_all(siteData)
         session.commit()

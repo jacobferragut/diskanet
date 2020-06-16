@@ -1,6 +1,3 @@
-1, MagicBox, Welcome to my site, Hello. I post on the forums everyday, 1, Times New Roman, Times New Roman, 24, 15, gray, true, false, false, false 
-2, MagicBox2, Welcome to my site, Hello. I post on the forums everyday, 2, Times New Roman, Times New Roman, 24, 15, gray, true, true, false, false
-3, MagicBox3, Welcome to my site, Hello. I post on the forums everyday, 3, Times New Roman, Times New Roman, 24, 15, gray, false, false, false, true
-
-
-
+1,MagicBox,Welcome to my site,Hello. I post on the forums everyday,user1,1,Times New Roman,Times New Roman,24,15,gray,True,,,  
+2,MagicBox2,Welcome to my site,Hello. I post on the forums everyday,user2,2,Times New Roman,Times New Roman,24,15,gray,True,True,,
+3,MagicBox3,Welcome to my site,Hello. I post on the forums everyday,user3,3,Times New Roman,Times New Roman,24,15,gray,,,,True
