@@ -325,6 +325,18 @@ class Discover(Resource):
         #genres art,film,music,writing
         keys = ['genre_music', 'genre_writing', 'genre_film', 'genre_art']        
         where_clause = ' and '.join([f'{key}={filterArgs[key]}' for key in keys if key in filterArgs])
+
+        conditions = []
+        for key in keys:
+            if key in filterArgs:
+                conditions.append(f'{key}={filterArgs[key]}')                
+        where_clause = ' and '.join(conditions)
+
+        query = g.db.query(Site)
+        for key in keys:
+            if key in filterArgs:
+                query = query.filter(getattr(Site, key) == filterArgs[key])
+        rows = query.all()
         
         results = {}        
         for row in g.db.execute(f'''
