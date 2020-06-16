@@ -61,11 +61,11 @@ def init_db():
                 body_font = row[7],
                 body_font_size = int(row[8]),
                 title_font_size = row[9],
-    			background_color = Column(types.String(length=25)),
-    			genre_music = Column(types.Boolean, default=False),
-    			genre_art = Column(types.Boolean, default=False),
-    			genre_film = Column(types.Boolean, default=False),
-    			genre_writing = Column(types.Boolean, default=False)
+                background_color = Column(types.String(length=25)),
+                genre_music = Column(types.Boolean, default=False),
+                genre_art = Column(types.Boolean, default=False),
+                genre_film = Column(types.Boolean, default=False),
+                genre_writing = Column(types.Boolean, default=False)
             ))
         session.add_all(siteData)
         session.commit()

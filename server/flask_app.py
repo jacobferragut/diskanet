@@ -147,7 +147,7 @@ class User(Resource):
             return {'msg': 'No user found'}
         return str({ff: getattr(u, ff) for ff in k })
     
-    @JWT.jwt_required    
+    @JWT.jwt_required
     def put(self, user_id):
         '''update user's information'''
         
@@ -203,7 +203,7 @@ class User(Resource):
 
 @api.route('/site/<int:user_id>')
 class Sites(Resource):
-	@JWT.jwt_required 
+    @JWT.jwt_required 
     def post(self, user_id):
         '''site creation'''
         #Use JWT authentication to verify user is logged in to post a site
@@ -269,12 +269,12 @@ class Site(Resource):
         #returns site name title and body
         return { s.name: {s.title: s.body} }
         
-	@JWT.jwt_required         
+    @JWT.jwt_required
     def put(self, user_id, site_id):
         '''update a site's info'''
         #Use JWT authentication to verify user is logged in to post a site
         if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
-            return {'msg': f'You are not authorized to edit site'}        
+            return {'msg': f'You are not authorized to edit site'}
         
         #grabs fields to create site
         d = api.payload
@@ -302,12 +302,12 @@ class Site(Resource):
         
         return {'msg': f'site {site.name} has been updated'} 
         
-	@JWT.jwt_required                 
+    @JWT.jwt_required
     def delete(self,user_id, site_id):
         '''delete a user's site'''
         #jwt auth b4 del
         if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
-            return {'msg': f'You are not authorized to delete site'}        
+            return {'msg': f'You are not authorized to delete site'}
         
         ret = g.db.query(sites).get(site_id)
         if ret is None: return {'error':'no site found'}
