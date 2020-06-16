@@ -49,14 +49,16 @@ def init_db():
     if session.query(Site).count() == 0:
         siteData = []
         ROWS = csv.reader(open('server/sites.csv', encoding='utf8'))
+        
         for row in ROWS:
+            #print(row)
             siteData.append( Site(
                 site_id = int(row[0]),
                 name    = row[1],
                 title   = row[2],
                 body    = row[3],
-                owner   = session.execute(f"select * from users where name={row[4]};").first(),
                 owner_id = int(row[5]),
+                owner   = session.query(User).get(int(row[5])),
                 title_font = row[6],
                 body_font = row[7],
                 body_font_size = int(row[8]),
