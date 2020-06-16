@@ -61,11 +61,11 @@ class Site(base_app):
     genre_writing = Column(types.Boolean, default=False)
 
     def _to_dict(self):
-        skips = []
+        skips = ['owner']
         to_str = []
         return {
             k: str(v) if k in to_str else v
-            for k,v in self.__dict__
+            for k,v in self.__dict__.items()
             if k[0] != '_' or k in skips
         }
     

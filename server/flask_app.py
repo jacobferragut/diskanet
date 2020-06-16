@@ -14,8 +14,8 @@ from sqlalchemy import func
 from sqlalchemy import Column, types
 from sqlalchemy.ext.declarative import declarative_base
 
-from .diskanet_orm import User as duser
-from .diskanet_orm import Site as sites
+from .diskanet_orm import User
+from .diskanet_orm import Site
 from .auth_orm import Auth
 from .util import get_config
 
@@ -38,7 +38,7 @@ jwt = JWT.JWTManager(app)
 
 #routes before auth, no discover
 @api.route('/user')
-class Users(Resource):
+class UsersResource(Resource):
     def post(self):
         '''Registers a new user'''
         #grabs fields to create user
@@ -47,11 +47,11 @@ class Users(Resource):
         #need 
         #user_id, name, creation_date, email, email_confirmation
 
-        user = duser() #creates new user object
+        user = User() #creates new user object
         auth = Auth() #creates new authentication object
         
         #user_id supposed to be uuid but for now im just incrementing
-        max = g.db.query(duser).order_by(duser.user_id.desc()).first().user_id
+        max = g.db.query(User).order_by(User.user_id.desc()).first().user_id
         #user id is the same for user and auth table object
         user.user_id = auth.user_id = max+1
         #creation date creation
@@ -138,11 +138,11 @@ class Users(Resource):
          
         
 @api.route('/user/<int:user_id>')
-class User(Resource):
+class UserResource(Resource):
     def get(self,user_id):
         '''retreives user information'''
         k = ['user_id','name','creation_date','email','email_confirmation']        
-        u = g.db.query(duser).get(user_id)
+        u = g.db.query(User).get(user_id)
         if u is None:
             return {'msg': 'No user found'}
         return str({ff: getattr(u, ff) for ff in k })
@@ -156,7 +156,7 @@ class User(Resource):
         if d is None: return {'msg': 'No change submitted'}
         
         #grabs user from database
-        user = g.db.query(duser).get(user_id)
+        user = g.db.query(User).get(user_id)
         if user is None:
             return {'msg': 'No user found'}
             
@@ -188,7 +188,7 @@ class User(Resource):
     def delete(self, user_id):
         '''delete user's account'''
         #get user
-        user = g.db.query(duser).get(user_id)
+        user = g.db.query(User).get(user_id)
         #see if user is found
         if user is None: return {'msg': 'No user found with that user_id'}
         name = user.name
@@ -202,7 +202,7 @@ class User(Resource):
         return {'msg': f'user {name} deleted'}
 
 @api.route('/site/<int:user_id>')
-class Sites(Resource):
+class SitesResource(Resource):
     @JWT.jwt_required 
     def post(self, user_id):
         '''site creation'''
@@ -217,7 +217,7 @@ class Sites(Resource):
         #site_id, name, title, body, owner_id (needs owner in the future)
         
         ###########
-        site = sites()
+        site = Site()
         ##############
         
         #are we making site_id UUID or not??? For now im assuming we arent    
@@ -240,7 +240,7 @@ class Sites(Resource):
 
         # EMF: probably leave out setting site.owner
         #user id of who owns the site
-        site.owner = g.db.query(duser).get(user_id)#use JWT authentication to get user creating the site
+        site.owner = g.db.query(User).get(user_id)#use JWT authentication to get user creating the site
         #commit the changes
         g.db.add(site)
         g.db.commit()
@@ -257,14 +257,14 @@ class Sites(Resource):
         
         
 @api.route('/site/<int:user_id>/<int:site_id>')
-class Site(Resource):
+class SiteResource(Resource):
 
     def get(self, user_id, site_id):
         '''get a site's info'''
-        #u = g.db.query(duser).get(user_id)
+        #u = g.db.query(User).get(user_id)
         #n = u.name
         #gets the site
-        s = g.db.query(sites).get(site_id)
+        s = g.db.query(Site).get(site_id)
         #returns site name title and body
         return { s.name: {s.title: s.body} }
         
@@ -280,7 +280,7 @@ class Site(Resource):
         if d is None: return {'msg': 'No change submitted'}
         
         #gets site
-        site = g.db.query(sites).get(site_id)
+        site = g.db.query(Site).get(site_id)
                 
         #first do required column entries...
         #and do allowed columns
@@ -308,14 +308,14 @@ class Site(Resource):
         if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
             return {'msg': f'You are not authorized to delete site'}
         
-        ret = g.db.query(sites).get(site_id)
+        ret = g.db.query(Site).get(site_id)
         if ret is None: return {'error':'no site found'}
         g.db.delete(ret)
         g.db.commit()
         return {'msg':f'site:{ret.name} deleted'}
 
 @api.route('/discover')
-class Discover(Resource):
+class DiscoverResource(Resource):
     def post(self):
         '''use filter'''
         filterArgs = api.payload
