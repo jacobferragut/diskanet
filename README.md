@@ -39,3 +39,21 @@ p.127 - Chapter 9: api testing
 p.137 - Chapter 10: Database Integrity Testing --- foreign key and relationships
 p.164 - Chapter 12: Design the Application
 p.178 - Chapter 13: Build the Data Model
+
+chapter 2, 3, and 4 then chapter 15
+#front end commands 
+
+brew install npm
+npm install -g create-react-app
+
+Windows
+choco install nodejs.install
+npm install -g create-react-app
+
+ALL OS's
+npx create-react-app react-diskanet
+
+cd react-diskanet
+npm start
+
+
