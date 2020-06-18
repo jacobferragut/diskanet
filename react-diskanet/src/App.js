@@ -82,6 +82,9 @@ class RegisterScreen extends Component {
     constructor(props){
         super(props)
         this.state = {username : ''}
+        this.state = {password : ''}
+        this.state = {passwordConfirmation : ''}
+
         //this.logIt = this.logIt.bind(this)
         this.updateUsername = this.updateUsername.bind(this);
     }
@@ -94,6 +97,10 @@ class RegisterScreen extends Component {
             <p>register</p>
         	<input type="text" value={this.state.username}
 	            onChange={this.updateUsername}/>
+	        <br/>
+        	<input type="password" value={this.state.password} name="password"/>
+	        <br/>
+        	<input type="checkbox" value="" name="passwordConfirmation"/>
 	        <br/>
 	        <button onClick={ this.goRegister} 
 	            name='registerButton'>register</button>
