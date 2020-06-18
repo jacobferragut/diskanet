@@ -13,6 +13,37 @@ const BoxPanel = styled.div`
 	padding: 20px;
 	margin: 10px;
 `;
+//submit discover filter button
+const FilterButton = styled.button`
+	padding: 5px;
+	margin: 3px;
+	background-color: #ccc;
+	font-size: 110%;
+	font-family: inherit;
+`;
+//select genres for form
+const FilterSelect = styled.select`
+	padding: 3px;
+	margin: 6px;
+	text-align: center;
+	font-family: inherit;
+`;
+class DiscoverScreen extends Component {
+	render(){
+		return (
+			<div>
+				<FilterButton> Discover! </FilterButton>
+				<FilterSelect value={""}>
+					<option value="Music">Music</option>
+					<option value="Art">Art</option>
+					<option value="Film">Film</option>
+					<option value="Writing">Writing</option>
+				</FilterSelect>
+				<input type="checkbox"></input>
+			</div>
+		);
+	}
+}
 
 class Banner extends Component {
 	render(){
@@ -24,7 +55,9 @@ class Banner extends Component {
 					</div>
 				</BoxPanel>
 				
-				<BoxPanel> UserBox Here </BoxPanel>
+				<BoxPanel>
+					UserBox Here 
+				</BoxPanel>
 			</div>
 		);
 	}
@@ -43,6 +76,7 @@ class RegisterScreen extends Component {
     render(){
         return(
         <div>
+            <p>register</p>
         	<input type="text" value={this.state.username}
 	            onChange={this.updateUsername}/>
 	        <br/>
@@ -51,6 +85,7 @@ class RegisterScreen extends Component {
         </div>
         )
     }
+
 }
 
 class App extends Component {
@@ -60,8 +95,11 @@ class App extends Component {
 				<Banner />
 				<p> hello world </p>
 				<RegisterScreen/>
+				<DiscoverScreen />
 			</div>
 		);
 	}
 }
 export default App;
+//export {App, Banner, RegisterScreen, BoxPanel};
+//export Banner, RegistrationScreen;

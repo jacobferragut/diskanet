@@ -9,17 +9,15 @@
   display: flex;
   flex-direction: row;
   align-items: left;
-  justify-content: left;
+  justify-content: flex-end;
   font-size: calc(10px + 2vmin);
   color: white;
   
 }
 .App-title {
-	
+
 }
-.App-UserBox {
-	
-}
+
 
 .App-link {
   color: #61dafb;
