@@ -31,7 +31,26 @@ class Banner extends Component {
 }
 
 class RegisterScreen extends Component {
-	
+    constructor(props){
+        super(props)
+        this.state = {username : ''}
+        //this.logIt = this.logIt.bind(this)
+        this.updateUsername = this.updateUsername.bind(this);
+    }
+    updateUsername(event) {
+        this.setState({username: event.target.value});
+    }
+    render(){
+        return(
+        <div>
+        	<input type="text" value={this.state.username}
+	            onChange={this.updateUsername}/>
+	        <br/>
+	        <button onClick={ this.goRegister} 
+	            name='registerButton'>register</button>
+        </div>
+        )
+    }
 }
 
 class App extends Component {
@@ -40,6 +59,7 @@ class App extends Component {
 			<div className="App">
 				<Banner />
 				<p> hello world </p>
+				<RegisterScreen/>
 			</div>
 		);
 	}
