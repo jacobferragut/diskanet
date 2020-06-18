@@ -24,14 +24,20 @@ class Banner extends Component {
 					</div>
 				</BoxPanel>
 				
-				<BoxPanel> UserBox Here </BoxPanel>
+				<BoxPanel>
+					UserBox Here 
+				</BoxPanel>
 			</div>
 		);
 	}
 }
 
 class RegisterScreen extends Component {
-	
+	render(){
+		return (
+			<p>register</p>
+		);
+	}
 }
 
 class App extends Component {
@@ -44,4 +50,6 @@ class App extends Component {
 		);
 	}
 }
-export default App;
+//export default App;
+export {App, Banner, RegisterScreen, BoxPanel};
+//export Banner, RegistrationScreen;
