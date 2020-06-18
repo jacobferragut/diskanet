@@ -21,25 +21,40 @@ const FilterButton = styled.button`
 	font-size: 110%;
 	font-family: inherit;
 `;
-//select genres for form
-const FilterSelect = styled.select`
-	padding: 3px;
-	margin: 6px;
-	text-align: center;
-	font-family: inherit;
+//filter panel for genres
+const FilterPanel = styled(BoxPanel)`
+	font-size: 1em;
+	font-family: serif
 `;
+
 class DiscoverScreen extends Component {
 	render(){
 		return (
 			<div>
+				<FilterPanel>
+				<h1>Select Genre(s)</h1>
+				Music<input 
+					type="checkbox" 
+					value="music">
+				</input><br/>
+				Art<input 
+					type="checkbox" 
+					value="art">
+				</input><br/>
+				Film<input 
+					type="checkbox" 
+					value="film">
+				</input><br/>
+				Writing<input 
+					type="checkbox" 
+					value="writing">
+				</input><br/>
+				<h2>Exclude Non-selected Genres from discover results?</h2>
+				Yes<input type="radio" name="exclude" value="Yes"></input><br/>
+				No<input type="radio" name="exclude" value="No"></input>
+				
 				<FilterButton> Discover! </FilterButton>
-				<FilterSelect value={""}>
-					<option value="Music">Music</option>
-					<option value="Art">Art</option>
-					<option value="Film">Film</option>
-					<option value="Writing">Writing</option>
-				</FilterSelect>
-				<input type="checkbox"></input>
+				</FilterPanel>
 			</div>
 		);
 	}
