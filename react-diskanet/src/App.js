@@ -1,8 +1,10 @@
 import React from 'react';
 import { Component } from 'react';
-import './App.css';
-
 import styled, { css } from 'styled-components'
+
+import './App.css';
+import {DiscoverScreen} from './Discover.js';
+
 
 const BoxPanel = styled.div`
 	display: inline-block;
@@ -13,62 +15,18 @@ const BoxPanel = styled.div`
 	padding: 20px;
 	margin: 10px;
 `;
-//submit discover filter button
-const FilterButton = styled.button`
-	padding: 5px;
-	margin: 3px;
-	background-color: #ccc;
-	font-size: 110%;
-	font-family: inherit;
-`;
-//filter panel for genres
-const FilterPanel = styled(BoxPanel)`
-	font-size: 1em;
-	font-family: serif
-`;
 
-class DiscoverScreen extends Component {
-	render(){
-		return (
-			<div>
-				<FilterPanel>
-				<h1>Select Genre(s)</h1>
-				Music<input 
-					type="checkbox" 
-					value="music">
-				</input><br/>
-				Art<input 
-					type="checkbox" 
-					value="art">
-				</input><br/>
-				Film<input 
-					type="checkbox" 
-					value="film">
-				</input><br/>
-				Writing<input 
-					type="checkbox" 
-					value="writing">
-				</input><br/>
-				<h2>Exclude Non-selected Genres from discover results?</h2>
-				Yes<input type="radio" name="exclude" value="Yes"></input><br/>
-				No<input type="radio" name="exclude" value="No"></input>
-				
-				<FilterButton> Discover! </FilterButton>
-				</FilterPanel>
-			</div>
-		);
-	}
-}
 
 class Banner extends Component {
 	render(){
 		return (
 			<div className="App-banner">
-				<BoxPanel>
-					<div className='App-title'>
+				<div className='App-title'>
+					<BoxPanel>
 						Nathan's World
-					</div>
-				</BoxPanel>
+					</BoxPanel>
+				</div>
+				
 				
 				<BoxPanel>
 					UserBox Here 
@@ -127,5 +85,5 @@ class App extends Component {
 	}
 }
 export default App;
-//export {App, Banner, RegisterScreen, BoxPanel};
+export {App, Banner, RegisterScreen, BoxPanel};
 //export Banner, RegistrationScreen;
