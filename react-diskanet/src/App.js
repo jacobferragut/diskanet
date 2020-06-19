@@ -84,6 +84,7 @@ class RegisterScreen extends Component {
         this.state = {username : ''}
         this.state = {password : ''}
         this.state = {passwordConfirmation : ''}
+        this.state = {email : ''}
 
         //this.logIt = this.logIt.bind(this)
         this.updateUsername = this.updateUsername.bind(this);
@@ -94,16 +95,19 @@ class RegisterScreen extends Component {
     render(){
         return(
         <div>
+            <form>
             <p>register</p>
-        	<input type="text" value={this.state.username}
+            email<input type="text" name="email"/>
+        	username<input type="text" value={this.state.username}
 	            onChange={this.updateUsername}/>
 	        <br/>
-        	<input type="password" value={this.state.password} name="password"/>
+        	password<input type="password" value={this.state.password} name="password"/>
 	        <br/>
-        	<input type="checkbox" value="" name="passwordConfirmation"/>
+        	show password<input type="checkbox" value="" name="passwordConfirmation"/>
 	        <br/>
 	        <button onClick={ this.goRegister} 
 	            name='registerButton'>register</button>
+	        </form>
         </div>
         )
     }
