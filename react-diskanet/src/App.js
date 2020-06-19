@@ -1,10 +1,21 @@
 import React from 'react';
 import { Component } from 'react';
 import styled, { css } from 'styled-components'
+import axios from 'axios';
 
 import './App.css';
 import {DiscoverScreen} from './Discover.js';
 
+const APIURL = 'http://localhost:5000/';
+	submitSearch(genre_music, genre_art, genre_film, genre_writing) {
+		submission = Object()
+		if (genre_music 
+		axios.post(APIURL + 'api/discover', 
+			{ genre_music, genre_art, genre_film, genre_writing })
+			.then( response => {
+				console.log(response);
+			});
+	};
 
 const BoxPanel = styled.div`
 	display: inline-block;
