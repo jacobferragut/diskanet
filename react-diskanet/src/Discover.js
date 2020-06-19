@@ -50,6 +50,11 @@ export default class DiscoverScreen extends Component {
 			<div>
 				<FilterPanel>
 				<h1>Select Genre(s)</h1>
+				<h2>must contain | may contain</h2>
+				Music<input 
+					type="checkbox" 
+					value="music">
+				</input>
 				Music<input 
 					type="checkbox" 
 					value="music">
@@ -57,11 +62,23 @@ export default class DiscoverScreen extends Component {
 				Art<input 
 					type="checkbox" 
 					value="art">
+				</input>
+				Art<input 
+					type="checkbox" 
+					value="art">
 				</input><br/>
 				Film<input 
 					type="checkbox" 
 					value="film">
+				</input>
+				Film<input 
+					type="checkbox" 
+					value="film">
 				</input><br/>
+				Writing<input 
+					type="checkbox" 
+					value="writing">
+				</input>
 				Writing<input 
 					type="checkbox" 
 					value="writing">

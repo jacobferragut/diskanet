@@ -57,3 +57,5 @@ cd react-diskanet
 npm start
 
 
+For react component shortcuts: https://reactjsexample.com/tag/slider/
+

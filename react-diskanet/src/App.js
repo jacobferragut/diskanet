@@ -27,6 +27,15 @@ const BoxPanel = styled.div`
 	margin: 10px;
 `;
 
+const SliderPage = () => {
+  return (
+    <div className="my-5">
+      <label htmlFor="customRange1">Example range</label>
+      <input type="range" className="custom-range" id="customRange1" />
+    </div>
+  );
+}
+
 
 class Banner extends Component {
 	render(){
@@ -46,7 +55,7 @@ class Banner extends Component {
 		);
 	}
 }
-
+/*
 class RegisterScreen extends Component {
     constructor(props){
         super(props)
@@ -82,6 +91,7 @@ class RegisterScreen extends Component {
     }
 
 }
+*/
 
 class App extends Component {
 	render(){
@@ -89,12 +99,13 @@ class App extends Component {
 			<div className="App">
 				<Banner />
 				<p> hello world </p>
-				<RegisterScreen/>
 				<DiscoverScreen />
+				<SliderPage />
+
 			</div>
 		);
 	}
 }
 export default App;
-export {App, Banner, RegisterScreen, BoxPanel};
+export {App, Banner, BoxPanel, SliderPage};
 //export Banner, RegistrationScreen;
