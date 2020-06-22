@@ -36,7 +36,7 @@ export default class DiscoverScreen extends Component {
 	constructor(props){
         super(props)
         this.state = { genre_music: "", genre_art: "", genre_film: "", genre_writing: "" }
-        
+                
 
         //this.logIt = this.logIt.bind(this)
         this.updateFilter = this.updateFilter.bind(this);

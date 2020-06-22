@@ -6,6 +6,7 @@ import axios from 'axios';
 import './App.css';
 import {DiscoverScreen} from './Discover.js';
 
+/*
 const APIURL = 'http://localhost:5000/';
 	submitSearch(genre_music, genre_art, genre_film, genre_writing) {
 		submission = Object()
@@ -16,6 +17,7 @@ const APIURL = 'http://localhost:5000/';
 				console.log(response);
 			});
 	};
+*/
 
 const BoxPanel = styled.div`
 	display: inline-block;
