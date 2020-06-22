@@ -46,7 +46,7 @@ export default class DiscoverScreen extends Component {
 		return (
 			<div>
 				<FilterPanel>
-				<h1>Select Genre(s)</h1>
+				<h1>Each Site</h1>
 				<h2>must contain | may contain</h2>
 				Music<input 
 					type="checkbox" 
