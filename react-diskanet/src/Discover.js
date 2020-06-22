@@ -30,21 +30,28 @@ const ResultButton = styled(FilterButton)`
 	overflow-wrap: normal;
 `;
 
-
+//genre_music, genre_art, genre_film, genre_writing
+const APIURL = 'http://localhost:5000/';
 
 export default class DiscoverScreen extends Component {
 	constructor(props){
         super(props)
-        this.state = { genre_music: "", genre_art: "", genre_film: "", genre_writing: "" }
+        this.state = { genre_music: "1", genre_art: "1", genre_film: "", genre_writing: "" }
         
 
-        //this.logIt = this.logIt.bind(this)
         this.updateFilter = this.updateFilter.bind(this);
+		this.submitSearch = this.submitSearch.bind(this);
     }
     updateFilter(event) {
-        this.setState({username: event.target.value});
+        this.setState({genre_music:"1"});
     }
 	
+	submitSearch() {
+		axios.post(APIURL + 'discover', this.state).then( response => {
+			console.log(response);
+
+		});
+	};
 	render(){
 		return (
 			<div>
@@ -53,15 +60,17 @@ export default class DiscoverScreen extends Component {
 				<h2>must contain | may contain</h2>
 				Music<input 
 					type="checkbox" 
-					value="music">
+					name="genre_music"
+					value="0"
+					>
 				</input>
 				Music<input 
 					type="checkbox" 
-					value="music">
+					name="mayContainMusic">
 				</input><br/>
 				Art<input 
 					type="checkbox" 
-					value="art">
+					name="genre_art">
 				</input>
 				Art<input 
 					type="checkbox" 
@@ -83,11 +92,8 @@ export default class DiscoverScreen extends Component {
 					type="checkbox" 
 					value="writing">
 				</input><br/>
-				<h2>Include Non-selected Genres in discover results?</h2>
-				Yes<input type="radio" name="exclude" value="Yes"></input><br/>
-				No<input type="radio" name="exclude" value="No"></input>
 				
-				<FilterButton type="button" onClick={clickWrapper}> Discover! </FilterButton>
+				<FilterButton type="button" onClick={this.submitSearch}> Discover! </FilterButton>
 				</FilterPanel>
 				
 				<ResultButton>
