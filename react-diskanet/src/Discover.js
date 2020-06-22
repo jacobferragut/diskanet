@@ -1,6 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import styled, { css } from 'styled-components'
+import axios from 'axios';
 
 import './App.css';
 import {BoxPanel} from './App.js';
@@ -24,16 +25,18 @@ const FilterPanel = styled.div`
 	margin: 10px;
 	font-family: serif
 `;
+const ResultButton = styled(FilterButton)`
+	border-radius: 10px;
+	overflow-wrap: normal;
+`;
+
 
 
 export default class DiscoverScreen extends Component {
 	constructor(props){
         super(props)
-        this.state = {genre_music : ''}
-        this.state = {genre_art : ''}
-        this.state = {genre_film : ''}
-		this.state = {genre_writing : ''}
-		this.state = {isIncluding : ''}
+        this.state = { genre_music: "", genre_art: "", genre_film: "", genre_writing: "" }
+        
 
         //this.logIt = this.logIt.bind(this)
         this.updateFilter = this.updateFilter.bind(this);
@@ -84,8 +87,14 @@ export default class DiscoverScreen extends Component {
 				Yes<input type="radio" name="exclude" value="Yes"></input><br/>
 				No<input type="radio" name="exclude" value="No"></input>
 				
-				<FilterButton> Discover! </FilterButton>
+				<FilterButton type="button" onClick={clickWrapper}> Discover! </FilterButton>
 				</FilterPanel>
+				
+				<ResultButton>
+					<p>Test Site:</p>
+					<p>Welcome to my site.</p>
+					<p>This is an example of a site result.</p>
+				</ResultButton>
 			</div>
 		);
 	}
