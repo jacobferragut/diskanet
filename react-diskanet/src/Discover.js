@@ -47,6 +47,10 @@ export default class DiscoverScreen extends Component {
     }
     updateFilter(event) {
 		if (event.target.checked) {
+			//make may genre unchecked
+			var mayName = event.target.name.substring(6);
+			document.getElementsByName(mayName)[0].checked = false;
+			
 			this.setState({
 				[event.target.name] : "1",
 			});
@@ -58,10 +62,15 @@ export default class DiscoverScreen extends Component {
     }
 	updateMayContain(event) {
 		if (event.target.checked){
-			this.setState({["genre_".concat(event.target.name)] : "",});
+			//make must contain genre unchecked
+			var genre = "genre_".concat(event.target.name)
+			document.getElementsByName(genre)[0].checked = false;
+			
+
+			this.setState({[genre] : "",});
 		}
 		else{
-			this.setState({["genre_".concat(event.target.name)] : "0",});
+			this.setState({[genre] : "0",});
 		}
 	}
 	
@@ -104,7 +113,8 @@ export default class DiscoverScreen extends Component {
 				</input>
 				Film<input 
 					type="checkbox" 
-					name="film">
+					name="film"
+					onChange={this.updateMayContain.bind(this)}>
 				</input><br/>
 				Writing<input 
 					type="checkbox" 
@@ -113,7 +123,8 @@ export default class DiscoverScreen extends Component {
 				</input>
 				Writing<input 
 					type="checkbox" 
-					name="writing">
+					name="writing"
+					onChange={this.updateMayContain.bind(this)}>
 				</input><br/>
 				
 				<SliderPage />

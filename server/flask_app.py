@@ -330,6 +330,11 @@ class DiscoverResource(Resource):
     def post(self):
         '''use filter'''
         filterArgs = api.payload
+        
+        #delete empty genres for may contains
+        [filterArgs.pop(key) for key in list(filterArgs) if filterArgs[key]==""]
+        
+        
         #if no filter submitted then use get
         if filterArgs is None: return self.get()
 

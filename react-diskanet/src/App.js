@@ -46,14 +46,12 @@ class Banner extends Component {
 		);
 	}
 }
-/*
+
 class RegisterScreen extends Component {
     constructor(props){
         super(props)
-        this.state = {username : ''}
-        this.state = {password : ''}
-        this.state = {passwordConfirmation : ''}
-        this.state = {email : ''}
+        this.state = {username : '', password:'', passwordConfirmation:'', email:''}
+
 
         //this.logIt = this.logIt.bind(this)
         this.updateUsername = this.updateUsername.bind(this);
@@ -82,21 +80,20 @@ class RegisterScreen extends Component {
     }
 
 }
-*/
+
 
 class App extends Component {
 	render(){
 		return (
 			<div className="App">
 				<Banner />
-				<p> hello world </p>
 				<DiscoverScreen />
-				<SliderPage />
+				<RegisterScreen/>
 
 			</div>
 		);
 	}
 }
 export default App;
-export {App, Banner, BoxPanel, SliderPage};
+export {App, Banner, BoxPanel, SliderPage, RegisterScreen};
 //export Banner, RegistrationScreen;
