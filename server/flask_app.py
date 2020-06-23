@@ -4,7 +4,7 @@ import hashlib
 
 from flask import Flask, g
 from flask_restx import Resource, Api
-# from flask_cors import CORS
+from flask_cors import CORS
 import flask_jwt_extended as JWT
 
 from sqlalchemy import create_engine
@@ -23,8 +23,9 @@ app = Flask(__name__)
 app.config.update(
     get_config(app.config['ENV'], app.open_resource('config.yaml'))
 )
-# CORS(app)
+#CORS(app)
 api = Api(app)
+CORS(app)
 
 if 'JWT_SECRET_KEY' not in app.config:
     app.config['JWT_SECRET_KEY'] = 'very secret'

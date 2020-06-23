@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import './App.css';
 import {BoxPanel} from './App.js';
+import {SliderPage} from './App.js';
 
 //submit discover filter button
 const FilterButton = styled.button`
@@ -36,15 +37,33 @@ const APIURL = 'http://localhost:5000/';
 export default class DiscoverScreen extends Component {
 	constructor(props){
         super(props)
-        this.state = { genre_music: "1", genre_art: "1", genre_film: "", genre_writing: "" }
+		//at first there is no state to submit
+		//this.state = {}
+        this.state = { genre_music: "0", genre_art: "0", genre_film: "0", genre_writing: "0" }
         
-
+		
         this.updateFilter = this.updateFilter.bind(this);
 		this.submitSearch = this.submitSearch.bind(this);
     }
     updateFilter(event) {
-        this.setState({genre_music:"1"});
+		if (event.target.checked) {
+			this.setState({
+				[event.target.name] : "1",
+			});
+		} else {
+			this.setState({
+				[event.target.name] : "0",
+			});
+		}
     }
+	updateMayContain(event) {
+		if (event.target.checked){
+			this.setState({["genre_".concat(event.target.name)] : "",});
+		}
+		else{
+			this.setState({["genre_".concat(event.target.name)] : "0",});
+		}
+	}
 	
 	submitSearch() {
 		axios.post(APIURL + 'discover', this.state).then( response => {
@@ -56,42 +75,48 @@ export default class DiscoverScreen extends Component {
 		return (
 			<div>
 				<FilterPanel>
-				<h1>Each Site</h1>
+				<h1>Select Genre(s)</h1>
 				<h2>must contain | may contain</h2>
 				Music<input 
 					type="checkbox" 
 					name="genre_music"
-					value="0"
-					>
+					onChange={this.updateFilter.bind(this)}>
 				</input>
 				Music<input 
 					type="checkbox" 
-					name="mayContainMusic">
+					name="music"
+					onChange={this.updateMayContain.bind(this)}>
 				</input><br/>
 				Art<input 
 					type="checkbox" 
-					name="genre_art">
+					name="genre_art"
+					onChange={this.updateFilter.bind(this)}>
 				</input>
 				Art<input 
 					type="checkbox" 
-					value="art">
+					name="art"
+					onChange={this.updateMayContain.bind(this)}>
 				</input><br/>
 				Film<input 
 					type="checkbox" 
-					value="film">
+					name="genre_film"
+					onChange={this.updateFilter.bind(this)}>
 				</input>
 				Film<input 
 					type="checkbox" 
-					value="film">
+					name="film">
 				</input><br/>
 				Writing<input 
 					type="checkbox" 
-					value="writing">
+					name="genre_writing"
+					onChange={this.updateFilter.bind(this)}>
 				</input>
 				Writing<input 
 					type="checkbox" 
-					value="writing">
+					name="writing">
 				</input><br/>
+				
+				<SliderPage />
 				
 				<FilterButton type="button" onClick={this.submitSearch}> Discover! </FilterButton>
 				</FilterPanel>
