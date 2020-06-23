@@ -4,8 +4,7 @@ import styled, { css } from 'styled-components'
 import axios from 'axios';
 
 import './App.css';
-import {BoxPanel} from './App.js';
-import {SliderPage} from './App.js';
+import {BoxPanel, SliderPage} from './Components/components.js';
 
 //submit discover filter button
 const FilterButton = styled.button`
