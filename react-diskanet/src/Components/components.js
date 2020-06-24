@@ -12,6 +12,19 @@ const BoxPanel = styled.div`
 	padding: 20px;
 	margin: 10px;
 `;
+const ResultPanel = styled(BoxPanel)`
+	color: #ff6347;
+	background-color: tomato;
+`;
+const ResultButton = styled.button`
+	padding: 5px;
+	margin: 3px;
+	background-color: #ccc;
+	font-size: 110%;
+	font-family: inherit;
+	border-radius: 10px;
+	overflow-wrap: normal;
+`;
 
 const SliderPage = () => {
   return (
@@ -41,4 +54,4 @@ class Banner extends Component {
 	}
 }
 
-export {Banner, BoxPanel, SliderPage};
+export {Banner, BoxPanel, SliderPage, ResultPanel, ResultButton};

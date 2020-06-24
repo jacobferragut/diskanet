@@ -7,7 +7,10 @@ import './App.css';
 import {DiscoverScreen} from './Discover.js';
 
 //components imported
-import {BoxPanel, SliderPage, Banner} from './Components/components.js';
+import {BoxPanel, SliderPage, Banner, ResultPanel, ResultButton} from './Components/components.js';
+
+//flask url
+const APIURL = 'http://localhost:5000/';
 
 class RegisterScreen extends Component {
     constructor(props){
@@ -19,6 +22,7 @@ class RegisterScreen extends Component {
         this.updateUsername = this.updateUsername.bind(this);
         this.updatePassword = this.updatePassword.bind(this);
         this.updateEmail = this.updateEmail.bind(this);
+		this.goRegister = this.goRegister.bind(this);
     }
     updateUsername(event) {
         this.setState({username: event.target.value});
@@ -39,6 +43,22 @@ class RegisterScreen extends Component {
             document.getElementsByName("password")[0].type="password"
         }        
     }
+	goRegister(event){
+		//console.log({msg:'successful button click'});
+		axios.post(APIURL + 'user', {
+			name: this.state.username, 
+			password: this.state.password, 
+			email: this.state.email}).then( response => {
+			/*example of response---------
+			{ 
+			  1 : {title:'example title', body: 'example body', ... },
+			  2 : {title:'title example', body: 'body example', ... },
+			}
+			*/
+			console.log(response);
+			//this.setState({['results'] : response});
+		});
+	}
     render(){
         return(
         <div>
@@ -55,7 +75,7 @@ class RegisterScreen extends Component {
         	show password<input type="checkbox" value="" name="ShowPassword"
         	    onChange={this.updateShowPassword}/>
 	        <br/>
-	        <button onClick={ this.goRegister} 
+	        <button type='button' onClick={ this.goRegister} 
 	            name='registerButton'>register</button>
 	        </form>
         </div>
@@ -72,7 +92,7 @@ class App extends Component {
 				<Banner />
 				<DiscoverScreen />
 				<RegisterScreen/>
-
+				
 			</div>
 		);
 	}

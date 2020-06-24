@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import axios from 'axios';
 
 import './App.css';
-import {BoxPanel, SliderPage} from './Components/components.js';
+import {BoxPanel, SliderPage, ResultPanel, ResultButton} from './Components/components.js';
 
 //submit discover filter button
 const FilterButton = styled.button`
@@ -25,10 +25,7 @@ const FilterPanel = styled.div`
 	margin: 10px;
 	font-family: serif
 `;
-const ResultButton = styled(FilterButton)`
-	border-radius: 10px;
-	overflow-wrap: normal;
-`;
+
 
 //genre_music, genre_art, genre_film, genre_writing
 const APIURL = 'http://localhost:5000/';
@@ -38,11 +35,12 @@ export default class DiscoverScreen extends Component {
         super(props)
 		//at first there is no state to submit
 		//this.state = {}
-        this.state = { genre_music: "0", genre_art: "0", genre_film: "0", genre_writing: "0" }
+        this.state = { genre_music: "0", genre_art: "0", genre_film: "0", genre_writing: "0", results: {} }
         
 		
         this.updateFilter = this.updateFilter.bind(this);
 		this.submitSearch = this.submitSearch.bind(this);
+		this.updateMayContain = this.updateMayContain.bind(this);
     }
     updateFilter(event) {
 		if (event.target.checked) {
@@ -74,12 +72,28 @@ export default class DiscoverScreen extends Component {
 	}
 	
 	submitSearch() {
+		//erase old results before creating new ones (if there is any)  console.log(response);
+		this.setState({['results'] : {}});
 		axios.post(APIURL + 'discover', this.state).then( response => {
-			console.log(response);
-
+			/*example of response---------
+			{ 
+			  1 : {title:'example title', body: 'example body', ... },
+			  2 : {title:'title example', body: 'body example', ... },
+			}
+			*/
+			this.setState({['results'] : response});
 		});
 	};
+	
+	
+	
+	
+	
+	
 	render(){
+		//grab results form state
+		const results = this.state['results'];
+		
 		return (
 			<div>
 				<FilterPanel>
@@ -131,13 +145,27 @@ export default class DiscoverScreen extends Component {
 				<FilterButton type="button" onClick={this.submitSearch}> Discover! </FilterButton>
 				</FilterPanel>
 				
-				<ResultButton>
-					<p>Test Site:</p>
-					<p>Welcome to my site.</p>
-					<p>This is an example of a site result.</p>
-				</ResultButton>
+				<ResultPanel>
+			
+				</ResultPanel>
 			</div>
 		);
 	}
 }
+/*
+//iterate through each result in results for buttons
+<script>console.log(Object.keys(Object.entries(results)[0])[0]['title'])</script>
+					for (Object r of Object.entries(results)){
+						//site's id
+						console.log(Object.keys(r)[0]);
+						var siteId = String(Object.keys(r)[0]);
+						//all site's info
+						Object siteInfo = r[siteId];
+						
+						<ResultButton>
+							<h2> Title: {siteInfo['title']} </h2>
+							<p> Body: {siteInfo['body']} </p>
+						</ResultButton>
+					}
+					*/
 export {DiscoverScreen, FilterButton, FilterPanel};
