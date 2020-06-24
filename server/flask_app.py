@@ -354,7 +354,7 @@ class DiscoverResource(Resource):
         '''see discover (unfiltered) results'''
         results = {}
         
-        for row in g.db.execute('select * from sites limit 5;'):
+        for row in g.db.execute('select * from sites limit 10;'):
             temp = dict(row)
             temp.pop('_sa_instance_state', None)
             results[temp['site_id']] = temp

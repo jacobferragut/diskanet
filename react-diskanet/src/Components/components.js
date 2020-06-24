@@ -13,7 +13,7 @@ const BoxPanel = styled.div`
 	margin: 10px;
 `;
 const ResultPanel = styled(BoxPanel)`
-	color: #ff6347;
+	color: #000;
 	background-color: tomato;
 `;
 const ResultButton = styled.button`
@@ -34,7 +34,73 @@ const SliderPage = () => {
     </div>
   );
 }
-
+class ResultSites extends Component {
+	constructor(props){
+		super(props);
+		this.visitSite = this.visitSite.bind(this);
+	}
+	/*example of ressults---------
+			{ 
+			  1 : {title:'example title', body: 'example body', ... },
+			  2 : {title:'title example', body: 'body example', ... },
+			}
+			*/
+	visitSite(event){
+		var id = event.target.id;
+		
+	}
+	render(){
+		var results = this.props.results;
+		
+		const sites = [];
+		if (Object.keys(results).length > 0){
+			for (var key of Object.keys(results['data'])){
+				//sites's id
+				var siteId = key;
+				//all a site info
+				var siteInfo = results['data'][siteId];
+				sites.push(
+					<div key={siteId}>
+						<h2> {siteInfo['title']} </h2>
+						<p> {siteInfo['body']} </p>
+						
+						<ResultButton id={siteId} onClick={this.visitSite}>Visit</ResultButton>
+					</div>
+				);
+				
+					//<div>
+					//	<h2> {siteInfo['title']} </h2>
+					//	<p> {siteInfo['body']} </p>
+					//	<ResultButton id={siteId} onClick={this.visitSite} />
+					//<//div>
+				//);
+			}
+		}
+		return(
+			<div>
+			{sites}
+			</div>
+		);
+		/*
+//iterate through each result in results for buttons
+<script>console.log(Object.keys(Object.entries(results)[0])[0]['title'])</script>
+					for (Object r of Object.entries(results)){
+						//site's id
+						console.log(Object.keys(r)[0]);
+						var siteId = String(Object.keys(r)[0]);
+						//all site's info
+						Object siteInfo = r[siteId];
+						
+						<ResultButton>
+							<h2> Title: {siteInfo['title']} </h2>
+							<p> Body: {siteInfo['body']} </p>
+						</ResultButton>
+					}
+					*/
+		
+		
+	}
+}
 class Banner extends Component {
 	render(){
 		return (
@@ -54,4 +120,4 @@ class Banner extends Component {
 	}
 }
 
-export {Banner, BoxPanel, SliderPage, ResultPanel, ResultButton};
+export {Banner, BoxPanel, SliderPage, ResultPanel, ResultButton, ResultSites};

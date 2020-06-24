@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import axios from 'axios';
 
 import './App.css';
-import {BoxPanel, SliderPage, ResultPanel, ResultButton} from './Components/components.js';
+import {BoxPanel, SliderPage, ResultPanel, ResultSites} from './Components/components.js';
 
 //submit discover filter button
 const FilterButton = styled.button`
@@ -144,28 +144,13 @@ export default class DiscoverScreen extends Component {
 				
 				<FilterButton type="button" onClick={this.submitSearch}> Discover! </FilterButton>
 				</FilterPanel>
-				
+				<br />
 				<ResultPanel>
-			
+					<ResultSites results={this.state.results} />
 				</ResultPanel>
 			</div>
 		);
 	}
 }
-/*
-//iterate through each result in results for buttons
-<script>console.log(Object.keys(Object.entries(results)[0])[0]['title'])</script>
-					for (Object r of Object.entries(results)){
-						//site's id
-						console.log(Object.keys(r)[0]);
-						var siteId = String(Object.keys(r)[0]);
-						//all site's info
-						Object siteInfo = r[siteId];
-						
-						<ResultButton>
-							<h2> Title: {siteInfo['title']} </h2>
-							<p> Body: {siteInfo['body']} </p>
-						</ResultButton>
-					}
-					*/
+
 export {DiscoverScreen, FilterButton, FilterPanel};
