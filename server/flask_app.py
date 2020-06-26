@@ -278,7 +278,8 @@ class SiteResource(Resource):
         #gets the site
         s = g.db.query(Site).get(site_id)
         #returns site name title and body
-        return { s.name: {s.title: s.body} }
+        #return { s.name: {s.title: s.body} }
+        return {s.site_id: s._to_dict()}
         
     @JWT.jwt_required
     def put(self, user_id, site_id):
