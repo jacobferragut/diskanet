@@ -23,6 +23,13 @@ pipenv run flask run
 
 http GET localhost:5000/my-api/4
 
+npx -p @storybook/cli sb init
+npm run storybook
+
+http POST localhost:5000/user name="jacob" password="password" email="wwwww@letter.com"
+export JWT="eyJ0eXAiO
+http GET localhost:5000/user name="jacob" password="password"
+"Authorization:Bearer $JWT"
 
 
 
