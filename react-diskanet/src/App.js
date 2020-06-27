@@ -28,15 +28,27 @@ class LoginScreen extends Component {
         axios.put(APIURL + 'user').then( response => {
             this.setState({['loginToken'] : response['data']['jwt']});
         });
+        
 */
+    
     axios.put(APIURL + 'user', {'name':this.state.username, 'password':this.state.password}).then( response => {
-                //this.setState({['loginToken'] : response['data']['jwt']});
+                this.setState({['loginToken'] : response['data']['jwt']});
                 console.log(response);
 
             });
 
         //console.log(response.data);
     }
+    /*
+    axios({ 
+        method: 'put', 
+        url: 'http://localhost:5000/site/1/1', 
+        data: {}, 
+        headers: {Authorization: 'Bearer ' + this.state.loginToken}
+    }).then( response => {
+        console.log(response);
+    });
+    */
 
     updateUsername(event) {
         this.setState({username: event.target.value});
