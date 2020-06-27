@@ -3,15 +3,36 @@ import { Component } from 'react';
 import styled, { css } from 'styled-components'
 import axios from 'axios';
 
+import { ResultButton } from './Components/components.js';
+
+const SiteTitle = styled.div`
+	${props => props.siteInfo.title_font ? "font-family: {props.siteInfo.title_font};" : '' }
+	${props => props.siteInfo.title_font_size ? "font-size: {props.siteInfo.title_font_size};" : '' }
+	
+
+`;
+const SiteBody = styled.div`
+	${props => props.siteInfo.body_font ? "font-family: {props.siteInfo.body_font};" : '' }
+	${props => props.siteInfo.body_font_size ? "font-size: {props.siteInfo.body_font_size};" : '' }
+
+`;
+
+const SitePanel = styled.div`
+	${props => props.siteInfo.background_color ? "background-color: {props.siteInfo.background_color};" : '' }
+
+`;
+
 
 const APIURL = 'http://localhost:5000/';
 
 class SiteScreen extends Component {
-	constructor(){
+	constructor(props){
+		super(props);
 		this.state = { site: {} };
 		
 		this.getSite = this.getSite.bind(this);
 		this.putSite = this.putSite.bind(this);
+		
 	}
 	getSite(){
 		//var siteUrl = 'site/'
@@ -20,7 +41,10 @@ class SiteScreen extends Component {
 			/*example of response---------
 			{ 1 : {title:'alsdfa', body:'dakjdfa',...} }
 			*/
-			this.setState({['site'] : response['data']});
+			var id = Object.keys(response['data'])[0];
+			var ret = response['data'][id];
+			console.log(ret);
+			this.setState({ ['site'] : ret });
 		});
 	}
 	putSite(){
@@ -28,8 +52,10 @@ class SiteScreen extends Component {
 	}
 	
 	render(){
+		
+		//console.log(this.state.site);
 		return(
-		<Site siteInfo={getSite()} />
+			<p>a</p>
 		);
 	}
 	
@@ -39,46 +65,35 @@ class Site extends Component {
 	constructor(props){
 		super(props);
 		
+		this.state = {background_color: 'gray', body_font_size: '15', title_font_size: '15', body_font:'Times New Roman', title_font:'Comic Sans'};
 	}
-	changeTitle() {
-		var el = document.getElementById('Title');
-		el.style.color = "red";
-		el.style.fontSize = "15px";
-		el.style.backgroundColor = "#FFFFFF";
-	}
-	
 	render(){
 		
 		//title_font 
 		//body_font 
-    //body_font_size 
-    //title_font_size 
-    //background_color 
-
-		var siteInfo = this.props.siteInfo;
-		var newCss = "div {".concat('','}');
+		//body_font_size 
+		//title_font_size 
+		//background_color 
 		
-		var titleCss = "
-		//edit css for 
-		var sheet = document.createElement('style')
-		sheet.innerHTML = "div {border: 2px solid black; background-color: blue;}";
-		document.body.appendChild(sheet);
+		var site = this.state;
+		
+		
 		
 		//document.getElementById('Site').
 		
 		return(
-			<div id='Site'>
-					<div id='Title'>
-						<h2> {siteInfo['title']} </h2>
-					</div>
-					<div id='Body'>
-						<p> {siteInfo['body']} </p>
+			<SitePanel siteInfo = {site}>
+					<SiteTitle siteInfo = {site}>
+						<h2> {site['title']} </h2>
+					</SiteTitle>
+					<SiteBody siteInfo = {site}>
+						<p> {site['body']} </p>
 
-						<ResultButton id={siteId} onClick={this.visitSite}>Visit</ResultButton>
-					</div>
-			</div>
-					
+						<ResultButton id='1' onClick={this.visitSite}>Visit</ResultButton>
+					</SiteBody>
+			</SitePanel>			
 
 		);
 	}
 }
+export {Site};

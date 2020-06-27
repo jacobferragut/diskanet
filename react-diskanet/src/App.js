@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import './App.css';
 import {DiscoverScreen} from './Discover.js';
-
+import {SiteScreen, Site} from './Site.js';
 
 
 
@@ -136,12 +136,14 @@ class RegisterScreen extends Component {
 
 class App extends Component {
 	render(){
+		//<DiscoverScreen />
 		return (
 			<div className="App">
 				<Banner />
-				<DiscoverScreen />
+				
 				<RegisterScreen/>
 				<LoginScreen />
+				<Site />
 			</div>
 		);
 	}
