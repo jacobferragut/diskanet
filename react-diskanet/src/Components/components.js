@@ -79,62 +79,6 @@ class ResultSites extends Component {
 		);
 	}
 }
-class Banner extends Component {
-	render(){
-		return (
-			<div className="App-banner">
-				<div className='App-title'>
-					<BoxPanel>
-						Nathan's World
-					</BoxPanel>
-				</div>
-				
-				
-				<BoxPanel>
-					<LoginScreen /> 
-				</BoxPanel>
-			</div>
-		);
-	}
-}
-class LoginScreen extends Component {
-    constructor(props){
-        super(props)
-        this.state = {username: '', password:'', loginToken:''}
-        this.updateUsername = this.updateUsername.bind(this);
-        this.updatePassword = this.updatePassword.bind(this);
-        this.login = this.login.bind(this);
-    }
-    login(event){
-    
-		axios.put(APIURL + 'user', {'name':this.state.username, 'password':this.state.password}).then( response => {
-                this.setState({['loginToken'] : response['data']['jwt']});
-        });
-		
-        //console.log(response.data);
-    }
-    
-    updateUsername(event) {
-        this.setState({username: event.target.value});
-    }
-    updatePassword(event) {
-        this.setState({password: event.target.value});
-    }
-    render(){
-        return(
-            <div>
-                <form>
-                    username<input type="text" value={this.state.username}
-                        onChange={this.updateUsername}/>
-                    <br/>
-                    password<input type="password" value={this.state.password} name="password"
-                        onChange={this.updatePassword}/>
-                    <br/>
-                    <button type='button' onClick={this.login} 
-                        name='loginButton'>LOGIN</button>
-                </form>
-            </div>
-        )
-    }
-}
-export {Banner, BoxPanel, SliderPage, ResultPanel, ResultButton, ResultSites, LoginScreen};
+
+
+export {BoxPanel, SliderPage, ResultPanel, ResultButton, ResultSites};

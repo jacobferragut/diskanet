@@ -10,7 +10,7 @@ import {SiteScreen, Site} from './Site.js';
 
 
 //components imported
-import {BoxPanel, SliderPage, Banner, ResultPanel, ResultButton} from './Components/components.js';
+import {BoxPanel, SliderPage, ResultPanel, ResultButton} from './Components/components.js';
 
 //flask url
 const APIURL = 'http://localhost:5000/';
@@ -89,11 +89,54 @@ class RegisterScreen extends Component {
 
 
 class App extends Component {
+	constructor(){
+		super();
+		this.state = {loginToken: '', name:'', password:''};
+		this.login = this.login.bind(this);
+        this.updateUsername = this.updateUsername.bind(this);
+        this.updatePassword = this.updatePassword.bind(this);
+	}
+	login(event){
+		if (this.state.name.length !== 0 && this.state.password.length !== 0){
+			axios.put(APIURL + 'user', {'name':this.state.name, 'password':this.state.password}).then( response => {
+				this.setState({['loginToken'] : response['data']['jwt']});
+				console.log(response);
+			});
+		}
+	}
+	updateUsername(event) {
+        this.setState({name: event.target.value});
+    }
+    updatePassword(event) {
+        this.setState({password: event.target.value});
+    }
 	render(){
 		//<DiscoverScreen />
 		return (
 			<div className="App">
-				<Banner />
+				<div className="App-banner">
+				<div className='App-title'>
+					<BoxPanel>
+						Nathan's World
+					</BoxPanel>
+				</div>
+				
+				
+				<BoxPanel>
+					<div>
+						<form>
+							username<input type="text" value={this.state.name}
+								onChange={this.updateUsername}/>
+							<br/>
+							password<input type="password" name="password" value={this.state.password}
+								onChange={this.updatePassword}/>
+							<br/>
+							<button type='button' onClick={this.login} 
+								name='loginButton'>LOGIN</button>
+						</form>
+					</div> 
+				</BoxPanel>
+			</div>
 				
 				<RegisterScreen/>
 				
@@ -103,5 +146,5 @@ class App extends Component {
 	}
 }
 export default App;
-export {App, Banner, BoxPanel, SliderPage, RegisterScreen};
+export {App, BoxPanel, SliderPage, RegisterScreen};
 //export Banner, RegistrationScreen;
