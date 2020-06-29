@@ -14,65 +14,7 @@ import {BoxPanel, SliderPage, Banner, ResultPanel, ResultButton} from './Compone
 
 //flask url
 const APIURL = 'http://localhost:5000/';
-class LoginScreen extends Component {
-    constructor(props){
-        super(props)
-        this.state = {username: '', password:'', loginToken:''}
-        this.updateUsername = this.updateUsername.bind(this);
-        this.updatePassword = this.updatePassword.bind(this);
-        this.login = this.login.bind(this);
-    }
-    login(event){
-        console.log("token activated");
-/*
-        axios.put(APIURL + 'user').then( response => {
-            this.setState({['loginToken'] : response['data']['jwt']});
-        });
-        
-*/
-    
-    axios.put(APIURL + 'user', {'name':this.state.username, 'password':this.state.password}).then( response => {
-                this.setState({['loginToken'] : response['data']['jwt']});
-                console.log(response);
 
-            });
-
-        //console.log(response.data);
-    }
-    /*
-    axios({ 
-        method: 'put', 
-        url: 'http://localhost:5000/site/1/1', 
-        data: {}, 
-        headers: {Authorization: 'Bearer ' + this.state.loginToken}
-    }).then( response => {
-        console.log(response);
-    });
-    */
-
-    updateUsername(event) {
-        this.setState({username: event.target.value});
-    }
-    updatePassword(event) {
-        this.setState({password: event.target.value});
-    }
-    render(){
-        return(
-            <div>
-                <form>
-                    username<input type="text" value={this.state.username}
-                        onChange={this.updateUsername}/>
-                    <br/>
-                    password<input type="password" value={this.state.password} name="password"
-                        onChange={this.updatePassword}/>
-                    <br/>
-                    <button type='button' onClick={this.login} 
-                        name='loginButton'>LOGIN</button>
-                </form>
-            </div>
-        )
-    }
-}
 class RegisterScreen extends Component {
     constructor(props){
         super(props)
@@ -154,12 +96,12 @@ class App extends Component {
 				<Banner />
 				
 				<RegisterScreen/>
-				<LoginScreen />
-				<Site />
+				
+				
 			</div>
 		);
 	}
 }
 export default App;
-export {App, Banner, BoxPanel, SliderPage, RegisterScreen, LoginScreen};
+export {App, Banner, BoxPanel, SliderPage, RegisterScreen};
 //export Banner, RegistrationScreen;

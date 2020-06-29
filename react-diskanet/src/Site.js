@@ -6,20 +6,18 @@ import axios from 'axios';
 import { ResultButton } from './Components/components.js';
 
 const SiteTitle = styled.div`
-	${props => props.siteInfo.title_font ? "font-family: {props.siteInfo.title_font};" : '' }
-	${props => props.siteInfo.title_font_size ? "font-size: {props.siteInfo.title_font_size};" : '' }
+	font-family: ${props => props.siteInfo.title_font != "" ? props.siteInfo.title_font : ""};
+	font-size: ${props => props.siteInfo.title_font_size != "" ? props.siteInfo.title_font_size.concat('px') : ""};
 	
 
 `;
 const SiteBody = styled.div`
-	${props => props.siteInfo.body_font ? "font-family: {props.siteInfo.body_font};" : '' }
-	${props => props.siteInfo.body_font_size ? "font-size: {props.siteInfo.body_font_size};" : '' }
-
+	font-family: ${props => props.siteInfo.body_font.length ? props.siteInfo.body_font : "Comic Sans"};
+	font-size: ${props => props.siteInfo.body_font_size != "" ? props.siteInfo.body_font_size.concat('px') : ""};
 `;
 
 const SitePanel = styled.div`
-	${props => props.siteInfo.background_color ? "background-color: {props.siteInfo.background_color};" : '' }
-
+	background-color: ${props => props.siteInfo.background_color.length ? props.siteInfo.background_color : ""};
 `;
 
 
@@ -65,7 +63,7 @@ class Site extends Component {
 	constructor(props){
 		super(props);
 		
-		this.state = {background_color: 'gray', body_font_size: '15', title_font_size: '15', body_font:'Times New Roman', title_font:'Comic Sans'};
+		this.state = {title: 'example title', body: 'cool site: The quick brown fox jumped over the lazy dog', background_color: 'tan', body_font_size: '48', title_font_size: '30', body_font:'Comic Sans MS', title_font:'Arial'};
 	}
 	render(){
 		
