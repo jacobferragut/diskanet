@@ -2,11 +2,19 @@ import React from 'react';
 import { Component } from 'react';
 import styled, { css } from 'styled-components';
 import axios from 'axios';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch,
+  useParams
+} from "react-router-dom";
 
 import './App.css';
 import {DiscoverScreen} from './Discover.js';
 import {SiteScreen, Site} from './Site.js';
-
+import {UserInformation} from './Profile.js';
 
 
 //components imported
@@ -102,6 +110,7 @@ class App extends Component {
 				this.setState({['loginToken'] : response['data']['jwt']});
 				console.log(response);
 			});
+			
 		}
 	}
 	updateUsername(event) {
@@ -113,6 +122,24 @@ class App extends Component {
 	render(){
 		//<DiscoverScreen />
 		return (
+			<div>
+			<Router>
+				<div>
+					<Switch>
+					  <Route exact path="/">
+						<App />
+					  </Route>
+					  <Route path="/user/:id" children={<UserInformation call={true} />} />
+						
+					  <Route path="/site/:user_id/:site_id">
+						<SiteScreen call={true} />
+					  </Route>
+					</Switch>
+
+				</div>
+			</Router>
+		
+		
 			<div className="App">
 				<div className="App-banner">
 				<div className='App-title'>
@@ -139,8 +166,10 @@ class App extends Component {
 			</div>
 				
 				<RegisterScreen/>
+				<UserInformation name={this.state.name} />
 				
-				
+			</div>
+			
 			</div>
 		);
 	}

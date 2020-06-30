@@ -32,18 +32,21 @@ class SiteScreen extends Component {
 		this.putSite = this.putSite.bind(this);
 		
 	}
+	//let { id } = useParams();
 	getSite(){
 		//var siteUrl = 'site/'
-		
-		axios.get(APIURL + 'site/1/1').then( response => {
-			/*example of response---------
-			{ 1 : {title:'alsdfa', body:'dakjdfa',...} }
-			*/
-			var id = Object.keys(response['data'])[0];
-			var ret = response['data'][id];
-			console.log(ret);
-			this.setState({ ['site'] : ret });
-		});
+		if (this.props.call){
+			axios.get(APIURL + 'site/1/1').then( response => {
+				/*example of response---------
+				{ 1 : {title:'alsdfa', body:'dakjdfa',...} }
+				*/
+				var id = Object.keys(response['data'])[0];
+				var ret = response['data'][id];
+				console.log(ret);
+				this.setState({ ['site'] : ret });
+			});
+		}
+		this.props.call = false;
 	}
 	putSite(){
 		
@@ -53,7 +56,7 @@ class SiteScreen extends Component {
 		
 		//console.log(this.state.site);
 		return(
-			<p>a</p>
+			<p>place holder</p>
 		);
 	}
 	
@@ -94,4 +97,4 @@ class Site extends Component {
 		);
 	}
 }
-export {Site};
+export {Site, SiteScreen};

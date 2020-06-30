@@ -142,11 +142,12 @@ class UsersResource(Resource):
 class UserResource(Resource):
     def get(self,user_id):
         '''retreives user information'''
-        k = ['user_id','name','creation_date','email','email_confirmation']        
+        #k = ['user_id','name','creation_date','email','email_confirmation']        
         u = g.db.query(User).get(user_id)
         if u is None:
             return {'msg': 'No user found'}
-        return str({ff: getattr(u, ff) for ff in k })
+        return u._to_dict()
+        #return str({ff: getattr(u, ff) for ff in k })
     
     @JWT.jwt_required
     def put(self, user_id):

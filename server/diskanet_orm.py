@@ -28,7 +28,7 @@ class User(base_app):
         to_str = ['creation_date']
         return {
             k: str(v) if k in to_str else v
-            for k,v in self.__dict__
+            for k,v in self.__dict__.items()
             if k[0] != '_' or k in skips
         }
 
@@ -62,7 +62,7 @@ class Site(base_app):
 
     def _to_dict(self):
         skips = ['owner']
-        to_str = []
+        to_str = ['creation_date']
         return {
             k: str(v) if k in to_str else v
             for k,v in self.__dict__.items()
