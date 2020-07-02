@@ -1,19 +1,21 @@
 import React from 'react';
 import { Component } from 'react';
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import axios from 'axios';
+import { useParams } from "react-router-dom";
+import { withRouter } from "react-router";
 
 import { ResultButton } from './Components/components.js';
 
 const SiteTitle = styled.div`
-	font-family: ${props => props.siteInfo.title_font != "" ? props.siteInfo.title_font : ""};
-	font-size: ${props => props.siteInfo.title_font_size != "" ? props.siteInfo.title_font_size.concat('px') : ""};
+	font-family: ${props => props.siteInfo.title_font !== "" ? props.siteInfo.title_font : ""};
+	font-size: ${props => props.siteInfo.title_font_size !== "" ? props.siteInfo.title_font_size.concat('px') : ""};
 	
 
 `;
 const SiteBody = styled.div`
 	font-family: ${props => props.siteInfo.body_font.length ? props.siteInfo.body_font : "Comic Sans"};
-	font-size: ${props => props.siteInfo.body_font_size != "" ? props.siteInfo.body_font_size.concat('px') : ""};
+	font-size: ${props => props.siteInfo.body_font_size !== "" ? props.siteInfo.body_font_size.concat('px') : ""};
 `;
 
 const SitePanel = styled.div`
@@ -23,7 +25,7 @@ const SitePanel = styled.div`
 
 const APIURL = 'http://localhost:5000/';
 
-class SiteScreen extends Component {
+class SiteScreen0 extends Component {
 	constructor(props){
 		super(props);
 		this.state = { site: {} };
@@ -43,7 +45,7 @@ class SiteScreen extends Component {
 				var id = Object.keys(response['data'])[0];
 				var ret = response['data'][id];
 				console.log(ret);
-				this.setState({ ['site'] : ret });
+				this.setState({ 'site' : ret });
 			});
 		}
 		this.props.call = false;
@@ -53,14 +55,20 @@ class SiteScreen extends Component {
 	}
 	
 	render(){
-		
+        const user_id = this.props.match.params.user_id;
+        const site_id = this.props.match.params.site_id;
+
 		//console.log(this.state.site);
-		return(
+		return <div>
+		
 			<p>place holder</p>
-		);
+			<p>User id: { user_id }</p>
+			<p>Site id: { site_id }</p>
+		</div>;
 	}
 	
 }
+
 
 class Site extends Component {
 	constructor(props){
@@ -77,7 +85,6 @@ class Site extends Component {
 		//background_color 
 		
 		var site = this.state;
-		
 		
 		
 		//document.getElementById('Site').
@@ -97,4 +104,8 @@ class Site extends Component {
 		);
 	}
 }
+
+    
+
+const SiteScreen = withRouter(SiteScreen0)
 export {Site, SiteScreen};

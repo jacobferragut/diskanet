@@ -1,24 +1,23 @@
 import React from 'react';
 import { Component } from 'react';
-import styled, { css } from 'styled-components';
 import axios from 'axios';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  useRouteMatch,
-  useParams
+  // eslint-disable-next-line
+  Link, useRouteMatch, useParams
 } from "react-router-dom";
 
 import './App.css';
+// eslint-disable-next-line
 import {DiscoverScreen} from './Discover.js';
-import {SiteScreen, Site} from './Site.js';
+import {SiteScreen} from './Site.js';
 import {UserInformation} from './Profile.js';
 
 
 //components imported
-import {BoxPanel, SliderPage, ResultPanel, ResultButton} from './Components/components.js';
+import {BoxPanel} from './Components/components.js';
 
 //flask url
 const APIURL = 'http://localhost:5000/';
@@ -47,10 +46,10 @@ class RegisterScreen extends Component {
         this.setState({email: event.target.value});
     }
     updateShowPassword(event){
-        if (document.getElementsByName("password")[0].type=="password"){    
+        if (document.getElementsByName("password")[0].type==="password"){    
             document.getElementsByName("password")[0].type="text"
         }
-        else if(document.getElementsByName("password")[0].type=="text"){    
+        else if(document.getElementsByName("password")[0].type==="text"){    
             document.getElementsByName("password")[0].type="password"
         }        
     }
@@ -107,7 +106,7 @@ class App extends Component {
 	login(event){
 		if (this.state.name.length !== 0 && this.state.password.length !== 0){
 			axios.put(APIURL + 'user', {'name':this.state.name, 'password':this.state.password}).then( response => {
-				this.setState({['loginToken'] : response['data']['jwt']});
+				this.setState({'loginToken' : response['data']['jwt']});
 				console.log(response);
 			});
 			
@@ -120,60 +119,51 @@ class App extends Component {
         this.setState({password: event.target.value});
     }
 	render(){
-		//<DiscoverScreen />
+		//<DiscoverScreen /> route guide
 		return (
-			<div>
 			<Router>
-				<div>
+                <div className="App">
+                    <div className="App-banner">
+                        <div className='App-title'>
+                            <BoxPanel>
+                                Nathan's World
+                            </BoxPanel>
+                            <BoxPanel>
+                                <div>
+                                    <form>
+                                        username<input type="text" value={this.state.name}
+                                            onChange={this.updateUsername}/>
+                                        <br/>
+                                        password<input type="password" name="password" value={this.state.password}
+                                            onChange={this.updatePassword}/>
+                                        <br/>
+                                        <button type='button' onClick={this.login} 
+                                            name='loginButton'>LOGIN</button>
+                                        <Link to="/users">Users</Link>
+                                    </form>
+                                </div> 
+                            </BoxPanel>
+                        </div>
+                    </div>
 					<Switch>
 					  <Route exact path="/">
-						<App />
+						<p>this is the app</p>
 					  </Route>
-					  <Route path="/user/:id" children={<UserInformation call={true} />} />
-						
+					  <Route path="/user/:id">
+						 <UserInformation call={true} name={this.state.name}/>
+					  </Route>
 					  <Route path="/site/:user_id/:site_id">
 						<SiteScreen call={true} />
 					  </Route>
+					  <Route path="/register">
+                        <RegisterScreen/>
+					  </Route>
 					</Switch>
-
-				</div>
+			    </div>
 			</Router>
-		
-		
-			<div className="App">
-				<div className="App-banner">
-				<div className='App-title'>
-					<BoxPanel>
-						Nathan's World
-					</BoxPanel>
-				</div>
-				
-				
-				<BoxPanel>
-					<div>
-						<form>
-							username<input type="text" value={this.state.name}
-								onChange={this.updateUsername}/>
-							<br/>
-							password<input type="password" name="password" value={this.state.password}
-								onChange={this.updatePassword}/>
-							<br/>
-							<button type='button' onClick={this.login} 
-								name='loginButton'>LOGIN</button>
-						</form>
-					</div> 
-				</BoxPanel>
-			</div>
-				
-				<RegisterScreen/>
-				<UserInformation name={this.state.name} />
-				
-			</div>
-			
-			</div>
 		);
 	}
 }
 export default App;
-export {App, BoxPanel, SliderPage, RegisterScreen};
+export {App, BoxPanel, RegisterScreen};
 //export Banner, RegistrationScreen;

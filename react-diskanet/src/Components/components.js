@@ -1,8 +1,8 @@
 import React from 'react';
 import { Component } from 'react';
-import styled, { css } from 'styled-components';
-import axios from 'axios';
-const APIURL = 'http://localhost:5000/';
+import styled from 'styled-components';
+//import axios from 'axios';
+//const APIURL = 'http://localhost:5000/';
 
 
 const BoxPanel = styled.div`

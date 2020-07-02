@@ -2,13 +2,10 @@ import React from 'react';
 import { Component } from 'react';
 //import styled, { css } from 'styled-components'
 import axios from 'axios';
+
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-  useParams
+// eslint-disable-next-line
+  BrowserRouter as Router, Switch, Route, Link, useRouteMatch, useParams
 } from "react-router-dom";
 
 
@@ -27,7 +24,7 @@ class UserInformation extends Component {
     getUser(){
 		let { id } = useParams();
 		axios.get(APIURL + 'user/'.concat(id.toString())).then( response => {
-				this.setState({['userInfo'] : response['data']});
+				this.setState({'userInfo' : response['data']});
 				console.log(response);
 			});
 	}

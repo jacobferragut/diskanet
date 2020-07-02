@@ -1,10 +1,10 @@
 import React from 'react';
 import { Component } from 'react';
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import axios from 'axios';
 
 import './App.css';
-import {BoxPanel, SliderPage, ResultPanel, ResultSites} from './Components/components.js';
+import {SliderPage, ResultPanel, ResultSites} from './Components/components.js';
 
 //submit discover filter button
 const FilterButton = styled.button`
@@ -64,16 +64,16 @@ export default class DiscoverScreen extends Component {
 			document.getElementsByName(genre)[0].checked = false;
 			
 
-			this.setState({[genre] : "",});
+			this.setState({genre : "",});
 		}
 		else{
-			this.setState({[genre] : "0",});
+			this.setState({genre : "0",});
 		}
 	}
 	
 	submitSearch() {
 		//erase old results before creating new ones (if there is any)  console.log(response);
-		this.setState({['results'] : {}});
+		this.setState({'results' : {}});
 		axios.post(APIURL + 'discover', this.state).then( response => {
 			/*example of response---------
 			{ 
@@ -81,7 +81,7 @@ export default class DiscoverScreen extends Component {
 			  2 : {title:'title example', body: 'body example', ... },
 			}
 			*/
-			this.setState({['results'] : response});
+			this.setState({'results' : response});
 		});
 	};
 	
@@ -91,9 +91,6 @@ export default class DiscoverScreen extends Component {
 	
 	
 	render(){
-		//grab results form state
-		const results = this.state['results'];
-		
 		return (
 			<div>
 				<FilterPanel>
