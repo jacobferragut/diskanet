@@ -25,6 +25,27 @@ const SitePanel = styled.div`
 `;
 
 
+class SiteBox extends Component {
+    render() {
+        const site = this.props.Site;
+        
+        return (
+            <div>	     
+	      <p>User id: { this.props.UserId } and Site id: { this.props.SiteId }</p>
+	      <SitePanel siteInfo = {site}>
+		<SiteTitle siteInfo = {site}>
+		  <h2> {site['title']} </h2>
+		</SiteTitle>
+		<SiteBody siteInfo = {site}>
+		  <p> {site['body']} </p>                         
+		  <ResultButton id='1' onClick={this.visitSite}>Visit</ResultButton>
+		</SiteBody>
+	      </SitePanel>                    
+	    </div>
+        );
+    }
+};
+
 class SiteScreen0 extends Component {
 	constructor(props){
 		super(props);
@@ -73,22 +94,14 @@ class SiteScreen0 extends Component {
 	    //background_color 
 
 	    //console.log(this.state.site);
-	    return <div>		
-		     <p>place holder</p>
-		     <p>User id: { user_id }</p>
-		     <p>Site id: { site_id }</p>
-		     <SitePanel siteInfo = {site}>
-		       <SiteTitle siteInfo = {site}>
-			 <h2> {site['title']} </h2>
-		       </SiteTitle>
-		       <SiteBody siteInfo = {site}>
-			 <p> {site['body']} </p>                         
-			 <ResultButton id='1' onClick={this.visitSite}>Visit</ResultButton>
-		       </SiteBody>
-		     </SitePanel>                    
-		   </div>;
+            // TODO: pass the visit-site function
+	    return <SiteBox
+                     UserId={ user_id }
+                     SiteId={ site_id }
+                     Site= { site }
+                   />;
 	}	
 }   
 
 const SiteScreen = withRouter(SiteScreen0);
-export {SiteScreen};
+export {SiteBox, SiteScreen};
