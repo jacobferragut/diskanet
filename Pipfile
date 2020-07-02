@@ -13,6 +13,7 @@ pyyaml = "*"
 flask-cors = "*"
 ipython = "*"
 flask-jwt-extended = "*"
+beautifulsoup4 = "*"
 
 [requires]
 python_version = "3.8"
