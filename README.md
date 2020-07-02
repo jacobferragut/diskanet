@@ -1,15 +1,18 @@
 diskanet readme
 
-pip install httpie
+Install HTTPie, Flask, and friends using pip & pipenv
+   pip install httpie
 
-pip install pipenv
-pipenv --three
-pipenv install flask
-pipenv install flask-restplus flask-cors
+   pip install pipenv
+   pipenv --three
+   pipenv install flask
+   pipenv install flask-restplus flask-cors
+   pipenv install ipython
 
-pipenv run ipython
-pipenv run flask run
-
+Run the Flask server
+   pipenv run ipython
+   pipenv run flask run
+   
 #run prepare_orm2
 export FLASK_APP=server/prepare_orm2.py
 export FLASK_ENV=dev_lite
