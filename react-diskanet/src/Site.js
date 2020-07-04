@@ -25,7 +25,10 @@ const SitePanel = styled.div`
 
 //component for site results ??
 class SiteBox extends Component {
-    render() {
+    constructor(props){
+		super(props);
+	}
+	render() {
         const site = this.props.Site;
         
         return (
@@ -101,11 +104,7 @@ class SiteScreen0 extends Component {
 			</SitePanel>
 			
 		</div>;
-
-    
-	putSite(){		
 	}
-	
 	
 }   
 
