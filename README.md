@@ -1,35 +1,47 @@
 diskanet readme
 
-pip install httpie
+Install HTTPie, Flask, and friends using pip & pipenv
 
-pip install pipenv
-pipenv --three
-pipenv install flask
-pipenv install flask-restplus flask-cors
+    pip install httpie    
+    pip install pipenv
+    pipenv --three
+    pipenv install flask
+    pipenv install flask-restplus flask-cors
+    pipenv install ipython
 
-pipenv run ipython
-pipenv run flask run
+Install react, use create-react-app, install axios & react-router-dom
 
-#run prepare_orm2
-export FLASK_APP=server/prepare_orm2.py
-export FLASK_ENV=dev_lite
-pipenv run flask init-db
-pipenv run flask init-auth
+    (todo)
 
-#run flask app
-export FLASK_APP=server/flask_app.py
-export FLASK_ENV=dev_lite
-pipenv run flask run
+Install Storybook
 
-http GET localhost:5000/my-api/4
+    npx -p @storybook/cli sb init
+    npm run storybook
+    
+Run the IPython
 
-npx -p @storybook/cli sb init
-npm run storybook
+    pipenv run ipython
 
-http POST localhost:5000/user name="jacob" password="password" email="wwwww@letter.com"
-export JWT="eyJ0eXAiO
-http GET localhost:5000/user name="jacob" password="password"
-"Authorization:Bearer $JWT"
+Prepare the DBs and populate with filler values
+
+    export FLASK_APP=server/prepare_orm2.py
+    export FLASK_ENV=dev_lite
+    pipenv run flask init-db
+    pipenv run flask init-auth
+
+
+Run Flask application after setting ENV variables; from diskanet dir
+
+    export FLASK_APP=server/flask_app.py
+    export FLASK_ENV=dev_lite
+    pipenv run flask run
+
+Test that it works
+
+    http GET localhost:5000/my-api/4
+    http POST localhost:5000/user name="jacob" password="password" email="wwwww@letter.com"
+    export JWT="eyJ0eXAiO..."   # capture the response JWT field
+    http GET localhost:5000/user name="jacob" password="password" "Authorization:Bearer $JWT"
 
 
 
