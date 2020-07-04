@@ -153,7 +153,7 @@ class App extends Component {
 						 <UserInformation call={true} name={this.state.name}/>
 					  </Route>
 					  <Route path="/site/:user_id/:site_id">
-						<SiteScreen call={true} />
+						<SiteScreen />
 					  </Route>
 					  <Route path="/register">
                         <RegisterScreen/>
