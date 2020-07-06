@@ -34,17 +34,19 @@ class RegisterScreen extends Component {
         this.updateEmail = this.updateEmail.bind(this);
 		this.goRegister = this.goRegister.bind(this);
     }
+    
     updateUsername(event) {
         this.setState({username: event.target.value});
     }
+    
     updatePassword(event) {
-        this.setState({password: event.target.value});
-
-            
+        this.setState({password: event.target.value});           
     }
+    
     updateEmail(event){
         this.setState({email: event.target.value});
     }
+    
     updateShowPassword(event){
         if (document.getElementsByName("password")[0].type==="password"){    
             document.getElementsByName("password")[0].type="text"
@@ -53,22 +55,24 @@ class RegisterScreen extends Component {
             document.getElementsByName("password")[0].type="password"
         }        
     }
-	goRegister(event){
-		//console.log({msg:'successful button click'});
-		axios.post(APIURL + 'user', {
-			name: this.state.username, 
-			password: this.state.password, 
-			email: this.state.email}).then( response => {
-			/*example of response---------
-			{ 
-			  1 : {title:'example title', body: 'example body', ... },
-			  2 : {title:'title example', body: 'body example', ... },
-			}
-			*/
-			console.log(response);
-			//this.setState({['results'] : response});
-		});
-	}
+    
+    goRegister(event){
+	//console.log({msg:'successful button click'});
+	axios.post(APIURL + 'user', {
+	    name: this.state.username, 
+	    password: this.state.password, 
+	    email: this.state.email}).then( response => {
+		/*example of response---------
+		  { 
+		  1 : {title:'example title', body: 'example body', ... },
+		  2 : {title:'title example', body: 'body example', ... },
+		  }
+		*/
+		console.log(response);
+		//this.setState({['results'] : response});
+	    });
+    }
+    
     render(){
         return(
         <div>
@@ -89,83 +93,110 @@ class RegisterScreen extends Component {
 	            name='registerButton'>register</button>
 	        </form>
         </div>
-        )
+        );
     }
 
 }
 
 
 class App extends Component {
-	constructor(){
-		super();
-		this.state = {loginToken: '', name:'', password:''};
-		this.login = this.login.bind(this);
+    constructor() {
+	super();
+	this.state = {loginToken: ''};
+	this.login = this.login.bind(this);
+    }
+    
+    login(username, password)  {
+	axios.put(
+            APIURL + 'user',
+            { 'name':username, 'password':password})
+            .then( response => {
+		this.setState({'loginToken' : response['data']['jwt']});
+		console.log(response);
+	    });  // todo: add error-checking
+    }
+    
+    render(){
+	//<DiscoverScreen /> route guide
+	return (
+	    <Router>
+              <div className="App">
+                <Banner login={ login }/>
+		<Switch>
+		  <Route exact path="/">
+		    <p>this is the app</p>
+		  </Route>
+                  
+		  <Route path="/user/:user_id">
+		    <Profile />                   
+		  </Route>
+                  
+		  <Route path="/site/:user_id/:site_id">
+		    <SiteScreen />
+		  </Route>
+                  
+		  <Route path="/register">
+                    <RegisterScreen/>
+		  </Route>
+		</Switch>
+	      </div>
+	    </Router>
+	);
+    }
+}
+
+class Banner extends Component {
+    constructor(props) {
+        super(props);
         this.updateUsername = this.updateUsername.bind(this);
         this.updatePassword = this.updatePassword.bind(this);
-	}
-	login(event){
-		if (this.state.name.length !== 0 && this.state.password.length !== 0){
-			axios.put(APIURL + 'user', {'name':this.state.name, 'password':this.state.password}).then( response => {
-				this.setState({'loginToken' : response['data']['jwt']});
-				console.log(response);
-			});
-			
-		}
-	}
-	updateUsername(event) {
+        this.callLogin = this.callLogin.bind(this);
+        this.state = { name:'', password:'' };
+    }
+    
+    updateUsername(event) {
         this.setState({name: event.target.value});
     }
+    
     updatePassword(event) {
         this.setState({password: event.target.value});
     }
-	render(){
-		//<DiscoverScreen /> route guide
-		return (
-			<Router>
-                <div className="App">
-                    <div className="App-banner">
-                        <div className='App-title'>
-                            <BoxPanel>
-                                Nathan's World
-                            </BoxPanel>
-                            <BoxPanel>
-                                <div>
-                                    <form>
-                                        username<input type="text" value={this.state.name}
-                                            onChange={this.updateUsername}/>
-                                        <br/>
-                                        password<input type="password" name="password" value={this.state.password}
-                                            onChange={this.updatePassword}/>
-                                        <br/>
-                                        <button type='button' onClick={this.login} 
-                                            name='loginButton'>LOGIN</button>
-                                        <Link to="/users">Users</Link>
-                                    </form>
-                                </div> 
-                            </BoxPanel>
-                        </div>
-                    </div>
-					<Switch>
-					  <Route exact path="/">
-						<p>this is the app</p>
-					  </Route>
 
-					  <Route path="/user/:user_id">
-						 <Profile />
+    callLogin(event) {
+        if (username !== 0 && password !== 0){
+            this.props.login(this.state.name, this.state.password);
+        }
+    }
 
-					  </Route>
-					  <Route path="/site/:user_id/:site_id">
-						<SiteScreen />
-					  </Route>
-					  <Route path="/register">
-                        <RegisterScreen/>
-					  </Route>
-					</Switch>
-			    </div>
-			</Router>
-		);
-	}
+    render() {
+        // todo: make a conditional render to just show "logged in" when logged in
+        // todo: add a register button
+        return (
+            <div className="App-banner">
+              <div className='App-title'>
+                <BoxPanel>
+                  Nathan's World
+                </BoxPanel>
+                <BoxPanel>
+                  <div>
+                    <form>
+                      username<input type="text" value={this.state.name}
+                                     onChange={this.updateUsername}/>
+                      <br/>
+                      password<input type="password" name="password" value={this.state.password}
+                                     onChange={this.updatePassword}/>
+                      <br/>
+                      <button type='button' onClick={callLogin} 
+                              name='loginButton'>LOGIN</button>
+                    </form>
+                  </div> 
+                </BoxPanel>
+              </div>
+            </div>
+        );
+    }
 }
+    
 export default App;
 export {App, BoxPanel, RegisterScreen};
 //export Banner, RegistrationScreen; Why does banner not work even when its exported?
