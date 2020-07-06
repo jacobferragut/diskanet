@@ -121,7 +121,7 @@ class Site extends Component {
 		//document.getElementById('Site').
 		
 		return(
-
+		<div>
 			<SitePanel siteInfo = {site}>
 					
 					<SiteTitle siteInfo = {site}>
@@ -133,8 +133,8 @@ class Site extends Component {
 						<p> site created by: {site.name} </p>
 					</SiteBody>
 			</SitePanel>
-			
-		</div>;
+		</div>
+		);
 	}
 	
 }   

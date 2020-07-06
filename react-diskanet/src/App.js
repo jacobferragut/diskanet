@@ -163,7 +163,7 @@ class Banner extends Component {
     }
 
     callLogin(event) {
-        if (username !== 0 && password !== 0){
+        if (this.state.name !== 0 && this.state.password !== 0){
             this.props.login(this.state.name, this.state.password);
         }
     }
@@ -186,7 +186,7 @@ class Banner extends Component {
                       password<input type="password" name="password" value={this.state.password}
                                      onChange={this.updatePassword}/>
                       <br/>
-                      <button type='button' onClick={callLogin} 
+                      <button type='button' onClick={this.callLogin} 
                               name='loginButton'>LOGIN</button>
                     </form>
                   </div> 
