@@ -121,7 +121,7 @@ class App extends Component {
 	return (
 	    <Router>
               <div className="App">
-                <Banner login={ login }/>
+                <Banner login={ this.login }/>
 		<Switch>
 		  <Route exact path="/">
 		    <p>this is the app</p>
