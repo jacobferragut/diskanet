@@ -1,6 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import styled from 'styled-components';
+import { Redirect } from 'react-router-dom'
 //import axios from 'axios';
 //const APIURL = 'http://localhost:5000/';
 
@@ -21,6 +22,16 @@ const ResultPanel = styled(BoxPanel)`
 `;
 
 const ResultButton = styled.button`
+	padding: 5px;
+	margin: 3px;
+	background-color: #ccc;
+	font-size: 110%;
+	font-family: inherit;
+	border-radius: 10px;
+	overflow-wrap: normal;
+`;
+
+const RedirectButton = styled.button`
 	padding: 5px;
 	margin: 3px;
 	background-color: #ccc;
@@ -83,5 +94,32 @@ class ResultSites extends Component {
 	}
 }
 
+class NavBar extends Component{
+    constructor(){
+        super()  
+        this.gotoHome = this.gotoHome.bind(this);
+        this.gotoSite = this.gotoSite.bind(this);
+        this.gotoAProfile = this.gotoAProfile(this);        
+        this.gotoDiscover = this.gotoDiscover(this);
+    }
+    gotoHome(event){
+        return <Redirect to='/' />
+    }
+    gotoSite(event){
+    }
+    gotoAProfile(event){
+    }
+    gotoDiscover(event){
+    }    
+    render(){
+        return(
+            <div>
+            <RedirectButton onClick={this.gotoHome}>Visit</RedirectButton>
+            </div>
+        );
+    }
+    
+}
 
-export {BoxPanel, SliderPage, ResultPanel, ResultButton, ResultSites};
+
+export {BoxPanel, SliderPage, ResultPanel, ResultButton, ResultSites, NavBar};

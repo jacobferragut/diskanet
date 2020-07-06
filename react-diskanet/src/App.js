@@ -17,7 +17,7 @@ import {Profile} from './Profile.js';
 
 
 //components imported
-import {BoxPanel} from './Components/components.js';
+import {BoxPanel, NavBar} from './Components/components.js';
 
 //flask url
 const APIURL = 'http://localhost:5000/';
@@ -198,5 +198,5 @@ class Banner extends Component {
 }
     
 export default App;
-export {App, BoxPanel, RegisterScreen};
+export {App, BoxPanel, RegisterScreen, NavBar};
 //export Banner, RegistrationScreen; Why does banner not work even when its exported?

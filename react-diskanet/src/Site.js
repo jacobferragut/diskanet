@@ -121,20 +121,22 @@ class Site extends Component {
 		//document.getElementById('Site').
 		
 		return(
+            <div>
 
-			<SitePanel siteInfo = {site}>
-					
-					<SiteTitle siteInfo = {site}>
-					    <h2> {site['title']} </h2>
-					</SiteTitle>
-					<SiteBody siteInfo = {site}>
-						<p> {site['body']} </p>
+                <SitePanel siteInfo = {site}>
+                    
+                        <SiteTitle siteInfo = {site}>
+                            <h2> {site['title']} </h2>
+                        </SiteTitle>
+                        <SiteBody siteInfo = {site}>
+                            <p> {site['body']} </p>
 
-						<p> site created by: {site.name} </p>
-					</SiteBody>
-			</SitePanel>
-			
-		</div>;
+                            <p> site created by: {site.name} </p>
+                        </SiteBody>
+                </SitePanel>
+            
+            </div>
+        );
 	}
 	
 }   
