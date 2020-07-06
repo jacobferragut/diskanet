@@ -72,9 +72,9 @@ class SiteScreen0 extends Component {
 
 class Site extends Component {
 	constructor(props){
-		super(props);
+        super(props);
 		
-		this.state = {title: 'example title', body: 'cool site: The quick brown fox jumped over the lazy dog', background_color: 'tan', body_font_size: '48', title_font_size: '30', body_font:'Comic Sans MS', title_font:'Arial'};
+        this.state = {title: 'example title', body: 'cool site: The quick brown fox jumped over the lazy dog', background_color: 'tan', body_font_size: '48', title_font_size: '30', body_font:'Comic Sans MS', title_font:'Arial'};
 	}
 	render(){
 		
@@ -92,7 +92,7 @@ class Site extends Component {
 		return(
 			<SitePanel siteInfo = {site}>
 					<SiteTitle siteInfo = {site}>
-						<h2> {site['title']} </h2>
+					    <h2> {site['title']} </h2>
 					</SiteTitle>
 					<SiteBody siteInfo = {site}>
 						<p> {site['body']} </p>

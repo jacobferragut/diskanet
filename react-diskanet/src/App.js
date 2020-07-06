@@ -149,7 +149,7 @@ class App extends Component {
 					  <Route exact path="/">
 						<p>this is the app</p>
 					  </Route>
-					  <Route path="/user/:id">
+					  <Route path="/user/:id"> //this route doesn't work when I tested it?
 						 <UserInformation call={true} name={this.state.name}/>
 					  </Route>
 					  <Route path="/site/:user_id/:site_id">
@@ -166,4 +166,4 @@ class App extends Component {
 }
 export default App;
 export {App, BoxPanel, RegisterScreen};
-//export Banner, RegistrationScreen;
+//export Banner, RegistrationScreen; Why does banner not work even when its exported?
