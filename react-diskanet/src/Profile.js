@@ -2,6 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 //import styled, { css } from 'styled-components'
 import axios from 'axios';
+import { withRouter } from "react-router";
 
 import {
 // eslint-disable-next-line
@@ -11,28 +12,27 @@ import {
 
 const APIURL = 'http://localhost:5000/';
 
+//PROFILE COMPONENT
 class UserInformation extends Component {
     constructor(props){
         super(props);
 		//this.props.name.bind(this);
-		this.state = {name:this.props.name, userInfo:{}};
-		this.getUser = this.getUser.bind(this);
+		this.state = {userInfo:{}};
     }
 	
     
     //this.state = { username:"oo", numSites:"0"};
-    getUser(){
-		let { id } = useParams();
-		axios.get(APIURL + 'user/'.concat(id.toString())).then( response => {
+    componentDidMount(){
+		//const id = this.props.match.params.id;
+		const user_id = this.props.match.params.user_id;
+
+		axios.get(APIURL + 'user/'.concat(user_id)).then( response => {
 				this.setState({'userInfo' : response['data']});
 				console.log(response);
 			});
 	}
     render(){
-		if (this.props.call){
-			this.props.call = false;
-			this.getUser();
-		}
+		
 		//getting every key of user's info
         var userStuff = [];
 		for (var key of Object.keys(this.state['userInfo'])){
@@ -52,5 +52,5 @@ class UserInformation extends Component {
         
     }
 }
-
-export {UserInformation};
+const Profile = withRouter(UserInformation);
+export {Profile};

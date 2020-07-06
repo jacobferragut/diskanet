@@ -13,7 +13,7 @@ import './App.css';
 // eslint-disable-next-line
 import {DiscoverScreen} from './Discover.js';
 import {SiteScreen} from './Site.js';
-import {UserInformation} from './Profile.js';
+import {Profile} from './Profile.js';
 
 
 //components imported
@@ -149,11 +149,13 @@ class App extends Component {
 					  <Route exact path="/">
 						<p>this is the app</p>
 					  </Route>
-					  <Route path="/user/:id"> //this route doesn't work when I tested it?
-						 <UserInformation call={true} name={this.state.name}/>
+
+					  <Route path="/user/:user_id">
+						 <Profile />
+
 					  </Route>
 					  <Route path="/site/:user_id/:site_id">
-						<SiteScreen call={true} />
+						<SiteScreen />
 					  </Route>
 					  <Route path="/register">
                         <RegisterScreen/>

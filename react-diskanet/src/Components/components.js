@@ -14,10 +14,12 @@ const BoxPanel = styled.div`
 	padding: 20px;
 	margin: 10px;
 `;
+
 const ResultPanel = styled(BoxPanel)`
 	color: #000;
 	background-color: tomato;
 `;
+
 const ResultButton = styled.button`
 	padding: 5px;
 	margin: 3px;
@@ -36,6 +38,7 @@ const SliderPage = () => {
     </div>
   );
 }
+
 class ResultSites extends Component {
 	constructor(props){
 		super(props);

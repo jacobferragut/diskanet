@@ -31,17 +31,18 @@ const FilterPanel = styled.div`
 const APIURL = 'http://localhost:5000/';
 
 export default class DiscoverScreen extends Component {
-	constructor(props){
+    constructor(props){
         super(props)
-		//at first there is no state to submit
-		//this.state = {}
-        this.state = { genre_music: "0", genre_art: "0", genre_film: "0", genre_writing: "0", results: {} }
-        
-		
+	//at first there is no state to submit
+	//this.state = {}
+        this.state = { genre_music: "0", genre_art: "0", genre_film: "0",
+                       genre_writing: "0", results: {} }
+	
         this.updateFilter = this.updateFilter.bind(this);
-		this.submitSearch = this.submitSearch.bind(this);
-		this.updateMayContain = this.updateMayContain.bind(this);
+	this.submitSearch = this.submitSearch.bind(this);
+        this.updateMayContain = this.updateMayContain.bind(this);
     }
+    
     updateFilter(event) {
 		if (event.target.checked) {
 			//make may genre unchecked
@@ -57,97 +58,94 @@ export default class DiscoverScreen extends Component {
 			});
 		}
     }
-	updateMayContain(event) {
-		if (event.target.checked){
-			//make must contain genre unchecked
-			var genre = "genre_".concat(event.target.name)
-			document.getElementsByName(genre)[0].checked = false;
-			
-
-			this.setState({genre : "",});
-		}
-		else{
-			this.setState({genre : "0",});
-		}
+    
+    updateMayContain(event) {
+	if (event.target.checked){
+	    //make must contain genre unchecked
+	    var genre = "genre_".concat(event.target.name)
+	    document.getElementsByName(genre)[0].checked = false;
+	    
+            
+	    this.setState({genre : "",});
 	}
-	
-	submitSearch() {
-		//erase old results before creating new ones (if there is any)  console.log(response);
-		this.setState({'results' : {}});
-		axios.post(APIURL + 'discover', this.state).then( response => {
-			/*example of response---------
-			{ 
-			  1 : {title:'example title', body: 'example body', ... },
-			  2 : {title:'title example', body: 'body example', ... },
-			}
-			*/
-			this.setState({'results' : response});
-		});
-	};
-	
-	
-	
-	
-	
-	
-	render(){
-		return (
-			<div>
-				<FilterPanel>
-				<h1>Select Genre(s)</h1>
-				<h2>must contain | may contain</h2>
-				Music<input 
-					type="checkbox" 
-					name="genre_music"
-					onChange={this.updateFilter.bind(this)}>
-				</input>
-				Music<input 
-					type="checkbox" 
-					name="music"
-					onChange={this.updateMayContain.bind(this)}>
-				</input><br/>
-				Art<input 
-					type="checkbox" 
-					name="genre_art"
-					onChange={this.updateFilter.bind(this)}>
-				</input>
-				Art<input 
-					type="checkbox" 
-					name="art"
-					onChange={this.updateMayContain.bind(this)}>
-				</input><br/>
-				Film<input 
-					type="checkbox" 
-					name="genre_film"
-					onChange={this.updateFilter.bind(this)}>
-				</input>
-				Film<input 
-					type="checkbox" 
-					name="film"
-					onChange={this.updateMayContain.bind(this)}>
-				</input><br/>
-				Writing<input 
-					type="checkbox" 
-					name="genre_writing"
-					onChange={this.updateFilter.bind(this)}>
-				</input>
-				Writing<input 
-					type="checkbox" 
-					name="writing"
-					onChange={this.updateMayContain.bind(this)}>
-				</input><br/>
-				
-				<SliderPage />
-				
-				<FilterButton type="button" onClick={this.submitSearch}> Discover! </FilterButton>
-				</FilterPanel>
-				<br />
-				<ResultPanel>
-					<ResultSites results={this.state.results} />
-				</ResultPanel>
-			</div>
-		);
+	else{
+	    this.setState({genre : "0",});
 	}
+    }
+    
+    submitSearch() {
+	//erase old results before creating new ones (if there is any)  console.log(response);
+	this.setState({'results' : {}});
+	axios.post(APIURL + 'discover', this.state).then( response => {
+	    /*example of response---------
+	      { 
+	      1 : {title:'example title', body: 'example body', ... },
+	      2 : {title:'title example', body: 'body example', ... },
+	      }
+	    */
+	    this.setState({'results' : response});
+	});
+    };
+    
+    render(){
+	return (
+	    <div>
+	      <FilterPanel>
+		<h1>Select Genre(s)</h1>
+		<h2>must contain | may contain</h2>
+		Music<input 
+	               type="checkbox" 
+	               name="genre_music"
+	               onChange={this.updateFilter.bind(this)}>
+		     </input>
+		Music<input 
+		       type="checkbox" 
+		       name="music"
+		       onChange={this.updateMayContain.bind(this)}>
+		     </input><br/>
+		Art<input 
+		     type="checkbox" 
+		     name="genre_art"
+		     onChange={this.updateFilter.bind(this)}>
+		   </input>
+		Art<input 
+		     type="checkbox" 
+		     name="art"
+		     onChange={this.updateMayContain.bind(this)}>
+		   </input><br/>
+		Film<input 
+		      type="checkbox" 
+		      name="genre_film"
+		      onChange={this.updateFilter.bind(this)}>
+		    </input>
+		Film<input 
+		      type="checkbox" 
+		      name="film"
+		      onChange={this.updateMayContain.bind(this)}>
+		    </input><br/>
+		Writing<input 
+			 type="checkbox" 
+			 name="genre_writing"
+			 onChange={this.updateFilter.bind(this)}>
+		       </input>
+		Writing<input 
+			 type="checkbox" 
+			 name="writing"
+			 onChange={this.updateMayContain.bind(this)}>
+		       </input><br/>	
+		<SliderPage />
+	        
+		<FilterButton type="button" onClick={this.submitSearch}>
+                  Discover!
+                </FilterButton>
+	      </FilterPanel>
+	      <br />
+	      <ResultPanel>
+		<ResultSites results={this.state.results} />
+	      </ResultPanel>
+	    </div>
+	);
+    }
 }
 
 export {DiscoverScreen, FilterButton, FilterPanel};
