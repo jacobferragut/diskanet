@@ -138,6 +138,9 @@ class App extends Component {
 		  <Route path="/register">
                     <RegisterScreen/>
 		  </Route>
+          <Route path="/discover">
+            <DiscoverScreen />
+          </Route>
 		</Switch>
 	      </div>
 	    </Router>

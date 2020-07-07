@@ -78,7 +78,7 @@ class ResultSites extends Component {
 				var siteInfo = results['data'][siteId];
 				sites.push(
 					<div key={siteId}>
-						<h2> {siteInfo['title']} </h2>
+                        <h2> {siteInfo['title']} </h2>
 						<p> {siteInfo['body']} </p>
 						
 						<ResultButton id={siteId} onClick={this.visitSite}>Visit</ResultButton>
@@ -102,7 +102,7 @@ class NavBar extends Component{
         this.gotoAProfile = this.gotoAProfile.bind(this);        
         this.gotoDiscover = this.gotoDiscover.bind(this);
         this.renderRedirect = this.renderRedirect.bind(this);
-        
+
         this.state = { redirect: null };
 
     }
@@ -124,8 +124,7 @@ class NavBar extends Component{
         this.setState({ redirect: "/user/1/" });
     }
     gotoDiscover(event){
-        this.setState({ redirect: "/user/2/" });
-
+        this.setState({ redirect: "/discover/" });
     }    
     render(){
         return(
