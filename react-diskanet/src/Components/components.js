@@ -99,9 +99,9 @@ class NavBar extends Component{
         super()  
         this.gotoHome = this.gotoHome.bind(this);
         this.gotoSite = this.gotoSite.bind(this);
-        this.gotoAProfile = this.gotoAProfile(this);        
-        this.gotoDiscover = this.gotoDiscover(this);
-        
+        this.gotoAProfile = this.gotoAProfile.bind(this);        
+        this.gotoDiscover = this.gotoDiscover.bind(this);
+        this.renderRedirect = this.renderRedirect.bind(this);
         this.state = { redirect: null };
 
     }
@@ -123,7 +123,7 @@ class NavBar extends Component{
         this.setState({ redirect: "/user/1/" });
     }
     gotoDiscover(event){
-        this.setState({ redirect: "/user/1/" });
+        this.setState({ redirect: "/discover/" });
 
     }    
     render(){
