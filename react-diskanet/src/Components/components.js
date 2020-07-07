@@ -1,6 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import styled from 'styled-components';
+import { Redirect } from 'react-router-dom';
 //import axios from 'axios';
 //const APIURL = 'http://localhost:5000/';
 
@@ -21,6 +22,16 @@ const ResultPanel = styled(BoxPanel)`
 `;
 
 const ResultButton = styled.button`
+	padding: 5px;
+	margin: 3px;
+	background-color: #ccc;
+	font-size: 110%;
+	font-family: inherit;
+	border-radius: 10px;
+	overflow-wrap: normal;
+`;
+
+const RedirectButton = styled.button`
 	padding: 5px;
 	margin: 3px;
 	background-color: #ccc;
@@ -83,5 +94,52 @@ class ResultSites extends Component {
 	}
 }
 
+class NavBar extends Component{
+    constructor(){
+        super()  
+        this.gotoHome = this.gotoHome.bind(this);
+        this.gotoSite = this.gotoSite.bind(this);
+        this.gotoAProfile = this.gotoAProfile(this);        
+        this.gotoDiscover = this.gotoDiscover(this);
+        
+        this.state = { redirect: null };
 
-export {BoxPanel, SliderPage, ResultPanel, ResultButton, ResultSites};
+    }
+    
+    renderRedirect = () => {
+        if (this.state.redirect){
+            return <Redirect to={this.state.redirect} />
+        }
+    }
+    
+    gotoHome(event){
+        console.log("gotoHome");
+        this.setState({ redirect: "/" });
+    }
+    gotoSite(event){
+        this.setState({ redirect: "/site/1/1/" });
+    }
+    gotoAProfile(event){
+        this.setState({ redirect: "/user/1/" });
+    }
+    gotoDiscover(event){
+        this.setState({ redirect: "/user/1/" });
+
+    }    
+    render(){
+        return(
+            <div>
+                {this.renderRedirect()}
+                <RedirectButton onClick={this.gotoHome}>Home</RedirectButton>
+                <RedirectButton onClick={this.gotoSite}>Site</RedirectButton>
+                <RedirectButton onClick={this.gotoDiscover}>Discover</RedirectButton>                
+                <RedirectButton onClick={this.gotoAProfile}>Profile</RedirectButton>                                
+
+            </div>
+        );
+    }
+    
+}
+
+
+export {BoxPanel, SliderPage, ResultPanel, ResultButton, ResultSites, NavBar};
