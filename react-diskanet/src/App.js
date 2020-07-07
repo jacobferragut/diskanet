@@ -192,6 +192,7 @@ class Banner extends Component {
                   </div> 
                 </BoxPanel>
               </div>
+                
             </div>
         );
     }

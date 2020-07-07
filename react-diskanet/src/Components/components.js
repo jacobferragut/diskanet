@@ -67,7 +67,7 @@ class ResultSites extends Component {
 				var siteInfo = results['data'][siteId];
 				sites.push(
 					<div key={siteId}>
-						<h2> {siteInfo['title']} </h2>
+                        <h2> {siteInfo['title']} </h2>
 						<p> {siteInfo['body']} </p>
 						
 						<ResultButton id={siteId} onClick={this.visitSite}>Visit</ResultButton>
