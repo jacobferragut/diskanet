@@ -29,27 +29,40 @@ class UserInformation extends Component {
 		axios.get(APIURL + 'user/'.concat(user_id)).then( response => {
 				this.setState({'userInfo' : response['data']});
 				console.log(response);
-			});
+		});
 	}
-    render(){
-		
-		//getting every key of user's info
+	state = {
+	    selectedFile: null
+	}	
+    fileSelectedHandler = event => {
+        this.setState({
+            selectedFile: event.target.files[0]
+        })
+    }
+    fileUploadHandler = () => {//I dont know where I should post the given image upload. I guess we need a URL that stores pictures in our database?
+        axios.post('');
+    }
+    render(){		
+        //getting every key of user's info
         var userStuff = [];
-		for (var key of Object.keys(this.state['userInfo'])){
-			userStuff.push(
-				<div id={key}>
-					<p>{key}:{this.state.userInfo[key]}</p>
-				</div>
-			);
-		}
-		
-		return(
-			<div>
-				<p>This is {this.state.userInfo['name']}'s profile</p>
-				{userStuff}
-			</div>
+        for (var key of Object.keys(this.state['userInfo'])){
+            userStuff.push(
+                <div id={key}>
+                    <p>{key}:{this.state.userInfo[key]}</p>
+                </div>
+            );
+        }
+    
+        return(
+            <div>
+                <p>This is {this.state.userInfo['name']}'s profile</p>
+                {userStuff}
+            </div>
+            <div>
+                <input type="file" onChange={this.fileSelectedHandler}/>
+                <button onClick={this.fileUploadHandler}>Upload</button>
+            </div>
         );
-        
     }
 }
 const Profile = withRouter(UserInformation);
