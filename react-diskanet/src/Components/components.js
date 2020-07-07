@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import styled from 'styled-components';
-import { Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom';
 //import axios from 'axios';
 //const APIURL = 'http://localhost:5000/';
 
@@ -101,20 +101,40 @@ class NavBar extends Component{
         this.gotoSite = this.gotoSite.bind(this);
         this.gotoAProfile = this.gotoAProfile(this);        
         this.gotoDiscover = this.gotoDiscover(this);
+        
+        this.state = { redirect: null };
+
     }
+    
+    renderRedirect = () => {
+        if (this.state.redirect){
+            return <Redirect to={this.state.redirect} />
+        }
+    }
+    
     gotoHome(event){
-        return <Redirect to='/' />
+        console.log("gotoHome");
+        this.setState({ redirect: "/" });
     }
     gotoSite(event){
+        this.setState({ redirect: "/site/1/1/" });
     }
     gotoAProfile(event){
+        this.setState({ redirect: "/user/1/" });
     }
     gotoDiscover(event){
+        this.setState({ redirect: "/user/1/" });
+
     }    
     render(){
         return(
             <div>
-            <RedirectButton onClick={this.gotoHome}>Visit</RedirectButton>
+                {this.renderRedirect()}
+                <RedirectButton onClick={this.gotoHome}>Home</RedirectButton>
+                <RedirectButton onClick={this.gotoSite}>Site</RedirectButton>
+                <RedirectButton onClick={this.gotoDiscover}>Discover</RedirectButton>                
+                <RedirectButton onClick={this.gotoAProfile}>Profile</RedirectButton>                                
+
             </div>
         );
     }
