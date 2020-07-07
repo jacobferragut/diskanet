@@ -134,7 +134,8 @@ class UsersResource(Resource):
                         'access':'user',
                         'name':auth.user_name
                     }
-                )
+                ),
+                'id': auth.user_id
             }
          
         

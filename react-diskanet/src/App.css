@@ -8,15 +8,14 @@
   min-height: flex;
   display: flex;
   flex-direction: row;
-  align-items: left;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
   
 }
 .App-title {
 	justify-content: flex-end;
-	padding-right: 70%
 
 }
 
@@ -24,5 +23,4 @@
 .App-link {
   color: #61dafb;
 }
-
 

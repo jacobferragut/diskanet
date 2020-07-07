@@ -8,6 +8,7 @@ import {
   // eslint-disable-next-line
   Link, useRouteMatch, useParams
 } from "react-router-dom";
+import { Container, Col, Row } from 'react-bootstrap';
 
 import './App.css';
 // eslint-disable-next-line
@@ -17,7 +18,7 @@ import {Profile} from './Profile.js';
 
 
 //components imported
-import {BoxPanel, NavBar} from './Components/components.js';
+import {BoxPanel, NavBar, SiteCreation} from './Components/components.js';
 
 //flask url
 const APIURL = 'http://localhost:5000/';
@@ -101,17 +102,19 @@ class RegisterScreen extends Component {
 
 class App extends Component {
     constructor() {
-	super();
-	this.state = {loginToken: ''};
-	this.login = this.login.bind(this);
+        super();
+        this.state = {loginToken: '', user_id:''};
+        this.login = this.login.bind(this);
     }
     
     login(username, password)  {
-	axios.put(
+        axios.put(
             APIURL + 'user',
             { 'name':username, 'password':password})
             .then( response => {
-		this.setState({'loginToken' : response['data']['jwt']});
+        if (response['data']['jwt'].length > 0){
+            this.setState({'loginToken' : response['data']['jwt'], 'user_id':response['data']['id'] });
+        }
 		console.log(response);
 	    });  // todo: add error-checking
     }
@@ -121,7 +124,8 @@ class App extends Component {
 	return (
 	    <Router>
               <div className="App">
-                <Banner login={ this.login }/>
+                <Banner login={ this.login } user_id={ this.state.user_id } />
+                
 		<Switch>
 		  <Route exact path="/">
 		    <p>this is the app</p>
@@ -130,16 +134,22 @@ class App extends Component {
 		  <Route path="/user/:user_id">
 		    <Profile />                   
 		  </Route>
-                  
+          
+          <Route path="/site/:user_id">
+            <SiteCreation token={this.state.jwt} />
+          </Route>
 		  <Route path="/site/:user_id/:site_id">
 		    <SiteScreen />
 		  </Route>
-                  
+           
 		  <Route path="/register">
                     <RegisterScreen/>
 		  </Route>
           <Route path="/discover">
             <DiscoverScreen />
+          </Route>
+          <Route path="/user">
+            <p>Authorization Failed: You must be logged in to view your profile</p>
           </Route>
 		</Switch>
 	      </div>
@@ -154,9 +164,11 @@ class Banner extends Component {
         this.updateUsername = this.updateUsername.bind(this);
         this.updatePassword = this.updatePassword.bind(this);
         this.callLogin = this.callLogin.bind(this);
-        this.state = { name:'', password:'' };
+        this.state = { name:'', password:'', user_id:'' };
     }
-    
+    componentDidMount(){
+        //this.setState(user_id:this.props.user_id);
+    }
     updateUsername(event) {
         this.setState({name: event.target.value});
     }
@@ -175,28 +187,45 @@ class Banner extends Component {
         // todo: make a conditional render to just show "logged in" when logged in
         // todo: add a register button
         return (
+           
             <div className="App-banner">
               <div className='App-title'>
-                <BoxPanel>
-                  Nathan's World
-                </BoxPanel>
-                <BoxPanel>
-                  <div>
-                    <form>
-                      username<input type="text" value={this.state.name}
-                                     onChange={this.updateUsername}/>
-                      <br/>
-                      password<input type="password" name="password" value={this.state.password}
-                                     onChange={this.updatePassword}/>
-                      <br/>
-                      <button type='button' onClick={this.callLogin} 
-                              name='loginButton'>LOGIN</button>
-                    </form>
-                  </div> 
-                </BoxPanel>
+                <Container fluid>
+                        
+                            <BoxPanel>
+                              Nathan's World
+                            </BoxPanel>
+                        
+                        
+                            <BoxPanel>
+                            { this.props.user_id === '' ? 
+                              <div>
+                                <form>
+                                  username<input type="text" value={this.state.name}
+                                                 onChange={this.updateUsername}/>
+                                  <br/>
+                                  password<input type="password" name="password" value={this.state.password}
+                                                 onChange={this.updatePassword}/>
+                                  <br/>
+                                  <button type='button' onClick={this.callLogin} 
+                                          name='loginButton'>LOGIN</button>
+                                </form>
+                              </div> 
+                              
+                               : 
+                               
+                            <p>Logged in as: {this.state.name}</p>
+                               
+                               
+                               
+                            }
+                            </BoxPanel>
+                        
+                        <NavBar user_id = {this.props.user_id} />
+                </Container>
               </div>
-              <NavBar />
             </div>
+           
         );
     }
 }

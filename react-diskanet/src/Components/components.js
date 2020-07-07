@@ -2,12 +2,12 @@ import React from 'react';
 import { Component } from 'react';
 import styled from 'styled-components';
 import { Redirect } from 'react-router-dom';
+import { Container, Col, Row } from 'react-bootstrap';
 //import axios from 'axios';
 //const APIURL = 'http://localhost:5000/';
 
 
 const BoxPanel = styled.div`
-	display: inline-block;
 	font-size: 30px;
 	background-color: #444;
 	color: #fff;
@@ -31,14 +31,19 @@ const ResultButton = styled.button`
 	overflow-wrap: normal;
 `;
 
-const RedirectButton = styled.button`
-	padding: 5px;
-	margin: 3px;
-	background-color: #ccc;
-	font-size: 110%;
-	font-family: inherit;
-	border-radius: 10px;
-	overflow-wrap: normal;
+const RedirectButton = styled(ResultButton)`
+	background-color: #555555;
+    border: none;
+    color: white;
+    padding: 1em 5em;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 24px;
+    margin: 8px 4px;
+    cursor: pointer;
+    box-shadow: 0 2.5px 5px 0;
+    border-radius: 0px;
 `;
 
 const SliderPage = () => {
@@ -117,10 +122,12 @@ class NavBar extends Component{
         this.setState({ redirect: "/" });
     }
     gotoSite(event){
-        this.setState({ redirect: "/site/1/1/" });
+        
+        this.setState({ redirect: "/site/"+this.props.user_id });
     }
     gotoAProfile(event){
-        this.setState({ redirect: "/user/1/" });
+        var redirectTo = "/user/"+this.props.user_id;
+        this.setState({ redirect: redirectTo });
     }
     gotoDiscover(event){
         this.setState({ redirect: "/discover/" });
@@ -130,11 +137,14 @@ class NavBar extends Component{
         return(
             <div>
                 {this.renderRedirect()}
-                <RedirectButton onClick={this.gotoHome}>Home</RedirectButton>
-                <RedirectButton onClick={this.gotoSite}>Site</RedirectButton>
-                <RedirectButton onClick={this.gotoDiscover}>Discover</RedirectButton>                
-                <RedirectButton onClick={this.gotoAProfile}>Profile</RedirectButton>                                
-
+                <Container>
+                    <Row>
+                        <RedirectButton onClick={this.gotoHome}>Home</RedirectButton>
+                        <RedirectButton onClick={this.gotoSite}>Site</RedirectButton>
+                        <RedirectButton onClick={this.gotoDiscover}>Discover</RedirectButton>
+                        <RedirectButton onClick={this.gotoAProfile}>Profile</RedirectButton>
+                    </Row>
+                </Container>
             </div>
         );
     }
