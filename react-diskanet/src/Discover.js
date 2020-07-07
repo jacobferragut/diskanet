@@ -39,7 +39,7 @@ export default class DiscoverScreen extends Component {
                        genre_writing: "0", results: {} }
 	
         this.updateFilter = this.updateFilter.bind(this);
-	this.submitSearch = this.submitSearch.bind(this);
+	    this.submitSearch = this.submitSearch.bind(this);
         this.updateMayContain = this.updateMayContain.bind(this);
     }
     
@@ -74,17 +74,17 @@ export default class DiscoverScreen extends Component {
     }
     
     submitSearch() {
-	//erase old results before creating new ones (if there is any)  console.log(response);
-	this.setState({'results' : {}});
-	axios.post(APIURL + 'discover', this.state).then( response => {
-	    /*example of response---------
-	      { 
-	      1 : {title:'example title', body: 'example body', ... },
-	      2 : {title:'title example', body: 'body example', ... },
-	      }
-	    */
-	    this.setState({'results' : response});
-	});
+        //erase old results before creating new ones (if there is any)  console.log(response);
+        this.setState({'results' : {}});
+        axios.post(APIURL + 'discover', this.state).then( response => {
+            /*example of response---------
+              { 
+              1 : {title:'example title', body: 'example body', ... },
+              2 : {title:'title example', body: 'body example', ... },
+              }
+            */
+            this.setState({'results' : response});
+        });
     };
     
     render(){

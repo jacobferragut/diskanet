@@ -2,8 +2,8 @@ import React from 'react';
 import { Component } from 'react';
 import styled from 'styled-components';
 import { Redirect } from 'react-router-dom';
-//import axios from 'axios';
-//const APIURL = 'http://localhost:5000/';
+import axios from 'axios';
+const APIURL = 'http://localhost:5000/';
 
 
 const BoxPanel = styled.div`
@@ -141,5 +141,22 @@ class NavBar extends Component{
     
 }
 
+class SiteCreation extends Component{
+    constructor(props){
+        super(props);
+        this.state = { loginToken = this.props.loginToken }
+    }
+    
+    createSite(){
+        axios.post(APIURL
+    }
+    render(){
+        return(
+            <div>
+                <p>These are your created sites</p>
+            </div>
+        )
+    }
+}
 
 export {BoxPanel, SliderPage, ResultPanel, ResultButton, ResultSites, NavBar};
