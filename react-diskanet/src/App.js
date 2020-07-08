@@ -136,10 +136,10 @@ class App extends Component {
 		    <Profile />                   
 		  </Route>
           
-          <Route path="/site/:user_id">
+          <Route exact path="/site/:user_id">
             <SiteCreation token={this.state.jwt} />
           </Route>
-		  <Route path="/site/:user_id/:site_id">
+		  <Route exact path="/site/:user_id/:site_id">
 		    <SiteScreen />
 		  </Route>
            

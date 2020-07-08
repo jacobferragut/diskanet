@@ -54,6 +54,7 @@ class UserInformation extends Component {
         }
     
         return(
+        <>
             <div>
                 <p>This is {this.state.userInfo['name']}'s profile</p>
                 {userStuff}
@@ -62,6 +63,7 @@ class UserInformation extends Component {
                 <input type="file" onChange={this.fileSelectedHandler}/>
                 <button onClick={this.fileUploadHandler}>Upload</button>
             </div>
+        </>
         );
     }
 }

@@ -89,13 +89,23 @@ class SiteScreen0 extends Component {
 		var site = this.state.site;
 
 		//console.log(this.state.site);
-		return <div>
+		return (
 		
-
-			<p>place holder</p>
-			<p>User id: { user_id }</p>
-			<p>Site id: { site_id }</p>
-		</div>;
+            <div>	     
+				<SitePanel siteInfo = {site}>
+					<SiteTitle siteInfo = {site}>
+						<h2> {site['title']} </h2>
+					</SiteTitle>
+					
+					<SiteBody siteInfo = {site}>
+						<p> {site['body']} </p>    
+                            
+                        <p> site created by: {site.name} </p>
+					</SiteBody>
+				</SitePanel>                    
+			</div>
+		
+        );
 	}
 	
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 import styled from 'styled-components';
 import { Redirect } from 'react-router-dom';
+import { withRouter } from "react-router";
 
 import { Container, Col, Row } from 'react-bootstrap';
 //import axios from 'axios';
@@ -155,22 +156,38 @@ class NavBar extends Component{
     
 }
 
-class SiteCreation extends Component{
+class SiteCreation0 extends Component{
     constructor(props){
         super(props);
-        this.state = { loginToken = this.props.loginToken }
+        this.state = { user_id:'', jwt:''};
+        this.createSite = this.createSite.bind(this);
     }
-    
+    componentDidMount(){
+        this.setState({'jwt':this.props.token});
+    }
     createSite(){
-        axios.post(APIURL
+        const user_id = this.props.match.params.user_id;
+        console.log(this.state.jwt);
+        axios.post(APIURL+"site/"+user_id, {
+            background_color:'red',
+            name:'no one',
+            title:'fake site',
+            body:'this is my fake site',
+            owner_id:user_id
+        }, {
+        headers: {
+            'Authorization': `Bearer ${this.props.token}` 
+        }
+        })
     }
     render(){
         return(
             <div>
                 <p>These are your created sites</p>
+                <ResultButton onClick={this.createSite}> Create Site </ResultButton>
             </div>
         )
     }
 }
-
-export {BoxPanel, SliderPage, ResultPanel, ResultButton, ResultSites, NavBar};
+const SiteCreation = withRouter(SiteCreation0);
+export {BoxPanel, SliderPage, ResultPanel, ResultButton, ResultSites, NavBar, SiteCreation};
