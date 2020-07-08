@@ -267,8 +267,7 @@ class SitesResource(Resource):
         '''get user's sites'''
         #executes raw sql to grab user's sites 
         s = g.db.execute(f'select * from sites where owner_id={user_id}')
-        return {ss.name: {ss.title:ss.body} for ss in s}
-        
+        return {ss.site_id: ss._to_dict() for ss in s }
         
 @api.route('/site/<int:user_id>/<int:site_id>')
 class SiteResource(Resource):
