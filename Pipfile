@@ -14,6 +14,7 @@ flask-cors = "*"
 ipython = "*"
 flask-jwt-extended = "*"
 beautifulsoup4 = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.8"

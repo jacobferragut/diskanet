@@ -23,15 +23,14 @@ app = Flask(__name__)
 app.config.update(
     get_config(app.config['ENV'], app.open_resource('config.yaml'))
 )
-#CORS(app)
 api = Api(app)
 CORS(app)
+
+print('App config:\n ', '\n  '.join([f'{k}: {v}' for k,v in sorted(app.config.items())]))
 
 if 'JWT_SECRET_KEY' not in app.config:
     app.config['JWT_SECRET_KEY'] = 'very secret'
 
-print('Secret key: ', app.config['JWT_SECRET_KEY'])
-    
 if 'JWT_ACCESS_TOKEN_EXPIRES' not in app.config:
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600
     
@@ -271,7 +270,6 @@ class SitesResource(Resource):
         
 @api.route('/site/<int:user_id>/<int:site_id>')
 class SiteResource(Resource):
-
     def get(self, user_id, site_id):
         '''get a site's info'''
         #u = g.db.query(User).get(user_id)
@@ -363,6 +361,14 @@ class DiscoverResource(Resource):
         
         return results
 
+
+@api.route('/photo')
+class PhotoResource(Resource):
+    def post(self):
+        print(api.payload)
+        return {'msg':'situation normal'}
+
+    
 @app.before_request
 def init_db():
     '''start db by creating global db_session'''
