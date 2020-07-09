@@ -50,7 +50,9 @@ const RedirectButton = styled(ResultButton)`
     box-shadow: 0 2.5px 5px 0;
     border-radius: 0px;
 `;
+//const FontSelector = styled.selected`
 
+//`;
 const SliderPage = () => {
   return (
     <div className="my-5">
@@ -159,31 +161,36 @@ class NavBar extends Component{
 class SiteCreation0 extends Component{
     constructor(props){
         super(props);
-        this.state = { user_id:'', jwt:''};
+        this.state = {sites:{} };
         this.createSite = this.createSite.bind(this);
     }
     componentDidMount(){
-        this.setState({'jwt':this.props.token});
+        const user_id = this.props.match.params.user_id;
+        axios.get(APIURL + 'site/'.concat(user_id)).then( response => {
+				this.setState({'sites' : response});
+				console.log(response);
+        });
     }
+    
     createSite(){
         const user_id = this.props.match.params.user_id;
-        console.log(this.state.jwt);
         axios.post(APIURL+"site/"+user_id, {
             background_color:'red',
             name:'no one',
             title:'fake site',
             body:'this is my fake site',
-            owner_id:user_id
         }, {
         headers: {
-            'Authorization': `Bearer ${this.props.token}` 
+            'Authorization': `Bearer ${this.props.jwt}` 
         }
         })
     }
     render(){
         return(
             <div>
-                <p>These are your created sites</p>
+                <p>These are your created sites:</p>
+                <ResultSites results={this.state.sites} />
+                
                 <ResultButton onClick={this.createSite}> Create Site </ResultButton>
             </div>
         )

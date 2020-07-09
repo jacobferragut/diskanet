@@ -18,7 +18,7 @@ import {Profile} from './Profile.js';
 
 
 //components imported
-import {BoxPanel, NavBar, SiteCreation} from './Components/components.js';
+import {BoxPanel, NavBar, SiteCreation, ResultSites} from './Components/components.js';
 
 //flask url
 const APIURL = 'http://localhost:5000/';
@@ -137,7 +137,7 @@ class App extends Component {
 		  </Route>
           
           <Route exact path="/site/:user_id">
-            <SiteCreation token={this.state.jwt} />
+            <SiteCreation jwt={this.state.loginToken} />
           </Route>
 		  <Route exact path="/site/:user_id/:site_id">
 		    <SiteScreen />
