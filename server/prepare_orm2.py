@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 import click
 from flask import Flask
 
-from .diskanet_orm import base_app, User, Site
+from .diskanet_orm import base_app, User, Site, Photo
 from .auth_orm import base as base_auth
 from .util import get_config
 

@@ -69,3 +69,11 @@ class Site(base_app):
             if k[0] != '_' or k in skips
         }
     
+class Photo(base_app):
+    __tablename__ = 'photos'
+    photo_id = Column(types.Integer, primary_key=True)
+    photo = Column(types.LargeBinary)
+    
+
+
+

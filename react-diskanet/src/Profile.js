@@ -37,7 +37,10 @@ class UserInformation extends Component {
     fileSelectedHandler = event => {
         this.setState({
             selectedFile: event.target.files[0]
-        })
+            console.log(event.target.files[0]);
+
+        })//console log
+        console.log(event.target.files[0]);
     }
     fileUploadHandler = () => {//I dont know where I should post the given image upload. I guess we need a URL that stores pictures in our database?
         axios.post('');
