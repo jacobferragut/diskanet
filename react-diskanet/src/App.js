@@ -1,5 +1,6 @@
 import React from 'react';
 import { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import {
   BrowserRouter as Router,
@@ -8,97 +9,20 @@ import {
   // eslint-disable-next-line
   Link, useRouteMatch, useParams
 } from "react-router-dom";
-import { Container, Col, Row } from 'react-bootstrap';
+import { Container /*, Col, Row */ } from 'react-bootstrap';
 
 import './App.css';
 // eslint-disable-next-line
 import {DiscoverScreen} from './Discover.js';
 import {SiteScreen} from './Site.js';
+import {RegisterScreen} from './Register.js';
 import {Profile} from './Profile.js';
 
-
 //components imported
-import {BoxPanel, NavBar, SiteCreation, ResultSites} from './Components/components.js';
+import {BoxPanel, NavBar, SiteCreation /*, ResultSites */ } from './Components/components.js';
 
 //flask url
 const APIURL = 'http://localhost:5000/';
-
-class RegisterScreen extends Component {
-    constructor(props){
-        super(props)
-        this.state = {username : '', password:'', showPassword:'', email:''};
-        this.textType = "password"
-
-        //this.logIt = this.logIt.bind(this)
-        this.updateUsername = this.updateUsername.bind(this);
-        this.updatePassword = this.updatePassword.bind(this);
-        this.updateEmail = this.updateEmail.bind(this);
-		this.goRegister = this.goRegister.bind(this);
-    }
-    
-    updateUsername(event) {
-        this.setState({username: event.target.value});
-    }
-    
-    updatePassword(event) {
-        this.setState({password: event.target.value});           
-    }
-    
-    updateEmail(event){
-        this.setState({email: event.target.value});
-    }
-    
-    updateShowPassword(event){
-        if (document.getElementsByName("password")[0].type==="password"){    
-            document.getElementsByName("password")[0].type="text"
-        }
-        else if(document.getElementsByName("password")[0].type==="text"){    
-            document.getElementsByName("password")[0].type="password"
-        }        
-    }
-    
-    goRegister(event){
-	//console.log({msg:'successful button click'});
-	axios.post(APIURL + 'user', {
-	    name: this.state.username, 
-	    password: this.state.password, 
-	    email: this.state.email}).then( response => {
-		/*example of response---------
-		  { 
-		  1 : {title:'example title', body: 'example body', ... },
-		  2 : {title:'title example', body: 'body example', ... },
-		  }
-		*/
-		console.log(response);
-		//this.setState({['results'] : response});
-	    });
-    }
-    
-    render(){
-        return(
-        <div>
-            <form>
-            <p>register</p>
-            email<input type="text" name="email" value={this.state.email}
-                onChange={this.updateEmail}/>
-        	username<input type="text" value={this.state.username}
-	            onChange={this.updateUsername}/>
-	        <br/>
-        	password<input type="password" value={this.state.password} name="password"
-        	    onChange={this.updatePassword}/>
-	        <br/>
-        	show password<input type="checkbox" value="" name="ShowPassword"
-        	    onChange={this.updateShowPassword}/>
-	        <br/>
-	        <button type='button' onClick={ this.goRegister} 
-	            name='registerButton'>register</button>
-	        </form>
-        </div>
-        );
-    }
-
-}
-
 
 class App extends Component {
     constructor() {
@@ -108,14 +32,14 @@ class App extends Component {
     }
     
     login(username, password)  {
-
-	    axios.put(
+	axios.put(
             APIURL + 'user',
             { 'name':username, 'password':password})
             .then( response => {
-        if (response['data']['jwt'].length > 0){
-            this.setState({'loginToken' : response['data']['jwt'], 'user_id':response['data']['id'] });
-        }
+                if (response['data']['jwt'].length > 0){
+                    this.setState({'loginToken' : response['data']['jwt'],
+                                   'user_id':response['data']['id'] });
+                }
 		console.log(response);
 	    });  // todo: add error-checking
     }
@@ -136,22 +60,25 @@ class App extends Component {
 		    <Profile />                   
 		  </Route>
           
-          <Route exact path="/site/:user_id">
-            <SiteCreation jwt={this.state.loginToken} />
-          </Route>
+                  <Route exact path="/site/:user_id">
+                    <SiteCreation jwt={this.state.loginToken} />
+                  </Route>
+                  
 		  <Route exact path="/site/:user_id/:site_id">
 		    <SiteScreen />
 		  </Route>
-           
+                  
 		  <Route path="/register">
                     <RegisterScreen/>
 		  </Route>
-          <Route path="/discover">
-            <DiscoverScreen />
-          </Route>
-          <Route path="/user">
-            <p>Authorization Failed: You must be logged in to view your profile</p>
-          </Route>
+                  
+                  <Route path="/discover">
+                    <DiscoverScreen />
+                  </Route>
+                  
+                  <Route path="/user">
+                    <p>Authorization Failed: You must be logged in to view your profile</p>
+                  </Route>
 		</Switch>
 	      </div>
 	    </Router>
@@ -165,11 +92,25 @@ class Banner extends Component {
         this.updateUsername = this.updateUsername.bind(this);
         this.updatePassword = this.updatePassword.bind(this);
         this.callLogin = this.callLogin.bind(this);
-        this.state = { name:'', password:'', user_id:'' };
+        this.gotoRegister = this.gotoRegister.bind(this);
+        this.renderRedirect = this.renderRedirect.bind(this);
+        this.state = { name:'', password:'', user_id:'', redirect: false };
     }
+    
     componentDidMount(){
         //this.setState(user_id:this.props.user_id);
     }
+
+    gotoRegister(event) {
+        this.setState({redirect: true});
+    }
+
+    renderRedirect() {
+        return (
+            this.state.redirect ? <Redirect to='/register/'/> : ''
+        );
+    }
+    
     updateUsername(event) {
         this.setState({name: event.target.value});
     }
@@ -187,50 +128,46 @@ class Banner extends Component {
     render() {
         // todo: make a conditional render to just show "logged in" when logged in
         // todo: add a register button
-        return (
-           
+        return (          
             <div className="App-banner">
               <div className='App-title'>
-                <Container fluid>
-                        
-                            <BoxPanel>
-                              Nathan's World
-                            </BoxPanel>
-                        
-                        
-                            <BoxPanel>
-                            { this.props.user_id === '' ? 
-                              <div>
-                                <form>
-                                  username<input type="text" value={this.state.name}
-                                                 onChange={this.updateUsername}/>
-                                  <br/>
-                                  password<input type="password" name="password" value={this.state.password}
-                                                 onChange={this.updatePassword}/>
-                                  <br/>
-                                  <button type='button' onClick={this.callLogin} 
-                                          name='loginButton'>LOGIN</button>
-                                </form>
-                              </div> 
-                              
-                               : 
-                               
-                            <p>Logged in as: {this.state.name}</p>
-                               
-                               
-                               
-                            }
-                            </BoxPanel>
-                        
-                        <NavBar user_id = {this.props.user_id} />
+                <Container fluid>                  
+                  <BoxPanel>
+                    Nathan's World
+                  </BoxPanel>
+                                    
+                  <BoxPanel>
+                    { this.props.user_id === '' ? 
+                      <div>
+                        {this.renderRedirect()}
+                        <form>
+                          username<input type="text" value={this.state.name}
+                                         onChange={this.updateUsername}/>
+                          <br/>
+                          password<input type="password" name="password" value={this.state.password}
+                                         onChange={this.updatePassword}/>
+                          <br/>
+                          <button type='button' onClick={this.callLogin} 
+                                  name='loginButton'>LOGIN</button>
+                          <button type='button' onClick={this.gotoRegister}
+                                  name='registerButton'>Register</button>
+                        </form>
+                      </div> 
+                      
+                      : 
+                      
+                      <p>Logged in as: {this.state.name}</p>
+                    }
+                  </BoxPanel>
+                  
+                  <NavBar user_id = {this.props.user_id} />
                 </Container>
               </div>
             </div>
-           
+            
         );
     }
 }
-    
+
 export default App;
-export {App, BoxPanel, RegisterScreen, NavBar};
 //export Banner, RegistrationScreen; Why does banner not work even when its exported?

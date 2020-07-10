@@ -44,7 +44,7 @@ class UserInformation extends Component {
         var userStuff = [];
         for (var key of Object.keys(this.state['userInfo'])){
             userStuff.push(
-                <div id={key}>
+                <div key={key}>
                     <p>{key}:{this.state.userInfo[key]}</p>
                 </div>
             );
