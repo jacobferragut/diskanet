@@ -50,9 +50,7 @@ const RedirectButton = styled(ResultButton)`
     box-shadow: 0 2.5px 5px 0;
     border-radius: 0px;
 `;
-//const FontSelector = styled.selected`
 
-//`;
 const SliderPage = () => {
     return (
         <div className="my-5">
@@ -64,8 +62,9 @@ const SliderPage = () => {
 
 class ResultSites extends Component {
     constructor(props){
-	super(props);
-	this.visitSite = this.visitSite.bind(this);
+        super(props);
+        this.visitSite = this.visitSite.bind(this);
+        this.state = {redirect: false, site_id:''};
     }
     /*example of ressults---------
       { data: {
@@ -74,9 +73,12 @@ class ResultSites extends Component {
       }
       }
     */
-    visitSite(event){
-	var id = event.target.id;
-	console.log(id);
+    visitSite(){
+        return (
+            this.state.redirect ? <Redirect to={'/site/'.concat(this.props.user_id,'/',this.state.site_id)} /> : ''
+        );
+        
+        //console.log(id);
     }
     
     render(){
@@ -85,22 +87,23 @@ class ResultSites extends Component {
 	const sites = [];
 	if (Object.keys(results).length > 0){
 	    for (var key of Object.keys(results['data'])){
-		//sites's id
-		var siteId = key;
-		//all a site info
-		var siteInfo = results['data'][siteId];
-		sites.push(
-		    <div key={siteId}>
-                      <h2> {siteInfo['title']} </h2>
-		      <p> {siteInfo['body']} </p>
-		      
-		      <ResultButton id={siteId} onClick={this.visitSite}>Visit</ResultButton>
-		    </div>
-		);
+            //sites's id
+            var siteId = key;
+            //all a site info
+            var siteInfo = results['data'][siteId];
+            sites.push(
+                <div key={siteId}>
+                          <h2> {siteInfo['title']} </h2>
+                  <p> {siteInfo['body']} </p>
+                  
+                  <ResultButton onClick={()=> this.setState({redirect:true, site_id:siteId}) }>Visit</ResultButton>
+                </div>
+            );
 	    }
 	}
 	return(
 	    <div>
+          {this.visitSite()}
 	      {sites}
 	    </div>
 	);
@@ -117,16 +120,19 @@ class NavBar extends Component{
         this.renderRedirect = this.renderRedirect.bind(this);
 
         this.state = { redirect: null };
+        
     }
     
     renderRedirect = () => {
         if (this.state.redirect){
+            //console.log(this.state);
             return <Redirect to={this.state.redirect} />;
         };
+        
     }
     
     gotoHome(event){
-        console.log("gotoHome");
+        //console.log("gotoHome");
         this.setState({ redirect: "/" });
     }
     
@@ -164,37 +170,62 @@ class NavBar extends Component{
 class SiteCreation0 extends Component{
     constructor(props){
         super(props);
-        this.state = {sites:{} };
+        this.state = {
+            sites:{}, 
+            background_color:'',
+            name:'',
+            title:'', 
+            title_font:'', 
+            title_font_size:'', 
+            body:'', 
+            body_font:'', 
+            body_font_size:''
+        };
         this.createSite = this.createSite.bind(this);
+        this.change = this.change.bind(this);
     }
     
     componentDidMount(){
         const user_id = this.props.match.params.user_id;
         axios.get(APIURL + 'site/'.concat(user_id)).then( response => {
-	    this.setState({'sites' : response});
-	    console.log(response);
+            this.setState({'sites' : response});
+            console.log(response);
         });
     }
     
     createSite(){
         const user_id = this.props.match.params.user_id;
         axios.post(APIURL+"site/"+user_id, {
-            background_color:'red',
-            name:'no one',
-            title:'fake site',
-            body:'this is my fake site',
+            background_color:this.state.background_color,
+            name:this.state.name,
+            title:this.state.title,
+            title_font:this.state.title_font,
+            title_font_size:this.state.title_font_size,
+            body:this.state.body,
+            body_font:this.state.body_font,
+            body_font_size:this.state.body_font_size
         }, {
             headers: {
                 'Authorization': `Bearer ${this.props.jwt}` 
             }
         });
     }
-    
+    change(event){
+        this.setState({event.target.name:event.target.value});
+    }
     render(){
         return(
             <div>
               <p>These are your created sites:</p>
-              <ResultSites results={this.state.sites} />
+              <ResultSites user_id={this.props.match.params.user_id} results={this.state.sites} />
+              
+              <select name='title_font' value={this.state.title_font} onChange={this.change()}>            
+                <option value="American Typewriter">American Typewriter</option>
+                <option value="Impact">Impact</option>
+                <option value="Fantasy">Fantasy</option>
+                <option selected value="Times New Roman">Times New Roman</option>
+                <option value="Comic Sans MS">Times New Roman</option>
+              </select>
               
               <ResultButton onClick={this.createSite}> Create Site </ResultButton>
             </div>
