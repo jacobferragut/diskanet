@@ -1,3 +1,14 @@
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql.expression import delete
+from sqlalchemy import func
+from sqlalchemy import Column, types
+from sqlalchemy.ext.declarative import declarative_base
+
+# from ... import User
+# from ... import Site
+# from ... import get_config
+
 triples = [ line.strip().split() for line in open('mappingbased-objects_lang=en.ttl') ]   # 3m
 
 
@@ -86,8 +97,18 @@ if artist.startswith('<http://dbpedia.org/resource/'):
     paragraphs = '\n'.join([ p.decode() for p in soup.find_all('p') if len(p.text) > 1 ])
 
     # randomly pick a font and color? -- assign owner of -1 or 0 or null (i.e., blank)
-
+    
     # store it in the db?
+# #first open db
+    # config = get_config(os.environ['FLASK_ENV'], open('../../server/config.yaml'))
+    # db = create_engine(config['DB'])
+    # g.db = sessionmaker(db)()
+    
+
+# # close db
+    # g.db.close()
+    # _ = g.pop('db')
+
 
     # throttle the connection maybe
     time.sleep(1)
