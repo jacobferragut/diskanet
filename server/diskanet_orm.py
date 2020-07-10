@@ -68,7 +68,8 @@ class Site(base_app):
             for k,v in self.__dict__.items()
             if k[0] != '_' or k in skips
         }
-    
+
+
 class Photo(base_app):
     __tablename__ = 'photos'
     photo_id = Column(types.Integer, primary_key=True)
