@@ -8,9 +8,13 @@ import { Container, /* Col,*/ Row } from 'react-bootstrap';
 //import axios from 'axios';
 //const APIURL = 'http://localhost:5000/';
 
+
 import axios from 'axios';
+
+import { SiteName, SiteTitle, SitePanel, SiteBox } from '../Site.js';
+
+
 const APIURL = 'http://localhost:5000/';
-import { SiteName, SiteTitle, SitePanel, SiteBox } from './Site.js';
 
 const BoxPanel = styled.div`
     font-size: 30px;
@@ -218,18 +222,54 @@ class SiteCreation0 extends Component{
             <div>
               <p>These are your created sites:</p>
               <SiteBox user_id={this.props.match.params.user_id} results={this.state.sites} />
-              
+              <form>
+              Title:
               <select name='title_font' value={this.state.title_font} onChange={this.change}>            
                 <option value="American Typewriter">American Typewriter</option>
                 <option value="Impact">Impact</option>
                 <option value="Fantasy">Fantasy</option>
-                <option selected value="Times New Roman">Times New Roman</option>
+                <option selected='selected' value="Times New Roman">Times New Roman</option>
                 <option value="Comic Sans MS">Comic Sans MS</option>
               </select>
-              
               <input type="text" name="title" value={this.state.title}
                             onChange={this.change}/>
+              <br />
+              Title Font Size:<input type="text" name="title_font_size" value={this.state.title_font_size}
+                            onChange={this.change}/>
+              <br />Body:
+              <select name='body_font' value={this.state.body_font} onChange={this.change}>            
+                <option value="American Typewriter">American Typewriter</option>
+                <option value="Impact">Impact</option>
+                <option value="Fantasy">Fantasy</option>
+                <option selected='selected' value="Times New Roman">Times New Roman</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+              </select>
+              <textarea name="body" value={this.state.body}
+                            onChange={this.change}/>
+              <br />
+              Body Font Size:<input type="text" name="body_font_size" value={this.state.body_font_size}
+                            onChange={this.change}/>
+              <br />
+              Background Color
+              <select name='background_color' value={this.state.background_color} onChange={this.change}>            
+                <option value="Maroon">Maroon</option>
+                <option value="Red">Red</option>
+                <option value="Orange">Orange</option>
+                <option value="Yellow">Yellow</option>
+                <option value="Olive">Olive</option>
+                <option value="Green">Green</option>
+                <option value="Purple">Purple</option>
+                <option value="Fuchsia">Fuchsia</option>
+                <option value="Lime">Lime</option>
+                <option value="Teal">Teal</option>
+              </select>
               
+              <br />
+              Name<input type="text" name="name" value={this.state.name}
+                            onChange={this.change}/>
+              <br />
+              
+              </form>
               <ResultButton onClick={this.createSite}> Create Site </ResultButton>
             </div>
         );
