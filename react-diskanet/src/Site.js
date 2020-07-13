@@ -27,6 +27,9 @@ const SitePanel = styled.div`
 
 //component for site results ??
 class SiteBox extends Component {
+    constructor(props){
+        super(props);
+    }
     render() {
         const site = this.props.Site;        
         return (

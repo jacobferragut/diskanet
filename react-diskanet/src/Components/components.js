@@ -10,7 +10,7 @@ import { Container, /* Col,*/ Row } from 'react-bootstrap';
 
 import axios from 'axios';
 const APIURL = 'http://localhost:5000/';
-
+import { SiteName, SiteTitle, SitePanel, SiteBox } from './Site.js';
 
 const BoxPanel = styled.div`
     font-size: 30px;
@@ -211,21 +211,24 @@ class SiteCreation0 extends Component{
         });
     }
     change(event){
-        this.setState({event.target.name:event.target.value});
+        this.setState({[event.target.name]:event.target.value});
     }
     render(){
         return(
             <div>
               <p>These are your created sites:</p>
-              <ResultSites user_id={this.props.match.params.user_id} results={this.state.sites} />
+              <SiteBox user_id={this.props.match.params.user_id} results={this.state.sites} />
               
-              <select name='title_font' value={this.state.title_font} onChange={this.change()}>            
+              <select name='title_font' value={this.state.title_font} onChange={this.change}>            
                 <option value="American Typewriter">American Typewriter</option>
                 <option value="Impact">Impact</option>
                 <option value="Fantasy">Fantasy</option>
                 <option selected value="Times New Roman">Times New Roman</option>
-                <option value="Comic Sans MS">Times New Roman</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
               </select>
+              
+              <input type="text" name="title" value={this.state.title}
+                            onChange={this.change}/>
               
               <ResultButton onClick={this.createSite}> Create Site </ResultButton>
             </div>
