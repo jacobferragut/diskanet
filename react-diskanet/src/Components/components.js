@@ -11,7 +11,7 @@ import { Container, /* Col,*/ Row } from 'react-bootstrap';
 
 import axios from 'axios';
 
-import { SiteName, SiteTitle, SitePanel, SiteBox } from '../Site.js';
+import { SiteBody, SiteTitle, SitePanel, SiteBox } from '../Site.js';
 
 
 const APIURL = 'http://localhost:5000/';
@@ -97,7 +97,11 @@ class ResultSites extends Component {
             var siteInfo = results['data'][siteId];
             sites.push(
                 <div key={siteId}>
-                          <h2> {siteInfo['title']} </h2>
+                  
+                  <h2> {siteInfo['title']} </h2>
+                  
+                  
+                  
                   <p> {siteInfo['body']} </p>
                   
                   <ResultButton onClick={()=> this.setState({redirect:true, site_id:siteId}) }>Visit</ResultButton>
@@ -176,13 +180,13 @@ class SiteCreation0 extends Component{
         super(props);
         this.state = {
             sites:{}, 
-            background_color:'',
+            background_color:'Gray',
             name:'',
             title:'', 
-            title_font:'', 
+            title_font:'Times New Roman', 
             title_font_size:'', 
             body:'', 
-            body_font:'', 
+            body_font:'Times New Roman', 
             body_font_size:''
         };
         this.createSite = this.createSite.bind(this);
@@ -193,10 +197,12 @@ class SiteCreation0 extends Component{
         const user_id = this.props.match.params.user_id;
         axios.get(APIURL + 'site/'.concat(user_id)).then( response => {
             this.setState({'sites' : response});
-            console.log(response);
+        });
+        
+        axios.get(APIURL + 'user/'.concat(user_id)).then( response => {
+            this.setState({'name' : response['data'].name});
         });
     }
-    
     createSite(){
         const user_id = this.props.match.params.user_id;
         axios.post(APIURL+"site/"+user_id, {
@@ -228,7 +234,7 @@ class SiteCreation0 extends Component{
                 <option value="American Typewriter">American Typewriter</option>
                 <option value="Impact">Impact</option>
                 <option value="Fantasy">Fantasy</option>
-                <option selected='selected' value="Times New Roman">Times New Roman</option>
+                <option value="Times New Roman">Times New Roman</option>
                 <option value="Comic Sans MS">Comic Sans MS</option>
               </select>
               <input type="text" name="title" value={this.state.title}
@@ -241,7 +247,7 @@ class SiteCreation0 extends Component{
                 <option value="American Typewriter">American Typewriter</option>
                 <option value="Impact">Impact</option>
                 <option value="Fantasy">Fantasy</option>
-                <option selected='selected' value="Times New Roman">Times New Roman</option>
+                <option value="Times New Roman">Times New Roman</option>
                 <option value="Comic Sans MS">Comic Sans MS</option>
               </select>
               <textarea name="body" value={this.state.body}
@@ -262,12 +268,10 @@ class SiteCreation0 extends Component{
                 <option value="Fuchsia">Fuchsia</option>
                 <option value="Lime">Lime</option>
                 <option value="Teal">Teal</option>
+                <option value="Gray">Gray</option>
               </select>
               
-              <br />
-              Name<input type="text" name="name" value={this.state.name}
-                            onChange={this.change}/>
-              <br />
+              
               
               </form>
               <ResultButton onClick={this.createSite}> Create Site </ResultButton>

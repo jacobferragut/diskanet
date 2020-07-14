@@ -253,6 +253,7 @@ class SitesResource(Resource):
         #user id of who owns the site
         site.owner = g.db.query(User).get(user_id)#use JWT authentication to get user creating the site
         site.owner_id = user_id
+        #site.name = site.owner.name
         
         #commit the changes
         g.db.add(site)

@@ -32,17 +32,17 @@ class SiteBox extends Component {
         super(props); //user_id and results (multiple sites)
         this.visitSite = this.visitSite.bind(this);
         this.changeSite = this.changeSite.bind(this);
-        this.state = {redirect: false, site_id:''};
+        this.state = {redirect: false, site_id:'', user_id:''};
     }
     visitSite(){
         return (
-            this.state.redirect ? <Redirect to={'/site/'.concat(this.props.user_id,'/',this.state.site_id)} /> : ''
+            this.state.redirect ? <Redirect to={'/site/'.concat(this.state.user_id,'/',this.state.site_id)} /> : ''
         );
         
         //console.log(id);
     }
     changeSite(event){
-        this.setState({redirect:true, site_id:event.target.id})
+        this.setState({redirect:true, site_id:event.target.id, user_id:event.target.key})
     }
     render(){
         var results = this.props.results;
@@ -64,7 +64,7 @@ class SiteBox extends Component {
                             <SiteBody siteInfo = {siteInfo}>
                                 <p> {siteInfo['body']} </p>                         
                             
-                                <ResultButton id={siteId} onClick={this.changeSite}>Visit</ResultButton>
+                                <ResultButton id={siteId} key={siteInfo['owner_id']} onClick={this.changeSite}>Visit</ResultButton>
                             </SiteBody>
                         </SitePanel>                  
                     </div>
@@ -135,4 +135,4 @@ class SiteScreen0 extends Component {
 
 
 const SiteScreen = withRouter(SiteScreen0);
-export {SiteBox, SiteScreen};
+export {SiteBox, SiteScreen, SiteBody, SitePanel, SiteTitle};

@@ -5,9 +5,8 @@ from sqlalchemy import func
 from sqlalchemy import Column, types
 from sqlalchemy.ext.declarative import declarative_base
 
-# from ... import User
-# from ... import Site
-# from ... import get_config
+from 'C:/Users/nferr/Desktop/diskanet/server/diskanet_orm.py' import User, Site
+from 'C:/Users/nferr/Desktop/diskanet/server/util.py' import get_config
 
 triples = [ line.strip().split() for line in open('mappingbased-objects_lang=en.ttl') ]   # 3m
 
@@ -99,10 +98,14 @@ if artist.startswith('<http://dbpedia.org/resource/'):
     # randomly pick a font and color? -- assign owner of -1 or 0 or null (i.e., blank)
     
     # store it in the db?
+    app = Flask(__name__)
+    app.config.update(
+        get_config(app.config['ENV'], app.open_resource('config.yaml'))
+    )
 # #first open db
-    # config = get_config(os.environ['FLASK_ENV'], open('../../server/config.yaml'))
-    # db = create_engine(config['DB'])
-    # g.db = sessionmaker(db)()
+    config = get_config(os.environ['FLASK_ENV'], open('../../server/config.yaml'))
+    db = create_engine(config['DB'])
+    g.db = sessionmaker(db)()
     
 
 # # close db
