@@ -36,14 +36,17 @@ class SiteBox extends Component {
     }
     visitSite(){
         return (
-            this.state.redirect ? <Redirect to={'/site/'.concat(this.state.user_id,'/',this.state.site_id)} /> : ''
-        );
-        
+            this.state.redirect
+                ? <Redirect to={'/site/'.concat(this.state.user_id,'/',this.state.site_id)} />
+                : ''
+        );        
         //console.log(id);
     }
+    
     changeSite(event){
         this.setState({redirect:true, site_id:event.target.id, user_id:event.target.key})
     }
+    
     render(){
         var results = this.props.results;
         
@@ -56,29 +59,32 @@ class SiteBox extends Component {
                 var siteInfo = results['data'][siteId];
                 sites.push(
                     <div key={siteId}>
-                        <SitePanel siteInfo = {siteInfo}>
-                            <SiteTitle siteInfo = {siteInfo}>
-                                <h2> {siteInfo['title']} </h2>
-                            </SiteTitle>
-            
-                            <SiteBody siteInfo = {siteInfo}>
-                                <p> {siteInfo['body']} </p>                         
-                            
-                                <ResultButton id={siteId} key={siteInfo['owner_id']} onClick={this.changeSite}>Visit</ResultButton>
-                            </SiteBody>
-                        </SitePanel>                  
+                      <SitePanel siteInfo = {siteInfo}>
+                        <SiteTitle siteInfo = {siteInfo}>
+                          <h2> {siteInfo['title']} </h2>
+                        </SiteTitle>
+                        
+                        <SiteBody siteInfo = {siteInfo}>
+                          <p> {siteInfo['body']} </p>                         
+                          
+                          <ResultButton id={siteId} key={siteInfo['owner_id']}
+                                        onClick={this.changeSite}>Visit</ResultButton>
+                        </SiteBody>
+                      </SitePanel>                  
                     </div>
                 );
             }
         }
+        
         return(
             <div>
-            {this.visitSite()}
-            {sites}
+              {this.visitSite()}
+              {sites}
             </div>
         );
     }
 }
+
 class SiteScreen0 extends Component {
     constructor(props){
         super(props);
@@ -105,7 +111,7 @@ class SiteScreen0 extends Component {
             const id = Object.keys(response['data'])[0];
             const ret = response['data'][id];
             console.log(ret);
-            this.setState({ 'site' : ret });
+            this.setState({ 'site': ret, 'user_id': user_id, 'site_id': site_id });
         });
     }
     

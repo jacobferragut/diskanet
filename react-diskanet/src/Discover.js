@@ -4,7 +4,8 @@ import styled from 'styled-components'
 import axios from 'axios';
 
 import './App.css';
-import {SliderPage, ResultPanel, ResultSites} from './Components/components.js';
+// import {SliderPage, ResultPanel, ResultSites} from './Components/components.js';
+import {SliderPage, ResultPanel} from './Components/components.js';
 import {SiteBox} from './Site.js';
 //submit discover filter button
 const FilterButton = styled.button`
@@ -14,6 +15,7 @@ const FilterButton = styled.button`
 	font-size: 110%;
 	font-family: inherit;
 `;
+
 //filter panel for genres
 const FilterPanel = styled.div`
 	display: inline-block;
@@ -26,7 +28,6 @@ const FilterPanel = styled.div`
 	font-family: serif
 `;
 
-
 //genre_music, genre_art, genre_film, genre_writing
 const APIURL = 'http://localhost:5000/';
 
@@ -36,7 +37,7 @@ export default class DiscoverScreen extends Component {
 	//at first there is no state to submit
 	//this.state = {}
         this.state = { genre_music: "0", genre_art: "0", genre_film: "0",
-                       genre_writing: "0", results: {} }
+                       genre_writing: "0", results: {} };
 	
         this.updateFilter = this.updateFilter.bind(this);
 	    this.submitSearch = this.submitSearch.bind(this);
@@ -44,31 +45,28 @@ export default class DiscoverScreen extends Component {
     }
     
     updateFilter(event) {
-		if (event.target.checked) {
-			//make may genre unchecked
-			var mayName = event.target.name.substring(6);
-			document.getElementsByName(mayName)[0].checked = false;
-			
-			this.setState({
-				[event.target.name] : "1",
-			});
-		} else {
-			this.setState({
-				[event.target.name] : "0",
-			});
-		}
+	if (event.target.checked) {
+	    //make may genre unchecked
+	    var mayName = event.target.name.substring(6);
+	    document.getElementsByName(mayName)[0].checked = false;
+	    
+	    this.setState({
+		[event.target.name] : "1",
+	    });
+	} else {
+	    this.setState({
+		[event.target.name] : "0",
+	    });
+	}
     }
     
     updateMayContain(event) {
 	if (event.target.checked){
 	    //make must contain genre unchecked
-	    var genre = "genre_".concat(event.target.name)
+	    var genre = "genre_".concat(event.target.name);
 	    document.getElementsByName(genre)[0].checked = false;
-	    
-            
 	    this.setState({genre : "",});
-	}
-	else{
+	} else {
 	    this.setState({genre : "0",});
 	}
     }

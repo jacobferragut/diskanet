@@ -11,7 +11,8 @@ import { Container, /* Col,*/ Row } from 'react-bootstrap';
 
 import axios from 'axios';
 
-import { SiteBody, SiteTitle, SitePanel, SiteBox } from '../Site.js';
+// import { SiteBody, SiteTitle, SitePanel, SiteBox } from '../Site.js';
+import { SiteBox } from '../Site.js';
 
 
 const APIURL = 'http://localhost:5000/';
