@@ -8,9 +8,13 @@ import { Container, /* Col,*/ Row } from 'react-bootstrap';
 //import axios from 'axios';
 //const APIURL = 'http://localhost:5000/';
 
-import axios from 'axios';
-const APIURL = 'http://localhost:5000/';
 
+import axios from 'axios';
+
+import { SiteBody, SiteTitle, SitePanel, SiteBox } from '../Site.js';
+
+
+const APIURL = 'http://localhost:5000/';
 
 const BoxPanel = styled.div`
     font-size: 30px;
@@ -93,7 +97,11 @@ class ResultSites extends Component {
             var siteInfo = results['data'][siteId];
             sites.push(
                 <div key={siteId}>
-                          <h2> {siteInfo['title']} </h2>
+                  
+                  <h2> {siteInfo['title']} </h2>
+                  
+                  
+                  
                   <p> {siteInfo['body']} </p>
                   
                   <ResultButton onClick={()=> this.setState({redirect:true, site_id:siteId}) }>Visit</ResultButton>
@@ -172,13 +180,13 @@ class SiteCreation0 extends Component{
         super(props);
         this.state = {
             sites:{}, 
-            background_color:'',
+            background_color:'Gray',
             name:'',
             title:'', 
-            title_font:'', 
+            title_font:'Times New Roman', 
             title_font_size:'', 
             body:'', 
-            body_font:'', 
+            body_font:'Times New Roman', 
             body_font_size:''
         };
         this.createSite = this.createSite.bind(this);
@@ -189,10 +197,12 @@ class SiteCreation0 extends Component{
         const user_id = this.props.match.params.user_id;
         axios.get(APIURL + 'site/'.concat(user_id)).then( response => {
             this.setState({'sites' : response});
-            console.log(response);
+        });
+        
+        axios.get(APIURL + 'user/'.concat(user_id)).then( response => {
+            this.setState({'name' : response['data'].name});
         });
     }
-    
     createSite(){
         const user_id = this.props.match.params.user_id;
         axios.post(APIURL+"site/"+user_id, {
@@ -219,15 +229,52 @@ class SiteCreation0 extends Component{
         return(
             <div>
               <p>These are your created sites:</p>
-              <ResultSites user_id={this.props.match.params.user_id} results={this.state.sites} />
-                <select name='title_font' value={this.state.title_font} onChange={this.change}>
+              <SiteBox user_id={this.props.match.params.user_id} results={this.state.sites} />
+              <form>
+              Title:
+              <select name='title_font' value={this.state.title_font} onChange={this.change}>
                 <option value="American Typewriter">American Typewriter</option>
                 <option value="Impact">Impact</option>
                 <option value="Fantasy">Fantasy</option>
-                <option selected value="Times New Roman">Times New Roman</option>
-                <option value="Comic Sans MS">Times New Roman</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
               </select>
-              
+              <input type="text" name="title" value={this.state.title}
+                            onChange={this.change}/>
+              <br />
+                Title Font Size:<input type="text" name="title_font_size"
+                                       value={this.state.title_font_size} onChange={this.change}/>
+              <br />Body:
+              <select name='body_font' value={this.state.body_font} onChange={this.change}>            
+                <option value="American Typewriter">American Typewriter</option>
+                <option value="Impact">Impact</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+              </select>
+              <textarea name="body" value={this.state.body}
+                            onChange={this.change}/>
+              <br />
+                Body Font Size:<input type="text" name="body_font_size"
+                                      value={this.state.body_font_size}
+                                      onChange={this.change}/>
+              <br />
+              Background Color
+                <select name='background_color' value={this.state.background_color}
+                        onChange={this.change}>            
+                  <option value="Maroon">Maroon</option>
+                  <option value="Red">Red</option>
+                  <option value="Orange">Orange</option>
+                  <option value="Yellow">Yellow</option>
+                  <option value="Olive">Olive</option>
+                  <option value="Green">Green</option>
+                  <option value="Purple">Purple</option>
+                  <option value="Fuchsia">Fuchsia</option>
+                  <option value="Lime">Lime</option>
+                  <option value="Teal">Teal</option>
+                  <option value="Gray">Gray</option>
+                </select>
+              </form>
               <ResultButton onClick={this.createSite}> Create Site </ResultButton>
             </div>
         );

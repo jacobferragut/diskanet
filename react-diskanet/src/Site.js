@@ -3,6 +3,7 @@ import { Component } from 'react';
 import styled from 'styled-components'
 import axios from 'axios';
 import { withRouter } from "react-router";
+import { Redirect } from 'react-router-dom';
 
 import { ResultButton } from './Components/components.js';
 
@@ -25,56 +26,87 @@ const SitePanel = styled.div`
         props.siteInfo.background_color.length ? props.siteInfo.background_color : ""};
 `;
 
-//component for site results ??
+//component displays all of a user's sites WITH CSS
 class SiteBox extends Component {
-    render() {
-        const site = this.props.Site;        
+    constructor(props){
+        super(props); //user_id and results (multiple sites)
+        this.visitSite = this.visitSite.bind(this);
+        this.changeSite = this.changeSite.bind(this);
+        this.state = {redirect: false, site_id:'', user_id:''};
+    }
+    visitSite(){
         return (
-	    <div>	     
-	      <p>User id: { this.props.UserId } and Site id: { this.props.SiteId }</p>
-	      <SitePanel siteInfo = {site}>
-		<SiteTitle siteInfo = {site}>
-		  <h2> {site['title']} </h2>
-		</SiteTitle>
-		
-		<SiteBody siteInfo = {site}>
-		  <p> {site['body']} </p>                         
-		  <ResultButton id='1' onClick={this.visitSite}>Visit</ResultButton>
-		</SiteBody>
-	      </SitePanel>                    
-	    </div>
+            this.state.redirect ? <Redirect to={'/site/'.concat(this.state.user_id,'/',this.state.site_id)} /> : ''
+        );
+        
+        //console.log(id);
+    }
+    changeSite(event){
+        this.setState({redirect:true, site_id:event.target.id, user_id:event.target.key})
+    }
+    render(){
+        var results = this.props.results;
+        
+        const sites = [];
+        if (Object.keys(results).length > 0){
+            for (var key of Object.keys(results['data'])){
+                //sites's id
+                var siteId = key;
+                //all a site info
+                var siteInfo = results['data'][siteId];
+                sites.push(
+                    <div key={siteId}>
+                        <SitePanel siteInfo = {siteInfo}>
+                            <SiteTitle siteInfo = {siteInfo}>
+                                <h2> {siteInfo['title']} </h2>
+                            </SiteTitle>
+            
+                            <SiteBody siteInfo = {siteInfo}>
+                                <p> {siteInfo['body']} </p>                         
+                            
+                                <ResultButton id={siteId} key={siteInfo['owner_id']} onClick={this.changeSite}>Visit</ResultButton>
+                            </SiteBody>
+                        </SitePanel>                  
+                    </div>
+                );
+            }
+        }
+        return(
+            <div>
+            {this.visitSite()}
+            {sites}
+            </div>
         );
     }
-};
-
+}
 class SiteScreen0 extends Component {
     constructor(props){
-	super(props);
+        super(props);
         
-	this.state = { site: {
-	    title: 'example title',
-            body: 'cool site: The quick brown fox jumped over the lazy dog',
-            background_color: 'tan',
-            body_font_size: '48',
-            title_font_size: '30',
-            body_font: 'Comic Sans MS',
-            title_font: 'Arial'
-	} };
+        this.state = { site: {
+            title: 'example title',
+                body: 'cool site: The quick brown fox jumped over the lazy dog',
+                background_color: 'tan',
+                body_font_size: '48',
+                title_font_size: '30',
+                body_font: 'Comic Sans MS',
+                title_font: 'Arial'
+        } };
         
-	this.putSite = this.putSite.bind(this);
+        this.putSite = this.putSite.bind(this);
     }
     
     componentDidMount(){
-	const user_id = this.props.match.params.user_id;
+        const user_id = this.props.match.params.user_id;
         const site_id = this.props.match.params.site_id;
-	const url = APIURL.concat('site/', user_id, '/', site_id);
-        
-	axios.get(url).then( response => {		
-	    const id = Object.keys(response['data'])[0];
-	    const ret = response['data'][id];
-	    console.log(ret);
-	    this.setState({ 'site' : ret });
-	});
+        const url = APIURL.concat('site/', user_id, '/', site_id);
+            
+        axios.get(url).then( response => {		
+            const id = Object.keys(response['data'])[0];
+            const ret = response['data'][id];
+            console.log(ret);
+            this.setState({ 'site' : ret });
+        });
     }
     
     putSite(){
@@ -103,4 +135,4 @@ class SiteScreen0 extends Component {
 
 
 const SiteScreen = withRouter(SiteScreen0);
-export {SiteBox, SiteScreen};
+export {SiteBox, SiteScreen, SiteBody, SitePanel, SiteTitle};

@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import './App.css';
 import {SliderPage, ResultPanel, ResultSites} from './Components/components.js';
-
+import {SiteBox} from './Site.js';
 //submit discover filter button
 const FilterButton = styled.button`
 	padding: 5px;
@@ -141,7 +141,7 @@ export default class DiscoverScreen extends Component {
 	      </FilterPanel>
 	      <br />
 	      <ResultPanel>
-		<ResultSites results={this.state.results} />
+		<SiteBox results={this.state.results} />
 	      </ResultPanel>
 	    </div>
 	);
