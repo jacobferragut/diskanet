@@ -15,6 +15,7 @@ ipython = "*"
 flask-jwt-extended = "*"
 beautifulsoup4 = "*"
 python-dotenv = "*"
+joblib = "*"
 
 [requires]
 python_version = "3.8"

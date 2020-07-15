@@ -88,7 +88,7 @@ class ResultSites extends Component {
 	if (Object.keys(results).length > 0){
 	    for (var key of Object.keys(results['data'])){
             //sites's id
-            var siteId = key;
+            const siteId = key;
             //all a site info
             var siteInfo = results['data'][siteId];
             sites.push(
@@ -210,16 +210,17 @@ class SiteCreation0 extends Component{
             }
         });
     }
+    
     change(event){
-        this.setState({event.target.name:event.target.value});
+        this.setState({ [event.target.name] : event.target.value });
     }
+    
     render(){
         return(
             <div>
               <p>These are your created sites:</p>
               <ResultSites user_id={this.props.match.params.user_id} results={this.state.sites} />
-              
-              <select name='title_font' value={this.state.title_font} onChange={this.change()}>            
+                <select name='title_font' value={this.state.title_font} onChange={this.change}>
                 <option value="American Typewriter">American Typewriter</option>
                 <option value="Impact">Impact</option>
                 <option value="Fantasy">Fantasy</option>

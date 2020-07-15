@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 import hashlib
 
-from flask import Flask, g
+from flask import Flask, g, request
 from flask_restx import Resource, Api
 from flask_cors import CORS
 import flask_jwt_extended as JWT
@@ -23,8 +23,10 @@ app = Flask(__name__)
 app.config.update(
     get_config(app.config['ENV'], app.open_resource('config.yaml'))
 )
+# CORS(app)
+CORS(app, resources={r'/*': {'origins': '*'}})
+
 api = Api(app)
-CORS(app)
 
 print('App config:\n ', '\n  '.join([f'{k}: {v}' for k,v in sorted(app.config.items())]))
 
@@ -364,13 +366,36 @@ class DiscoverResource(Resource):
         return results
 
 
+def file_extension(filename):
+    return filename.rsplit('.', 1)[1].lower()
+
+
 @api.route('/photo')
 class PhotoResource(Resource):
-    def post(self):
-        print(api.payload)
-        return {'msg':'situation normal'}
+    allowed_ext = {'png', 'jpg', 'jpeg', 'gif'}
 
-    
+    def post(self):
+        print('file:', request.files)
+
+        print(request.files.__dict__)
+
+        if ('file' not in request.files):
+            return { 'err': 'No file in request.files' }
+        if not request.files['file'].filename:
+            return { 'err': 'No filename in request.files[\'file\']' }
+        
+        file = request.files['file']
+        ext  = file_extension(file.filename)
+
+        
+        if file and (ext in self.allowed_ext):
+            print('filename of submitted file:', secure_filename(file.filename))
+            file.save('uploaded_file.' + ext)
+            return {'msg': 'file saved'}
+        else:
+            return {'err':'Unallowed file type, ' + ext}
+
+        
 @app.before_request
 def init_db():
     '''start db by creating global db_session'''
