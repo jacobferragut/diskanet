@@ -61,14 +61,15 @@ export default class DiscoverScreen extends Component {
     }
     
     updateMayContain(event) {
-	if (event.target.checked){
-	    //make must contain genre unchecked
-	    var genre = "genre_".concat(event.target.name);
-	    document.getElementsByName(genre)[0].checked = false;
-	    this.setState({genre : "",});
-	} else {
-	    this.setState({genre : "0",});
-	}
+        var genre = "genre_".concat(event.target.name);
+        if (event.target.checked){
+            //make must contain genre unchecked
+            
+            document.getElementsByName(genre)[0].checked = false;
+            this.setState({ [genre] : "",});
+        } else {
+            this.setState({ [genre] : "0",});
+        }
     }
     
     submitSearch() {
@@ -82,6 +83,7 @@ export default class DiscoverScreen extends Component {
               }
             */
             this.setState({'results' : response});
+            console.log(this.state);
         });
     };
     

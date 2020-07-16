@@ -14,12 +14,12 @@ import { Container /*, Col, Row */ } from 'react-bootstrap';
 import './App.css';
 // eslint-disable-next-line
 import {DiscoverScreen} from './Discover.js';
-import {SiteScreen} from './Site.js';
+import {SiteScreen, SiteCreation} from './Site.js';
 import {RegisterScreen} from './Register.js';
 import {Profile} from './Profile.js';
 
 //components imported
-import {BoxPanel, NavBar, SiteCreation /*, ResultSites */ } from './Components/components.js';
+import {BoxPanel, NavBar,  /*, ResultSites */ } from './Components/components.js';
 
 //flask url
 const APIURL = 'http://localhost:5000/';
@@ -64,7 +64,7 @@ class App extends Component {
                     <SiteCreation jwt={this.state.loginToken} />
                   </Route>
                   
-		  <Route exact path="/site/:user_id/:site_id">
+		  <Route exact path="/site/:site_id">
 		    <SiteScreen />
 		  </Route>
                   

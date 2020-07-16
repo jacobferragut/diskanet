@@ -29,7 +29,7 @@ const SitePanel = styled.div`
 //component displays all of a user's sites WITH CSS
 class SiteBox extends Component {
     constructor(props){
-        super(props); //user_id and results (multiple sites)
+        super(props); //results (multiple sites)
         this.visitSite = this.visitSite.bind(this);
         this.changeSite = this.changeSite.bind(this);
         this.state = {redirect: false, site_id:''};
@@ -80,12 +80,143 @@ class SiteBox extends Component {
         return(
             <div>
               {this.visitSite()}
-              {this.state.sites}
+              {sites}
             </div>
         );
     }
 }
 
+//displays sitebox (user's sites) AND site creation form
+class SiteCreation0 extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            sites:{}, 
+            background_color:'Gray',
+            name:'',
+            title:'', 
+            title_font:'Times New Roman', 
+            title_font_size:'', 
+            body:'', 
+            body_font:'Times New Roman', 
+            body_font_size:'',
+            genre_music:false
+        };
+        this.createSite = this.createSite.bind(this);
+        this.change = this.change.bind(this);
+        this.changeCheckbox = this.changeCheckbox.bind(this);
+    }
+    
+    componentDidMount(){
+        const user_id = this.props.match.params.user_id;
+        axios.get(APIURL + 'sites/'.concat(user_id)).then( response => {
+            this.setState({'sites' : response});
+            console.log(response);
+        });
+        
+        axios.get(APIURL + 'user/'.concat(user_id)).then( response => {
+            this.setState({'name' : response['data'].name});
+        });
+    }
+    createSite(){
+        const user_id = this.props.match.params.user_id;
+        axios.post(APIURL+"sites/"+user_id, {
+            background_color:this.state.background_color,
+            name:this.state.name,
+            title:this.state.title,
+            title_font:this.state.title_font,
+            title_font_size:this.state.title_font_size,
+            body:this.state.body,
+            body_font:this.state.body_font,
+            body_font_size:this.state.body_font_size,
+            genre_music:this.state.genre_music
+        }, {
+            headers: {
+                'Authorization': `Bearer ${this.props.jwt}` 
+            }
+        });
+    }
+    
+    change(event){
+        this.setState({ [event.target.name] : event.target.value });
+    }
+    
+    changeCheckbox(event){
+        //event.target.value = event.target.checked;
+        //this.change(event);
+        this.setState({ [event.target.name] : event.target.checked });
+
+    }
+    
+    render(){
+        return(
+            <div>
+              <p>These are your created sites:</p>
+              <SiteBox results={this.state.sites} />
+              <form>
+              Title:
+              <select name='title_font' value={this.state.title_font} onChange={this.change}>
+                <option value="American Typewriter">American Typewriter</option>
+                <option value="Impact">Impact</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+              </select>
+              <input type="text" name="title" value={this.state.title}
+                            onChange={this.change}/>
+              <br />
+                Title Font Size:<input type="text" name="title_font_size"
+                                       value={this.state.title_font_size} onChange={this.change}/>
+              <br />Body:
+              <select name='body_font' value={this.state.body_font} onChange={this.change}>            
+                <option value="American Typewriter">American Typewriter</option>
+                <option value="Impact">Impact</option>
+                <option value="Fantasy">Fantasy</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+              </select>
+              <textarea name="body" value={this.state.body}
+                            onChange={this.change}/>
+              <br />
+                Body Font Size:<input type="text" name="body_font_size"
+                                      value={this.state.body_font_size}
+                                      onChange={this.change}/>
+              <br />
+              Background Color
+                <select name='background_color' value={this.state.background_color}
+                        onChange={this.change}>            
+                  <option value="Maroon">Maroon</option>
+                  <option value="Red">Red</option>
+                  <option value="Orange">Orange</option>
+                  <option value="Yellow">Yellow</option>
+                  <option value="Olive">Olive</option>
+                  <option value="Green">Green</option>
+                  <option value="Purple">Purple</option>
+                  <option value="Fuchsia">Fuchsia</option>
+                  <option value="Lime">Lime</option>
+                  <option value="Teal">Teal</option>
+                  <option value="Gray">Gray</option>
+                </select>
+              <br />
+              <div>
+              Genre: Music<input 
+		       type="checkbox" 
+		       name="genre_music"
+		       onChange={this.changeCheckbox}>
+		       </input>
+		       </div>
+		     <br/>
+              
+              
+              
+              </form>
+              <ResultButton onClick={this.createSite}> Create Site </ResultButton>
+            </div>
+        );
+    }
+}
+
+//displays a single site
 class SiteScreen0 extends Component {
     constructor(props){
         super(props);
@@ -103,7 +234,7 @@ class SiteScreen0 extends Component {
         this.putSite = this.putSite.bind(this);
     }
     
-    componentDidUpdate(){
+    componentDidMount(){
         const site_id = this.props.match.params.site_id;
         const url = APIURL.concat('site/', site_id);
             
@@ -120,9 +251,9 @@ class SiteScreen0 extends Component {
     }
     
     render(){
-	var site = this.state.site;
+        var site = this.state.site;
         
-	return (		
+        return (		
             <div>	     
 	      <SitePanel siteInfo = {site}>
 		<SiteTitle siteInfo = {site}>
@@ -139,6 +270,6 @@ class SiteScreen0 extends Component {
     }   
 }
 
-
+const SiteCreation = withRouter(SiteCreation0);
 const SiteScreen = withRouter(SiteScreen0);
-export {SiteBox, SiteScreen, SiteBody, SitePanel, SiteTitle};
+export {SiteBox, SiteScreen, SiteBody, SitePanel, SiteTitle, SiteCreation};

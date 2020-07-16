@@ -273,9 +273,9 @@ class SitesResource(Resource):
         
 
         
-@api.route('/site/<int:user_id>/<int:site_id>')
+@api.route('/site/<int:site_id>')
 class SiteResource(Resource):
-    def get(self, user_id, site_id):
+    def get(self, site_id):
         '''get a site's info'''
         #u = g.db.query(User).get(user_id)
         #n = u.name
@@ -337,7 +337,7 @@ class DiscoverResource(Resource):
         filterArgs = api.payload
         
         #delete empty genres for may contains
-        [filterArgs.pop(key) for key in list(filterArgs) if filterArgs[key]==""]
+        [filterArgs.pop(key) for key in list(filterArgs) if filterArgs[key]=="" or filterArgs[key]=={}]
         
         
         #if no filter submitted then use get
@@ -359,7 +359,7 @@ class DiscoverResource(Resource):
         '''see discover (unfiltered) results'''
         results = {}
         
-        for row in g.db.execute('select * from sites limit 10;'):
+        for row in g.db.execute('select * from sites limit 20;'):
             temp = dict(row)
             temp.pop('_sa_instance_state', None)
             results[temp['site_id']] = temp

@@ -5,15 +5,9 @@ import { Redirect } from 'react-router-dom';
 import { withRouter } from "react-router";
 
 import { Container, /* Col,*/ Row } from 'react-bootstrap';
-//import axios from 'axios';
-//const APIURL = 'http://localhost:5000/';
 
 
 import axios from 'axios';
-
-// import { SiteBody, SiteTitle, SitePanel, SiteBox } from '../Site.js';
-import { SiteBox } from '../Site.js';
-
 
 const APIURL = 'http://localhost:5000/';
 
@@ -65,59 +59,7 @@ const SliderPage = () => {
     );
 }
 
-class ResultSites extends Component {
-    constructor(props){
-        super(props);
-        this.visitSite = this.visitSite.bind(this);
-        this.state = {redirect: false, site_id:''};
-    }
-    /*example of ressults---------
-      { data: {
-      5 : {title:'example title', body: 'example body', ... },
-      7 : {title:'title example', body: 'body example', ... },
-      }
-      }
-    */
-    visitSite(){
-        return (
-            this.state.redirect ? <Redirect to={'/site/'.concat(this.state.site_id)} /> : ''
-        );
-        
-        //console.log(id);
-    }
-    
-    render(){
-	var results = this.props.results;
-	
-	const sites = [];
-	if (Object.keys(results).length > 0){
-	    for (var key of Object.keys(results['data'])){
-            //sites's id
-            const siteId = key;
-            //all a site info
-            var siteInfo = results['data'][siteId];
-            sites.push(
-                <div key={siteId}>
-                  
-                  <h2> {siteInfo['title']} </h2>
-                  
-                  
-                  
-                  <p> {siteInfo['body']} </p>
-                  
-                  <ResultButton onClick={()=> this.setState({redirect:true, site_id:siteId}) }>Visit</ResultButton>
-                </div>
-            );
-	    }
-	}
-	return(
-	    <div>
-          {this.visitSite()}
-	      {sites}
-	    </div>
-	);
-    }
-}
+
 
 class NavBar extends Component{
     constructor(){
@@ -176,133 +118,5 @@ class NavBar extends Component{
 }
 
 
-class SiteCreation0 extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            sites:{}, 
-            background_color:'Gray',
-            name:'',
-            title:'', 
-            title_font:'Times New Roman', 
-            title_font_size:'', 
-            body:'', 
-            body_font:'Times New Roman', 
-            body_font_size:'',
-            genre_music:false
-        };
-        this.createSite = this.createSite.bind(this);
-        this.change = this.change.bind(this);
-        this.changeCheckbox = this.changeCheckbox.bind(this);
-    }
-    
-    componentDidMount(){
-        const user_id = this.props.match.params.user_id;
-        axios.get(APIURL + 'sites/'.concat(user_id)).then( response => {
-            this.setState({'sites' : response});
-        });
-        
-        axios.get(APIURL + 'user/'.concat(user_id)).then( response => {
-            this.setState({'name' : response['data'].name});
-        });
-    }
-    createSite(){
-        const user_id = this.props.match.params.user_id;
-        axios.post(APIURL+"sites/"+user_id, {
-            background_color:this.state.background_color,
-            name:this.state.name,
-            title:this.state.title,
-            title_font:this.state.title_font,
-            title_font_size:this.state.title_font_size,
-            body:this.state.body,
-            body_font:this.state.body_font,
-            body_font_size:this.state.body_font_size,
-            genre_music:this.state.genre_music
-        }, {
-            headers: {
-                'Authorization': `Bearer ${this.props.jwt}` 
-            }
-        });
-    }
-    
-    change(event){
-        this.setState({ [event.target.name] : event.target.value });
-    }
-    
-    changeCheckbox(event){
-        //event.target.value = event.target.checked;
-        //this.change(event);
-        this.setState({ [event.target.name] : event.target.checked });
 
-    }
-    
-    render(){
-        return(
-            <div>
-              <p>These are your created sites:</p>
-              <SiteBox user_id={this.props.match.params.user_id} results={this.state.sites} />
-              <form>
-              Title:
-              <select name='title_font' value={this.state.title_font} onChange={this.change}>
-                <option value="American Typewriter">American Typewriter</option>
-                <option value="Impact">Impact</option>
-                <option value="Fantasy">Fantasy</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Comic Sans MS">Comic Sans MS</option>
-              </select>
-              <input type="text" name="title" value={this.state.title}
-                            onChange={this.change}/>
-              <br />
-                Title Font Size:<input type="text" name="title_font_size"
-                                       value={this.state.title_font_size} onChange={this.change}/>
-              <br />Body:
-              <select name='body_font' value={this.state.body_font} onChange={this.change}>            
-                <option value="American Typewriter">American Typewriter</option>
-                <option value="Impact">Impact</option>
-                <option value="Fantasy">Fantasy</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Comic Sans MS">Comic Sans MS</option>
-              </select>
-              <textarea name="body" value={this.state.body}
-                            onChange={this.change}/>
-              <br />
-                Body Font Size:<input type="text" name="body_font_size"
-                                      value={this.state.body_font_size}
-                                      onChange={this.change}/>
-              <br />
-              Background Color
-                <select name='background_color' value={this.state.background_color}
-                        onChange={this.change}>            
-                  <option value="Maroon">Maroon</option>
-                  <option value="Red">Red</option>
-                  <option value="Orange">Orange</option>
-                  <option value="Yellow">Yellow</option>
-                  <option value="Olive">Olive</option>
-                  <option value="Green">Green</option>
-                  <option value="Purple">Purple</option>
-                  <option value="Fuchsia">Fuchsia</option>
-                  <option value="Lime">Lime</option>
-                  <option value="Teal">Teal</option>
-                  <option value="Gray">Gray</option>
-                </select>
-              <br />
-              <div>
-              Genre: Music<input 
-		       type="checkbox" 
-		       name="genre_music"
-		       onChange={this.changeCheckbox}>
-		       </input>
-		       </div>
-		     <br/>
-              
-              
-              
-              </form>
-              <ResultButton onClick={this.createSite}> Create Site </ResultButton>
-            </div>
-        );
-    }
-}
-
-const SiteCreation = withRouter(SiteCreation0);
-export {BoxPanel, SliderPage, ResultPanel, ResultButton, ResultSites, NavBar, SiteCreation};
+export {BoxPanel, SliderPage, ResultPanel, ResultButton, NavBar};
