@@ -80,7 +80,7 @@ class ResultSites extends Component {
     */
     visitSite(){
         return (
-            this.state.redirect ? <Redirect to={'/site/'.concat(this.props.user_id,'/',this.state.site_id)} /> : ''
+            this.state.redirect ? <Redirect to={'/site/'.concat(this.state.site_id)} /> : ''
         );
         
         //console.log(id);
@@ -146,7 +146,7 @@ class NavBar extends Component{
     }
     
     gotoSite(event){    
-        this.setState({ redirect: "/site/"+this.props.user_id });
+        this.setState({ redirect: "/sites/"+this.props.user_id });
     }
     
     gotoAProfile(event){
@@ -188,15 +188,17 @@ class SiteCreation0 extends Component{
             title_font_size:'', 
             body:'', 
             body_font:'Times New Roman', 
-            body_font_size:''
+            body_font_size:'',
+            genre_music:false
         };
         this.createSite = this.createSite.bind(this);
         this.change = this.change.bind(this);
+        this.changeCheckbox = this.changeCheckbox.bind(this);
     }
     
     componentDidMount(){
         const user_id = this.props.match.params.user_id;
-        axios.get(APIURL + 'site/'.concat(user_id)).then( response => {
+        axios.get(APIURL + 'sites/'.concat(user_id)).then( response => {
             this.setState({'sites' : response});
         });
         
@@ -206,7 +208,7 @@ class SiteCreation0 extends Component{
     }
     createSite(){
         const user_id = this.props.match.params.user_id;
-        axios.post(APIURL+"site/"+user_id, {
+        axios.post(APIURL+"sites/"+user_id, {
             background_color:this.state.background_color,
             name:this.state.name,
             title:this.state.title,
@@ -214,7 +216,8 @@ class SiteCreation0 extends Component{
             title_font_size:this.state.title_font_size,
             body:this.state.body,
             body_font:this.state.body_font,
-            body_font_size:this.state.body_font_size
+            body_font_size:this.state.body_font_size,
+            genre_music:this.state.genre_music
         }, {
             headers: {
                 'Authorization': `Bearer ${this.props.jwt}` 
@@ -224,6 +227,13 @@ class SiteCreation0 extends Component{
     
     change(event){
         this.setState({ [event.target.name] : event.target.value });
+    }
+    
+    changeCheckbox(event){
+        //event.target.value = event.target.checked;
+        //this.change(event);
+        this.setState({ [event.target.name] : event.target.checked });
+
     }
     
     render(){
@@ -275,6 +285,18 @@ class SiteCreation0 extends Component{
                   <option value="Teal">Teal</option>
                   <option value="Gray">Gray</option>
                 </select>
+              <br />
+              <div>
+              Genre: Music<input 
+		       type="checkbox" 
+		       name="genre_music"
+		       onChange={this.changeCheckbox}>
+		       </input>
+		       </div>
+		     <br/>
+              
+              
+              
               </form>
               <ResultButton onClick={this.createSite}> Create Site </ResultButton>
             </div>

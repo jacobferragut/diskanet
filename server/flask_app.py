@@ -207,7 +207,7 @@ class UserResource(Resource):
         g.auth_db.commit()
         return {'msg': f'user {name} deleted'}
 
-@api.route('/site/<int:user_id>')
+@api.route('/sites/<int:user_id>')
 class SitesResource(Resource):
     @JWT.jwt_required 
     def post(self, user_id):

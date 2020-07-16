@@ -60,7 +60,7 @@ class App extends Component {
 		    <Profile />                   
 		  </Route>
           
-                  <Route exact path="/site/:user_id">
+                  <Route exact path="/sites/:user_id">
                     <SiteCreation jwt={this.state.loginToken} />
                   </Route>
                   

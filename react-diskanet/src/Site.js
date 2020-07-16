@@ -32,12 +32,13 @@ class SiteBox extends Component {
         super(props); //user_id and results (multiple sites)
         this.visitSite = this.visitSite.bind(this);
         this.changeSite = this.changeSite.bind(this);
-        this.state = {redirect: false, site_id:'', user_id:''};
+        this.state = {redirect: false, site_id:''};
+        this.render = this.render.bind(this);
     }
     visitSite(){
         return (
             this.state.redirect
-                ? <Redirect to={'/site/'.concat(this.state.user_id,'/',this.state.site_id)} />
+                ? <Redirect to={'/site/'.concat(this.state.site_id)} />
                 : ''
         );        
         //console.log(id);
@@ -79,7 +80,7 @@ class SiteBox extends Component {
         return(
             <div>
               {this.visitSite()}
-              {sites}
+              {this.state.sites}
             </div>
         );
     }
@@ -102,16 +103,15 @@ class SiteScreen0 extends Component {
         this.putSite = this.putSite.bind(this);
     }
     
-    componentDidMount(){
-        const user_id = this.props.match.params.user_id;
+    componentDidUpdate(){
         const site_id = this.props.match.params.site_id;
-        const url = APIURL.concat('site/', user_id, '/', site_id);
+        const url = APIURL.concat('site/', site_id);
             
         axios.get(url).then( response => {		
             const id = Object.keys(response['data'])[0];
             const ret = response['data'][id];
             console.log(ret);
-            this.setState({ 'site': ret, 'user_id': user_id, 'site_id': site_id });
+            this.setState({ 'site': ret, 'site_id': site_id });
         });
     }
     
