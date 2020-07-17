@@ -66,8 +66,9 @@ class SiteBox extends Component {
                         </SiteTitle>
                         
                         <SiteBody siteInfo = {siteInfo}>
-                          <p> {siteInfo['body']} </p>                         
+                          <p> {siteInfo['body']} </p>
                           
+                            
                           <ResultButton id={siteId} key={siteInfo['owner_id']}
                                         onClick={this.changeSite}>Visit</ResultButton>
                         </SiteBody>
@@ -232,7 +233,11 @@ class SiteScreen0 extends Component {
                 body_font_size: '48',
                 title_font_size: '30',
                 body_font: 'Comic Sans MS',
-                title_font: 'Arial'
+                title_font: 'Arial',
+                genre_music: '',
+                genre_art: '',
+                genre_film: '',
+                genre_writing: ''
         } };
         
         this.putSite = this.putSite.bind(this);
@@ -265,8 +270,17 @@ class SiteScreen0 extends Component {
 		</SiteTitle>
 		
 		<SiteBody siteInfo = {site}>
-		  <p> {site['body']} </p>                          
-                  <p> site created by: {site.name} </p>
+		  <p> {site['body']} </p>         
+          
+          <br />
+          Genres:
+          {site['genre_music'].toString() === 'true' ? <p>Music</p>  : ''}
+          {site['genre_art'].toString() === 'true' ? <p> Art </p> : ''}
+          {site['genre_film'].toString() === 'true' ? <p> Film </p> : ''}
+          {site['genre_writing'].toString() === 'true' ? <p> Writing </p> : ''}
+          <br />
+          
+          <p> site created by: {site.name} </p>
 		</SiteBody>
 	      </SitePanel>                    
 	    </div>
