@@ -118,6 +118,7 @@ class SiteCreation0 extends Component{
             this.setState({'name' : response['data'].name});
         });
     }
+    
     createSite(){
         const user_id = this.props.match.params.user_id;
         axios.post(APIURL+"sites/"+user_id, {
@@ -134,6 +135,9 @@ class SiteCreation0 extends Component{
             headers: {
                 'Authorization': `Bearer ${this.props.jwt}` 
             }
+        }).then(response => {
+            this.setState({'sites' : response});
+            console.log(response);
         });
     }
     

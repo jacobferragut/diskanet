@@ -231,7 +231,7 @@ class SitesResource(Resource):
         allowed = ['title_font','title_font_size','body_font','body_font_size',
                    'background_color','genre_music','genre_art','genre_film',
                    'genre_writing']
-        required = ['name','title','body']
+        required = ['title','body']
         reqNum = 0
         for k,v in d.items():
             if k in required:
@@ -255,14 +255,15 @@ class SitesResource(Resource):
         #user id of who owns the site
         site.owner = g.db.query(User).get(user_id)#use JWT authentication to get user creating the site
         site.owner_id = user_id
-        #site.name = site.owner.name
+        site.name = site.owner.name
         
         #commit the changes
         g.db.add(site)
         g.db.commit()
-        
-        
-        return 'site created'#add function later to return dict
+
+        # now return all the sies
+        s = g.db.query(Site).filter(Site.owner_id==user_id).all()
+        return {ss.site_id: ss._to_dict() for ss in s}
         
         
     def get(self, user_id):
