@@ -1,6 +1,10 @@
 import React from 'react';
 import { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+
+
+
 import axios from 'axios';
 import {
   BrowserRouter as Router,
@@ -29,8 +33,19 @@ class App extends Component {
         super();
         this.state = {loginToken: '', user_id:''};
         this.login = this.login.bind(this);
+        
+        
     }
-    
+    componentDidMount(){
+        const cookies = new Cookies();
+        console.log(cookies.get('jwt'));
+        console.log(cookies.get('user_id'));
+        if (cookies.get('jwt') && cookies.get('user_id')){
+            this.setState({ loginToken: cookies.get('jwt'), user_id: cookies.get('user_id') });
+        }
+        
+        
+    }
     login(username, password)  {
 	axios.put(
             APIURL + 'user',
@@ -40,12 +55,17 @@ class App extends Component {
                     this.setState({'loginToken' : response['data']['jwt'],
                                    'user_id':response['data']['id'] });
                 }
-		console.log(response);
+        //store user's id and token into cookies
+        const cookies = new Cookies();
+        cookies.set('user_id', response['data']['id'], { path: '/' });
+        cookies.set('jwt', response['data']['jwt'], { path: '/' });
+		//console.log(response);
 	    });  // todo: add error-checking
     }
     
     render(){
-	//<DiscoverScreen /> route guide
+        
+    //<DiscoverScreen /> route guide
 	return (
 	    <Router>
               <div className="App">

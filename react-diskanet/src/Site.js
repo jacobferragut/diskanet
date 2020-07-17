@@ -294,15 +294,15 @@ class SiteScreen0 extends Component {
 		
 		<SiteBody siteInfo = {site}>
 		  <p> {site['body']} </p>         
-          
+          <div>
           <br />
           Genres:
-          {site['genre_music'].toString() === 'true' ? <p>Music</p>  : ''}
-          {site['genre_art'].toString() === 'true' ? <p> Art </p> : ''}
-          {site['genre_film'].toString() === 'true' ? <p> Film </p> : ''}
-          {site['genre_writing'].toString() === 'true' ? <p> Writing </p> : ''}
+          {site['genre_music'].toString() === 'true' ? <li>Music</li>  : ''}
+          {site['genre_art'].toString() === 'true' ? <li> Art </li> : ''}
+          {site['genre_film'].toString() === 'true' ? <li> Film </li> : ''}
+          {site['genre_writing'].toString() === 'true' ? <li> Writing </li> : ''}
           <br />
-          
+          </div>
           <p> site created by: {site.name} </p>
 		</SiteBody>
 	      </SitePanel>                    
