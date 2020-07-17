@@ -100,7 +100,10 @@ class SiteCreation0 extends Component{
             body:'', 
             body_font:'Times New Roman', 
             body_font_size:'',
-            genre_music:false
+            genre_music:false,
+            genre_art:false,
+            genre_film:false,
+            genre_writing:false
         };
         this.createSite = this.createSite.bind(this);
         this.change = this.change.bind(this);
@@ -130,7 +133,10 @@ class SiteCreation0 extends Component{
             body:this.state.body,
             body_font:this.state.body_font,
             body_font_size:this.state.body_font_size,
-            genre_music:this.state.genre_music
+            genre_music:this.state.genre_music,
+            genre_art:this.state.genre_art,
+            genre_film:this.state.genre_film,
+            genre_writing:this.state.genre_writing
         }, {
             headers: {
                 'Authorization': `Bearer ${this.props.jwt}` 
@@ -202,15 +208,32 @@ class SiteCreation0 extends Component{
                   <option value="Gray">Gray</option>
                 </select>
               <br />
-              <div>
+            <div>
               Genre: Music<input 
 		       type="checkbox" 
 		       name="genre_music"
 		       onChange={this.changeCheckbox}>
 		       </input>
-		       </div>
+		       
+               Art<input 
+		       type="checkbox" 
+		       name="genre_art"
+		       onChange={this.changeCheckbox}>
+		       </input>
+		       
+               Film<input 
+		       type="checkbox" 
+		       name="genre_film"
+		       onChange={this.changeCheckbox}>
+		       </input>
+		       
+               Writing<input 
+		       type="checkbox" 
+		       name="genre_writing"
+		       onChange={this.changeCheckbox}>
+		       </input>
+		    </div>
 		     <br/>
-              
               
               
               </form>
