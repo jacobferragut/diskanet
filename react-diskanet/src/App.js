@@ -7,7 +7,7 @@ import Cookies from 'universal-cookie';
 
 import axios from 'axios';
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Switch,
   Route,
   // eslint-disable-next-line
@@ -67,7 +67,7 @@ class App extends Component {
         
     //<DiscoverScreen /> route guide
 	return (
-	    <Router>
+	    <BrowserRouter>
               <div className="App">
                 <Banner login={ this.login } user_id={ this.state.user_id } />
                 
@@ -85,7 +85,7 @@ class App extends Component {
                   </Route>
                   
 		  <Route exact path="/site/:site_id">
-		    <SiteScreen />
+		    <SiteScreen user_id={ this.state.user_id }  />
 		  </Route>
                   
 		  <Route path="/register">
@@ -101,7 +101,7 @@ class App extends Component {
                   </Route>
 		</Switch>
 	      </div>
-	    </Router>
+	    </BrowserRouter>
 	);
     }
 }

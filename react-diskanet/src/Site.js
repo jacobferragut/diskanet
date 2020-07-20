@@ -2,10 +2,11 @@ import React from 'react';
 import { Component } from 'react';
 import styled from 'styled-components'
 import axios from 'axios';
-import { withRouter } from "react-router";
+import { withRouter, useHistory } from "react-router";
 import { Redirect } from 'react-router-dom';
 
 import { ResultButton } from './Components/components.js';
+import Cookies from 'universal-cookie';
 
 const APIURL = 'http://localhost:5000/';
 
@@ -264,6 +265,8 @@ class SiteScreen0 extends Component {
         } };
         
         this.putSite = this.putSite.bind(this);
+        this.activateDelete = this.activateDelete.bind(this);
+        this.deleteSite = this.deleteSite.bind(this);
     }
     
     componentDidMount(){
@@ -280,6 +283,40 @@ class SiteScreen0 extends Component {
     
     putSite(){
 	
+    }
+    activateDelete(){
+        const site_id = this.props.match.params.site_id;
+        const url = APIURL.concat('site/', site_id);
+        
+        if(this.props.user_id===this.state.site.owner_id){
+            const cookies = new Cookies();
+
+            axios.delete(url, {}, {
+                headers: {
+                    'Authorization': `Bearer ${cookies.get('jwt')}` 
+                }
+            }).then( response => {
+                console.log(response);
+                const history = useHistory(); 
+                history.push("/sites/".concat(this.props.user_id));
+
+                //<Redirect to={'/sites/'.concat(this.props.user_id)} />
+            });
+        }
+    }
+    
+    deleteSite(){
+        const site_id = this.props.match.params.site_id;
+        const url = APIURL.concat('site/', site_id);
+        var r=window.confirm("are you sure you want to delete your site?");        
+        if (r) {
+            var shouldActivate = true;        
+        } else {
+            alert("You are not the owner of this site");
+        }
+        if (shouldActivate){
+            this.activateDelete();
+        }
     }
     
     render(){
@@ -304,6 +341,8 @@ class SiteScreen0 extends Component {
           <br />
           </div>
           <p> site created by: {site.name} </p>
+          <ResultButton onClick={this.deleteSite}> Delete</ResultButton>
+          
 		</SiteBody>
 	      </SitePanel>                    
 	    </div>

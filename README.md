@@ -78,3 +78,4 @@ npm start
 
 For react component shortcuts: https://reactjsexample.com/tag/slider/
 
+npm install universal-cookie
