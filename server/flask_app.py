@@ -136,7 +136,8 @@ class UsersResource(Resource):
                         'name':auth.user_name
                     }
                 ),
-                'id': auth.user_id
+                'id': auth.user_id,
+                'name': auth.user_name
             }
          
         
@@ -320,13 +321,16 @@ class SiteResource(Resource):
         return {'msg': f'site {site.name} has been updated'} 
         
     @JWT.jwt_required
-    def delete(self,user_id, site_id):
+    def delete(self, site_id):
         '''delete a user's site'''
         #jwt auth b4 del
-        if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
-            return {'msg': f'You are not authorized to delete site'}
-        ret = g.db.query(Site).filter(Site.owner_id == user_id, Site.site_id == site_id).first()
+        ret = g.db.query(Site).get(site_id)
         if ret is None: return {'error':'no site found'}
+        
+        
+        if int(JWT.get_jwt_identity()) != int(ret.owner_id):# or JWT.get_jwt_claims()['access'] != 'mod':
+            return {'msg': f'You are not authorized to delete site'}
+        
         g.db.delete(ret)
         g.db.commit()
         return {'msg':f'site:{ret.name} deleted'}

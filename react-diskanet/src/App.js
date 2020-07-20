@@ -38,10 +38,10 @@ class App extends Component {
     }
     componentDidMount(){
         const cookies = new Cookies();
-        console.log(cookies.get('jwt'));
-        console.log(cookies.get('user_id'));
-        if (cookies.get('jwt') && cookies.get('user_id')){
-            this.setState({ loginToken: cookies.get('jwt'), user_id: cookies.get('user_id') });
+        //console.log(cookies.get('jwt'));
+        //console.log(cookies.get('user_id'));
+        if (cookies.get('jwt') && cookies.get('user_id') && cookies.get('name')){
+            this.setState({ loginToken: cookies.get('jwt'), user_id: cookies.get('user_id'), name: cookies.get('name')});
         }
         
         
@@ -54,11 +54,14 @@ class App extends Component {
                 if (response['data']['jwt'].length > 0){
                     this.setState({'loginToken' : response['data']['jwt'],
                                    'user_id':response['data']['id'] });
+                    const cookies = new Cookies();
+                    cookies.set('user_id', response['data']['id'], { path: '/' });
+                    cookies.set('jwt', response['data']['jwt'], { path: '/' });
+                    cookies.set('name', username, { path: '/' });
+                
                 }
         //store user's id and token into cookies
-        const cookies = new Cookies();
-        cookies.set('user_id', response['data']['id'], { path: '/' });
-        cookies.set('jwt', response['data']['jwt'], { path: '/' });
+        
 		//console.log(response);
 	    });  // todo: add error-checking
     }
@@ -85,7 +88,7 @@ class App extends Component {
                   </Route>
                   
 		  <Route exact path="/site/:site_id">
-		    <SiteScreen user_id={ this.state.user_id }  />
+		    <SiteScreen user_id={ this.state.user_id } jwt={this.state.loginToken}  />
 		  </Route>
                   
 		  <Route path="/register">
@@ -148,6 +151,7 @@ class Banner extends Component {
     render() {
         // todo: make a conditional render to just show "logged in" when logged in
         // todo: add a register button
+        const cookies = new Cookies();
         return (          
             <div className="App-banner">
               <div className='App-title'>
@@ -176,7 +180,7 @@ class Banner extends Component {
                       
                       : 
                       
-                      <p>Logged in as: {this.state.name}</p>
+                      <p>Logged in as: {cookies.get('name')}</p>
                     }
                   </BoxPanel>
                   

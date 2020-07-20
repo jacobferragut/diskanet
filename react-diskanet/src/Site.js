@@ -6,7 +6,6 @@ import { withRouter, useHistory } from "react-router";
 import { Redirect } from 'react-router-dom';
 
 import { ResultButton } from './Components/components.js';
-import Cookies from 'universal-cookie';
 
 const APIURL = 'http://localhost:5000/';
 
@@ -261,7 +260,8 @@ class SiteScreen0 extends Component {
                 genre_music: '',
                 genre_art: '',
                 genre_film: '',
-                genre_writing: ''
+                genre_writing: '',
+                owner_id: ''
         } };
         
         this.putSite = this.putSite.bind(this);
@@ -288,19 +288,17 @@ class SiteScreen0 extends Component {
         const site_id = this.props.match.params.site_id;
         const url = APIURL.concat('site/', site_id);
         
-        if(this.props.user_id===this.state.site.owner_id){
-            const cookies = new Cookies();
-
-            axios.delete(url, {}, {
+        if(this.props.user_id.toString() === this.state.site.owner_id.toString()){
+            console.log(this.props.jwt);
+            axios.delete(url, {
                 headers: {
-                    'Authorization': `Bearer ${cookies.get('jwt')}` 
+                    'Authorization': `Bearer ${this.props.jwt}` 
                 }
             }).then( response => {
-                console.log(response);
-                const history = useHistory(); 
-                history.push("/sites/".concat(this.props.user_id));
-
-                //<Redirect to={'/sites/'.concat(this.props.user_id)} />
+                console.log("Site was deleted!");
+                //const history = useHistory(); 
+                //history.push("/sites/".concat(this.props.user_id));
+                
             });
         }
     }
@@ -310,12 +308,9 @@ class SiteScreen0 extends Component {
         const url = APIURL.concat('site/', site_id);
         var r=window.confirm("are you sure you want to delete your site?");        
         if (r) {
-            var shouldActivate = true;        
+            this.activateDelete();        
         } else {
             alert("You are not the owner of this site");
-        }
-        if (shouldActivate){
-            this.activateDelete();
         }
     }
     
