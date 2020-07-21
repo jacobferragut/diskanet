@@ -250,9 +250,9 @@ class SiteScreen0 extends Component {
         super(props);
         
         this.state = { site: {
-            title: 'example title',
-                body: 'cool site: The quick brown fox jumped over the lazy dog',
-                background_color: 'tan',
+            title: '',
+                body: '',
+                background_color: 'white',
                 body_font_size: '48',
                 title_font_size: '30',
                 body_font: 'Comic Sans MS',
@@ -262,7 +262,7 @@ class SiteScreen0 extends Component {
                 genre_film: '',
                 genre_writing: '',
                 owner_id: ''
-        } };
+        }, site_id:'', showDelete:false, redirect:false };
         
         this.putSite = this.putSite.bind(this);
         this.activateDelete = this.activateDelete.bind(this);
@@ -272,13 +272,22 @@ class SiteScreen0 extends Component {
     componentDidMount(){
         const site_id = this.props.match.params.site_id;
         const url = APIURL.concat('site/', site_id);
-            
+        
+        //get site
         axios.get(url).then( response => {		
             const id = Object.keys(response['data'])[0];
             const ret = response['data'][id];
-            console.log(ret);
+            //console.log(ret);
             this.setState({ 'site': ret, 'site_id': site_id });
+            
+            //render delete button
+            if (ret.owner_id.toString() === this.props.user_id.toString()){
+                this.setState({ 'showDelete': true });
+            }
+            
         });
+        
+        
     }
     
     putSite(){
@@ -296,9 +305,7 @@ class SiteScreen0 extends Component {
                 }
             }).then( response => {
                 console.log("Site was deleted!");
-                //const history = useHistory(); 
-                //history.push("/sites/".concat(this.props.user_id));
-                
+                this.setState({redirect:true});
             });
         }
     }
@@ -317,7 +324,8 @@ class SiteScreen0 extends Component {
     render(){
         var site = this.state.site;
         
-        return (		
+        return (
+            
             <div>	     
 	      <SitePanel siteInfo = {site}>
 		<SiteTitle siteInfo = {site}>
@@ -336,8 +344,9 @@ class SiteScreen0 extends Component {
           <br />
           </div>
           <p> site created by: {site.name} </p>
-          <ResultButton onClick={this.deleteSite}> Delete</ResultButton>
           
+          {this.state.showDelete ? <ResultButton onClick={this.deleteSite}> Delete</ResultButton> : '' }
+          {this.state.redirect ? <Redirect to={"/sites/"+this.state.site.owner_id} /> : ''}
 		</SiteBody>
 	      </SitePanel>                    
 	    </div>

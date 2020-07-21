@@ -7,9 +7,10 @@ import Cookies from 'universal-cookie';
 
 import axios from 'axios';
 import {
-  BrowserRouter,
+  HashRouter,
   Switch,
   Route,
+  NavLink,
   // eslint-disable-next-line
   Link, useRouteMatch, useParams
 } from "react-router-dom";
@@ -31,7 +32,7 @@ const APIURL = 'http://localhost:5000/';
 class App extends Component {
     constructor() {
         super();
-        this.state = {loginToken: '', user_id:''};
+        this.state = {loginToken: '', user_id:'', loggedIn:false};
         this.login = this.login.bind(this);
         
         
@@ -41,7 +42,7 @@ class App extends Component {
         //console.log(cookies.get('jwt'));
         //console.log(cookies.get('user_id'));
         if (cookies.get('jwt') && cookies.get('user_id') && cookies.get('name')){
-            this.setState({ loginToken: cookies.get('jwt'), user_id: cookies.get('user_id'), name: cookies.get('name')});
+            this.setState({ loginToken: cookies.get('jwt'), user_id: cookies.get('user_id'), name: cookies.get('name'), loggedIn:true });
         }
         
         
@@ -55,9 +56,9 @@ class App extends Component {
                     this.setState({'loginToken' : response['data']['jwt'],
                                    'user_id':response['data']['id'] });
                     const cookies = new Cookies();
-                    cookies.set('user_id', response['data']['id'], { path: '/' });
-                    cookies.set('jwt', response['data']['jwt'], { path: '/' });
-                    cookies.set('name', username, { path: '/' });
+                    cookies.set('user_id', response['data']['id'], { path: '/', expires: new Date(Date.now()+3600000) });
+                    cookies.set('jwt', response['data']['jwt'], { path: '/', expires: new Date(Date.now()+3600000) });
+                    cookies.set('name', username, { path: '/', expires: new Date(Date.now()+3600000) });
                 
                 }
         //store user's id and token into cookies
@@ -70,7 +71,7 @@ class App extends Component {
         
     //<DiscoverScreen /> route guide
 	return (
-	    <BrowserRouter>
+	    <HashRouter>
               <div className="App">
                 <Banner login={ this.login } user_id={ this.state.user_id } />
                 
@@ -104,7 +105,7 @@ class App extends Component {
                   </Route>
 		</Switch>
 	      </div>
-	    </BrowserRouter>
+	    </HashRouter>
 	);
     }
 }
@@ -184,7 +185,9 @@ class Banner extends Component {
                     }
                   </BoxPanel>
                   
+                  <NavLink to="/sites/19">Diyrd19</NavLink>
                   <NavBar user_id = {this.props.user_id} />
+                  
                 </Container>
               </div>
             </div>

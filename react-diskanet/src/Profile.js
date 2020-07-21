@@ -16,10 +16,10 @@ const APIURL = 'http://localhost:5000/';
 class UserInformation extends Component {
     constructor(props){
         super(props);
-	//this.props.name.bind(this);
-        this.fileSelectedHandler = this.fileSelectedHandler.bind(this);
-        this.fileUploadHandler = this.fileUploadHandler.bind(this);
-	this.state = {userInfo:{}, selectedFile: null};
+	
+        this.state = {userInfo:{}, selectedFile: null, imageURL:''};
+    
+        this.handleUploadImage = this.handleUploadImage.bind(this);
     }	
     
     componentDidMount(){
@@ -31,25 +31,21 @@ class UserInformation extends Component {
 	    console.log(response);
 	});
     }
-    
-    fileSelectedHandler(event) {
-        this.setState({selectedFile: event.target.files[0]});
-        console.log(this.state.selectedFile);
-    }
-    
-    fileUploadHandler() {
-        const formData = new FormData();
-	formData.append( 
-	    "photo",
-	    this.state.selectedFile,
-	    this.state.selectedFile.name
-	);
-        console.log(this.state.selectedFile);
+    handleUploadImage(ev) {
+        ev.preventDefault();
+
+        const data = new FormData();
+        data.append('file', this.uploadInput.files[0]);
+        //data.append('filename', this.fileName.value);
         
-        axios.post(APIURL + 'photo', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' } })
-            .then(()=>console.log('Uploaded ' + this.state.selectedFile.name));
+        axios
+        .post(APIURL+'photo', data)
+        .then(res => console.log(res))
+        .catch(err => console.warn(err));
     }
+    
+    
+    
     
     render(){		
         //getting every key of user's info
@@ -69,9 +65,21 @@ class UserInformation extends Component {
                 {userStuff}
               </div>
               <div>
-                <input type="file" onChange={this.fileSelectedHandler}/>
-                <button onClick={this.fileUploadHandler}>Upload</button>
+              <img src={this.state.imageURL} alt="img" />
+              
+              <form onSubmit={this.handleUploadImage}>
+                <div>
+                  <input ref={(ref) => { this.uploadInput = ref; }} type="file" />
+                </div>
+                
+                <div>
+                  <button>Upload</button>
+                </div>
+                
+              </form>
+                      
               </div>
+              
             </>
         );
     }

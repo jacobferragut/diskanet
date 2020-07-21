@@ -13,6 +13,7 @@ from sqlalchemy.sql.expression import delete
 from sqlalchemy import func
 from sqlalchemy import Column, types
 from sqlalchemy.ext.declarative import declarative_base
+from werkzeug.utils import secure_filename
 
 from .diskanet_orm import User
 from .diskanet_orm import Site
@@ -371,37 +372,17 @@ class DiscoverResource(Resource):
         
         return results
 
+# Create a directory in a known location to save files to.
+uploads_dir = os.path.join(app.instance_path, 'uploads')
 
-def file_extension(filename):
-    return filename.rsplit('.', 1)[1].lower()
+@app.route('/photo', methods=['POST'])
+def photo():
+    file = request.files['file']
+    file.save(os.path.join(uploads_dir, secure_filename('test.png')))
+    return "done"
 
 
-@api.route('/photo')
-class PhotoResource(Resource):
-    allowed_ext = {'png', 'jpg', 'jpeg', 'gif'}
 
-    def post(self):
-        print('file:', request.files)
-
-        print(request.files.__dict__)
-
-        if ('file' not in request.files):
-            return { 'err': 'No file in request.files' }
-        if not request.files['file'].filename:
-            return { 'err': 'No filename in request.files[\'file\']' }
-        
-        file = request.files['file']
-        ext  = file_extension(file.filename)
-
-        
-        if file and (ext in self.allowed_ext):
-            print('filename of submitted file:', secure_filename(file.filename))
-            file.save('uploaded_file.' + ext)
-            return {'msg': 'file saved'}
-        else:
-            return {'err':'Unallowed file type, ' + ext}
-
-        
 @app.before_request
 def init_db():
     '''start db by creating global db_session'''
