@@ -17,6 +17,7 @@ from werkzeug.utils import secure_filename
 
 from .diskanet_orm import User
 from .diskanet_orm import Site
+from .diskanet_orm import Photo
 from .auth_orm import Auth
 from .util import get_config
 
@@ -343,8 +344,8 @@ class DiscoverResource(Resource):
         filterArgs = api.payload
         
         #delete empty genres for may contains
-        [filterArgs.pop(key) for key in list(filterArgs) if filterArgs[key]=="" or filterArgs[key]=={}]
-        
+        [filterArgs.pop(key)
+         for key in list(filterArgs) if filterArgs[key]=="" or filterArgs[key]=={}]
         
         #if no filter submitted then use get
         if filterArgs is None: return self.get()
@@ -375,12 +376,29 @@ class DiscoverResource(Resource):
 # Create a directory in a known location to save files to.
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 
+# we're using a FLASK route rather than a resource (to avoid request mangling)
 @app.route('/photo', methods=['POST'])
 def photo():
     file = request.files['file']
     file.save(os.path.join(uploads_dir, secure_filename('test.png')))
+    photo = Photo(photo=file.read())
+    g.db.add(photo)
+    g.db.commit()
+    # user = g.db.query(User).get(user_id)   # what's the user id? put in payload?
+    # user.photo_id = photo.photo_id         # User table needs photo_id column
+    # g.db.add(user)
+    # g.db.commit()
     return "done"
 
+
+@app.route('/photo/<int:photo_id>', methods=['GET'])
+def photo(photo_id):
+    the_photo = g.db.query(Photo).get(photo_id).photo
+    response = make_response(the_photo)
+    response.headers.set('Content-Type', 'image/jpeg')
+    #response.headers.set(
+    #    'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
+    return response
 
 
 @app.before_request
