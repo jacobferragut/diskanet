@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 import hashlib
 
-from flask import Flask, g, request
+from flask import Flask, g, request, make_response
 from flask_restx import Resource, Api
 from flask_cors import CORS
 import flask_jwt_extended as JWT
@@ -380,10 +380,15 @@ uploads_dir = os.path.join(app.instance_path, 'uploads')
 @app.route('/photo', methods=['POST'])
 def photo():
     file = request.files['file']
-    file.save(os.path.join(uploads_dir, secure_filename('test.png')))
+    #doesnt work
+    user_id = request.files['user_id']
+
     photo = Photo(photo=file.read())
+    
+    #print(photo.photo)
     g.db.add(photo)
     g.db.commit()
+    print(user_id)
     # user = g.db.query(User).get(user_id)   # what's the user id? put in payload?
     # user.photo_id = photo.photo_id         # User table needs photo_id column
     # g.db.add(user)
@@ -392,12 +397,12 @@ def photo():
 
 
 @app.route('/photo/<int:photo_id>', methods=['GET'])
-def photo(photo_id):
+def photoget(photo_id):
     the_photo = g.db.query(Photo).get(photo_id).photo
     response = make_response(the_photo)
     response.headers.set('Content-Type', 'image/jpeg')
     #response.headers.set(
-    #    'Content-Disposition', 'attachment', filename='%s.jpg' % pid)
+    #    'Content-Disposition', 'attachment', filename='name.jpg')
     return response
 
 

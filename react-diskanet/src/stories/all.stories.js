@@ -1,9 +1,14 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import { Redirect, NavLink } from 'react-router-dom';
+import { withRouter } from "react-router";
+
+import { Container, Col, Row, Grid } from 'react-bootstrap';
+
 
 import { Banner, RegisterScreen } from '../App.js';
-import { BoxPanel } from '../Components/components.js';
+import { BoxPanel, NavBar } from '../Components/components.js';
 import { DiscoverScreen, FilterButton, FilterPanel } from '../Discover.js';
 import { SiteScreen, SiteBox } from '../Site.js';
 import { UserInformation } from '../Profile.js';
@@ -46,4 +51,17 @@ storiesOf('Sites', module)
 storiesOf('MVP', module)
     // .add('Banner', () => <Banner/>)
     .add('Filter', () => <DiscoverScreen something={action('register')}></DiscoverScreen>)
-    .add('Profile', () => <UserInformation />);
+    .add('Profile', () => <UserInformation />)
+    .add('NavBar', () => 
+    
+    <Container>
+        <Row>
+            <Col>First</Col>
+            <Col>Second</Col>
+            <Col>Third</Col>
+            <Col>Fourth</Col>
+        </Row>
+    </Container>
+    );
+
+

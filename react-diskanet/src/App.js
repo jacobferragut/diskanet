@@ -32,7 +32,7 @@ const APIURL = 'http://localhost:5000/';
 class App extends Component {
     constructor() {
         super();
-        this.state = {loginToken: '', user_id:'', loggedIn:false};
+        this.state = {loginToken: '', user_id:''};
         this.login = this.login.bind(this);
         
         
@@ -42,7 +42,7 @@ class App extends Component {
         //console.log(cookies.get('jwt'));
         //console.log(cookies.get('user_id'));
         if (cookies.get('jwt') && cookies.get('user_id') && cookies.get('name')){
-            this.setState({ loginToken: cookies.get('jwt'), user_id: cookies.get('user_id'), name: cookies.get('name'), loggedIn:true });
+            this.setState({ loginToken: cookies.get('jwt'), user_id: cookies.get('user_id'), name: cookies.get('name') });
         }
         
         
@@ -65,6 +65,7 @@ class App extends Component {
         
 		//console.log(response);
 	    });  // todo: add error-checking
+        
     }
     
     render(){
@@ -121,8 +122,11 @@ class Banner extends Component {
         this.state = { name:'', password:'', user_id:'', redirect: false };
     }
     
-    componentDidMount(){
-        //this.setState(user_id:this.props.user_id);
+    componentDidUpdate(){
+        //makes user_id the same as app (so if logged in on app, logged in on banner)
+        if (this.state.user_id !== this.props.user_id)
+            this.setState({user_id:this.props.user_id});
+        
     }
 
     gotoRegister(event) {
@@ -146,6 +150,8 @@ class Banner extends Component {
     callLogin(event) {
         if (this.state.name !== 0 && this.state.password !== 0){
             this.props.login(this.state.name, this.state.password);
+            //check if logged in
+            
         }
     }
 
@@ -162,7 +168,7 @@ class Banner extends Component {
                   </BoxPanel>
                                     
                   <BoxPanel>
-                    { this.props.user_id === '' ? 
+                    { this.state.user_id==='' ? 
                       <div>
                         {this.renderRedirect()}
                         <form>
@@ -181,11 +187,10 @@ class Banner extends Component {
                       
                       : 
                       
-                      <p>Logged in as: {cookies.get('name')}</p>
+                      <p>Logged in as: {this.state.name}</p>
                     }
                   </BoxPanel>
                   
-                  <NavLink to="/sites/19">Diyrd19</NavLink>
                   <NavBar user_id = {this.props.user_id} />
                   
                 </Container>

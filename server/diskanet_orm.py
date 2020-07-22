@@ -11,7 +11,10 @@ class User(base_app):
     user_id = Column(types.Integer, primary_key=True)
     #user name
     name = Column(types.String(length=25), nullable=False)
-     
+    
+    #photo id of user's profile
+    photo_id = Column(types.Integer, ForeignKey('photos.photo_id'), nullable=False)
+
     # password = Column(types.Text, nullable=False)
     # pass_salt = Column(types.String(length=50), nullable=False)
     creation_date = Column(types.DateTime(timezone=True), default=func.now(), nullable=False)

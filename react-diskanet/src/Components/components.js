@@ -1,11 +1,11 @@
 import React from 'react';
 import { Component } from 'react';
 import styled from 'styled-components';
-import { Redirect } from 'react-router-dom';
+import { Redirect, NavLink } from 'react-router-dom';
 import { withRouter } from "react-router";
 
-import { Container, /* Col,*/ Row } from 'react-bootstrap';
-
+import { Container, Col, Row } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import axios from 'axios';
 
@@ -106,10 +106,18 @@ class NavBar extends Component{
               {this.renderRedirect()}
               <Container>
                 <Row>
-                  <RedirectButton onClick={this.gotoHome}>Home</RedirectButton>
-                  <RedirectButton onClick={this.gotoSite}>Site</RedirectButton>
-                  <RedirectButton onClick={this.gotoDiscover}>Discover</RedirectButton>
-                  <RedirectButton onClick={this.gotoAProfile}>Profile</RedirectButton>
+                  <Col>
+                    <NavLink to="/">Home</NavLink>
+                  </Col>
+                  <Col>
+                    <NavLink to={"/sites/"+this.props.user_id}>My Sites</NavLink>
+                  </Col>
+                  <Col>
+                    <NavLink to="/discover">Discover</NavLink>
+                  </Col>
+                  <Col>
+                    <NavLink to={"/user/"+this.props.user_id}>My Profile</NavLink>
+                  </Col>
                 </Row>
               </Container>
             </div>
