@@ -5,16 +5,17 @@ from sqlalchemy import func
 from sqlalchemy import Column, types
 from sqlalchemy.ext.declarative import declarative_base
 
-from 'C:/Users/nferr/Desktop/diskanet/server/diskanet_orm.py' import User, Site
-from 'C:/Users/nferr/Desktop/diskanet/server/util.py' import get_config
+# cd ..
 
-triples = [ line.strip().split() for line in open('mappingbased-objects_lang=en.ttl') ]   # 3m
+from server.diskanet_orm import User, Site
+from server.util import get_config
 
+# triples look like object-relation-object-'.' (actually 4-tuple)
+triples = [ line.strip().split() for line in open('data/mappingbased-objects_lang=en.ttl') ]   # 3m
 
+middles = { t[1] for t in triples if len(t) == 4 }   # these are the distinct relations
 
-middles = { t[1] for t in triples if len(t) == 4 }
-
-num_quads = len(t for t in triples if len(t) == 5)  # ignore these (erb & ontario!)
+num_quads = len([t for t in triples if len(t) == 5])  # ignore these rare exceptions (erb & ontario!)
 
 print(len(middles), 'possible types of relationships')
 
@@ -42,27 +43,29 @@ good_triples = [ t for t in triples if t[1] in good_relations ]
 albums = list({ t[2] for t in good_triples if t[1] == good_relations[0] })
 bands = list({ t[0] for t in good_triples if t[1] == good_relations[5] })
 artists = list({ t[2] for t in good_triples if t[1] in (good_relations[5], good_relations[14]) })
-               
-sb = set(bands)
-band_rel = [ t for t in good_triples if t[0] in sb ]
 
-sa = set(artists)
-artist_rel = list({ t[1] for t in good_triples if t[0] in sa })
+if False:  # compute relationships that bands and artists are involved in
+    sb = set(bands)
+    band_rel = [ t for t in good_triples if t[0] in sb ]
 
-[ t for t in good_triples if t[1] == '<http://dbpedia.org/ontology/format>' ]
+    sa = set(artists)
+    artist_rel = list({ t[1] for t in good_triples if t[0] in sa })
 
+    # some weird ontology thing: format is used confusingly
+    [ t for t in good_triples if t[1] == '<http://dbpedia.org/ontology/format>' ]
 
-with open('artists.txt', 'w') as fout:
-    fout.write('\n'.join(artists) + '\n')
+if False:  # save the data
+    with open('artists.txt', 'w') as fout:
+        fout.write('\n'.join(artists) + '\n')
 
-with open('albums.txt', 'w') as fout:
-    fout.write('\n'.join(albums) + '\n')
+    with open('albums.txt', 'w') as fout:
+        fout.write('\n'.join(albums) + '\n')
 
-with open('bands.txt', 'w') as fout:
-    fout.write('\n'.join(bands) + '\n')
+    with open('bands.txt', 'w') as fout:
+        fout.write('\n'.join(bands) + '\n')
 
     
-if False:    # start here
+if False:    # load the data  (start here)
     with open('artists.txt') as fin:
         artists = [l.strip() for l in fin]
 
@@ -73,50 +76,70 @@ if False:    # start here
         bands =  [l.strip() for l in fin]
 
 
+        
 import time
 import urllib
 from bs4 import BeautifulSoup
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+# get a database connection
+# store it in the db?
+db_conn_str = get_config('dev_lite', open('server/config.yaml'))['DB']
+# db_conn_str = 'sqlite:///temp.db'
+engine = create_engine(db_conn_str)
+db = sessionmaker(engine)()
+
+for artist in artists[:1000]:
+    if artist.startswith('<http://dbpedia.org/resource/'):
+        url = 'http://en.wikipedia.org/wiki/' + artist[29:-1]
+
+        url = 'http://' + urllib.parse.quote(url[7:])   # handle weird characters
+
+        try:
+            with urllib.request.urlopen(url) as response:
+                html = response.read()
+        except urllib.error.HTTPError as e:
+            print('Error', e, 'getting', url, '...skipping')
+            continue
+        finally:
+            print('Got', url)
     
-artist = artists[88]
-if artist.startswith('<http://dbpedia.org/resource/'):
-    url = 'http://en.wikipedia.org/wiki/' + artist[29:-1]
+        soup = BeautifulSoup(html, 'html.parser')
 
-    with urllib.request.urlopen(url) as response:
-       html = response.read()
+        for a in soup.findAll('a'):
+            a.replaceWith(a.text)
 
-    soup = BeautifulSoup(html, 'html.parser')
+        for s in soup.findAll('sup'):
+            s.replaceWith('')   #Put it where the A element is
 
-    for a in soup.findAll('a'):
-        a.replaceWith(a.text)
+        # what about the headings?
+        paragraphs = '\n'.join([ p.decode() for p in soup.find_all('p') if len(p.text) > 1 ])
 
-    for s in soup.findAll('sup'):
-        s.replaceWith('')   #Put it where the A element is
-
-    # what about the headings?
-    paragraphs = '\n'.join([ p.decode() for p in soup.find_all('p') if len(p.text) > 1 ])
-
-    # randomly pick a font and color? -- assign owner of -1 or 0 or null (i.e., blank)
+        # randomly pick a font and color? -- assign owner of -1 or 0 or null (i.e., blank)
+        new_site = Site(
+            name='the universe',
+            title=soup.findAll('title')[0].text.rsplit('-', 1)[0].strip(),
+            body=paragraphs,
+            owner=None,
+            owner_id=11,
+            genre_music = True
+            # TODO: figure out if it should be:   genre_art = True (instead, or both, or whatever)
+        )
     
-    # store it in the db?
-    app = Flask(__name__)
-    app.config.update(
-        get_config(app.config['ENV'], app.open_resource('config.yaml'))
-    )
-# #first open db
-    config = get_config(os.environ['FLASK_ENV'], open('../../server/config.yaml'))
-    db = create_engine(config['DB'])
-    g.db = sessionmaker(db)()
-    
-
-# # close db
-    # g.db.close()
-    # _ = g.pop('db')
-
-
+        db.add(new_site)
+        db.commit()
+        
     # throttle the connection maybe
     time.sleep(1)
 
-    # in react use import renderHTML from 'react-render-html'; to render the strings as html
+    # In React use import renderHTML from 'react-render-html'; to render the strings as html
+    
+# close db
+db.close()
+
+
+
 
     
 other = {
