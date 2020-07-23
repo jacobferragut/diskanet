@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import axios from 'axios';
 import { withRouter, useHistory } from "react-router";
 import { Redirect } from 'react-router-dom';
-
+import renderHTML from 'react-render-html';
 import { ResultButton } from './Components/components.js';
 
 const APIURL = 'http://localhost:5000/';
@@ -58,6 +58,9 @@ class SiteBox extends Component {
                 var siteId = key;
                 //all a site info
                 var siteInfo = results['data'][siteId];
+                
+                
+                
                 sites.push(
                     <div key={siteId}>
                       <SitePanel siteInfo = {siteInfo}>
@@ -66,8 +69,9 @@ class SiteBox extends Component {
                         </SiteTitle>
                         
                         <SiteBody siteInfo = {siteInfo}>
-                          <p> {siteInfo['body']} </p>
-                          
+                        
+                            {siteInfo['body'].includes("<p>") ? renderHTML(siteInfo['body']) : <p>{siteInfo['body']}</p> }
+                            
                             
                           <ResultButton id={siteId} key={siteInfo['owner_id']}
                                         onClick={this.changeSite}>Visit</ResultButton>

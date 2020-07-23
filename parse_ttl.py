@@ -5,19 +5,18 @@ from sqlalchemy import func
 from sqlalchemy import Column, types
 from sqlalchemy.ext.declarative import declarative_base
 
-# cd ..
 
 from server.diskanet_orm import User, Site
 from server.util import get_config
 
 # triples look like object-relation-object-'.' (actually 4-tuple)
-triples = [ line.strip().split() for line in open('data/mappingbased-objects_lang=en.ttl') ]   # 3m
+#triples = [ line.strip().split() for line in open('data/mappingbased-objects_lang=en.ttl') ]   # 3m
 
-middles = { t[1] for t in triples if len(t) == 4 }   # these are the distinct relations
+#middles = { t[1] for t in triples if len(t) == 4 }   # these are the distinct relations
 
-num_quads = len([t for t in triples if len(t) == 5])  # ignore these rare exceptions (erb & ontario!)
+#num_quads = len([t for t in triples if len(t) == 5])  # ignore these rare exceptions (erb & ontario!)
 
-print(len(middles), 'possible types of relationships')
+#print(len(middles), 'possible types of relationships')
 
 good_relations = [
     '<http://dbpedia.org/ontology/album>',                  # song <album> album
@@ -38,11 +37,11 @@ good_relations = [
     '<http://dbpedia.org/ontology/instrument>',
 ]
 
-good_triples = [ t for t in triples if t[1] in good_relations ]
+#good_triples = [ t for t in triples if t[1] in good_relations ]
 
-albums = list({ t[2] for t in good_triples if t[1] == good_relations[0] })
-bands = list({ t[0] for t in good_triples if t[1] == good_relations[5] })
-artists = list({ t[2] for t in good_triples if t[1] in (good_relations[5], good_relations[14]) })
+#albums = list({ t[2] for t in good_triples if t[1] == good_relations[0] })
+#bands = list({ t[0] for t in good_triples if t[1] == good_relations[5] })
+#artists = list({ t[2] for t in good_triples if t[1] in (good_relations[5], good_relations[14]) })
 
 if False:  # compute relationships that bands and artists are involved in
     sb = set(bands)
@@ -55,7 +54,7 @@ if False:  # compute relationships that bands and artists are involved in
     [ t for t in good_triples if t[1] == '<http://dbpedia.org/ontology/format>' ]
 
 if False:  # save the data
-    with open('artists.txt', 'w') as fout:
+    with open('data/artists.txt', 'w') as fout:
         fout.write('\n'.join(artists) + '\n')
 
     with open('albums.txt', 'w') as fout:
@@ -65,20 +64,19 @@ if False:  # save the data
         fout.write('\n'.join(bands) + '\n')
 
     
-if False:    # load the data  (start here)
-    with open('artists.txt') as fin:
-        artists = [l.strip() for l in fin]
-
-    with open('albums.txt') as fin:
-        albums =  [l.strip() for l in fin]
-
-    with open('bands.txt') as fin:
-        bands =  [l.strip() for l in fin]
+    # load the data  (start here)
+with open('data/artists.txt','r',encoding='utf-8') as fin:
+    artists = [l.strip() for l in fin]
+#with open('albums.txt') as fin:
+#    albums =  [l.strip() for l in fin]
+#with open('bands.txt') as fin:
+#    bands =  [l.strip() for l in fin]
 
 
         
 import time
-import urllib
+import urllib, urllib.request
+import urllib.error
 from bs4 import BeautifulSoup
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -102,8 +100,8 @@ for artist in artists[:1000]:
         except urllib.error.HTTPError as e:
             print('Error', e, 'getting', url, '...skipping')
             continue
-        finally:
-            print('Got', url)
+        
+        print("SUCCESS")
     
         soup = BeautifulSoup(html, 'html.parser')
 
@@ -116,13 +114,16 @@ for artist in artists[:1000]:
         # what about the headings?
         paragraphs = '\n'.join([ p.decode() for p in soup.find_all('p') if len(p.text) > 1 ])
 
+
+        randuser = db.query(User).get(int(1))
+        
         # randomly pick a font and color? -- assign owner of -1 or 0 or null (i.e., blank)
         new_site = Site(
             name='the universe',
             title=soup.findAll('title')[0].text.rsplit('-', 1)[0].strip(),
-            body=paragraphs,
-            owner=None,
-            owner_id=11,
+            body=paragraphs[:500],
+            owner=randuser,
+            owner_id=randuser.user_id,
             genre_music = True
             # TODO: figure out if it should be:   genre_art = True (instead, or both, or whatever)
         )
@@ -130,8 +131,8 @@ for artist in artists[:1000]:
         db.add(new_site)
         db.commit()
         
-    # throttle the connection maybe
-    time.sleep(1)
+        # throttle the connection maybe
+        time.sleep(.05)
 
     # In React use import renderHTML from 'react-render-html'; to render the strings as html
     

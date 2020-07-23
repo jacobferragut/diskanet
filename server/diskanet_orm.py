@@ -13,7 +13,7 @@ class User(base_app):
     name = Column(types.String(length=25), nullable=False)
     
     #photo id of user's profile
-    photo_id = Column(types.Integer, ForeignKey('photos.photo_id'), nullable=False)
+    #photo_id = Column(types.Integer, ForeignKey('photos.photo_id'), nullable=False)
 
     # password = Column(types.Text, nullable=False)
     # pass_salt = Column(types.String(length=50), nullable=False)
