@@ -2,7 +2,7 @@ import React from 'react';
 import { Component } from 'react';
 import styled from 'styled-components'
 import axios from 'axios';
-import { withRouter, useHistory } from "react-router";
+import { withRouter /*,useHistory*/ } from "react-router";
 import { Redirect } from 'react-router-dom';
 import renderHTML from 'react-render-html';
 import { ResultButton } from './Components/components.js';
@@ -315,8 +315,8 @@ class SiteScreen0 extends Component {
     }
     
     deleteSite(){
-        const site_id = this.props.match.params.site_id;
-        const url = APIURL.concat('site/', site_id);
+        //const site_id = this.props.match.params.site_id;
+        //const url = APIURL.concat('site/', site_id);
         var r=window.confirm("are you sure you want to delete your site?");        
         if (r) {
             this.activateDelete();        
@@ -336,8 +336,9 @@ class SiteScreen0 extends Component {
 		  <h2> {site['title']} </h2>
 		</SiteTitle>
 		
-		<SiteBody siteInfo = {site}>
-		  <p> {site['body']} </p>         
+		<SiteBody siteInfo = {site}>   
+          {site['body'].includes("<p>") ? renderHTML(site['body']) : <p>{site['body']}</p> }
+
           <div>
           <br />
           Genres:

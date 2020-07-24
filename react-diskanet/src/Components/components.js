@@ -2,14 +2,14 @@ import React from 'react';
 import { Component } from 'react';
 import styled from 'styled-components';
 import { Redirect, NavLink } from 'react-router-dom';
-import { withRouter } from "react-router";
+//import { withRouter } from "react-router";
 
 import { Container, Col, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import axios from 'axios';
+//import axios from 'axios';
 
-const APIURL = 'http://localhost:5000/';
+//const APIURL = 'http://localhost:5000/';
 
 const BoxPanel = styled.div`
     font-size: 30px;
@@ -34,7 +34,7 @@ const ResultButton = styled.button`
     border-radius: 10px;
     overflow-wrap: normal;
 `;
-
+/*
 const RedirectButton = styled(ResultButton)`
     background-color: #555555;
     border: none;
@@ -48,7 +48,7 @@ const RedirectButton = styled(ResultButton)`
     cursor: pointer;
     box-shadow: 0 2.5px 5px 0;
     border-radius: 0px;
-`;
+`;*/
 
 const SliderPage = () => {
     return (

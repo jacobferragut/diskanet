@@ -121,7 +121,7 @@ for artist in artists[:1000]:
         new_site = Site(
             name='the universe',
             title=soup.findAll('title')[0].text.rsplit('-', 1)[0].strip(),
-            body=paragraphs[:500],
+            body=paragraphs[:1000],
             owner=randuser,
             owner_id=randuser.user_id,
             genre_music = True
@@ -132,7 +132,7 @@ for artist in artists[:1000]:
         db.commit()
         
         # throttle the connection maybe
-        time.sleep(.05)
+        time.sleep(.01)
 
     # In React use import renderHTML from 'react-render-html'; to render the strings as html
     

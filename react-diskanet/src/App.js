@@ -10,7 +10,6 @@ import {
   HashRouter,
   Switch,
   Route,
-  NavLink,
   // eslint-disable-next-line
   Link, useRouteMatch, useParams
 } from "react-router-dom";
@@ -48,7 +47,8 @@ class App extends Component {
         
     }
     login(username, password)  {
-	axios.put(
+
+    axios.put(
             APIURL + 'user',
             { 'name':username, 'password':password})
             .then( response => {
@@ -59,13 +59,17 @@ class App extends Component {
                     cookies.set('user_id', response['data']['id'], { path: '/', expires: new Date(Date.now()+3600000) });
                     cookies.set('jwt', response['data']['jwt'], { path: '/', expires: new Date(Date.now()+3600000) });
                     cookies.set('name', username, { path: '/', expires: new Date(Date.now()+3600000) });
-                
+                    
+                } else{
+                    return false;
                 }
         //store user's id and token into cookies
         
 		//console.log(response);
 	    });  // todo: add error-checking
         
+        
+        return true;
     }
     
     render(){
@@ -119,13 +123,14 @@ class Banner extends Component {
         this.callLogin = this.callLogin.bind(this);
         this.gotoRegister = this.gotoRegister.bind(this);
         this.renderRedirect = this.renderRedirect.bind(this);
-        this.state = { name:'', password:'', user_id:'', redirect: false };
+        this.state = { name:'', password:'', user_id:'', redirect: false, isLoggedIn: false };
+        
+        this.loggedIn = this.loggedIn.bind(this);
+        this.logout = this.logout.bind(this);
     }
     
-    componentDidUpdate(){
+    componentDidMount(){
         //makes user_id the same as app (so if logged in on app, logged in on banner)
-        if (this.state.user_id !== this.props.user_id)
-            this.setState({user_id:this.props.user_id});
         
     }
 
@@ -149,16 +154,44 @@ class Banner extends Component {
 
     callLogin(event) {
         if (this.state.name !== 0 && this.state.password !== 0){
-            this.props.login(this.state.name, this.state.password);
+            let r = this.props.login(this.state.name, this.state.password);
             //check if logged in
-            
+            //console.log(r);
+            if (r)
+                this.setState({isLoggedIn:true});
         }
     }
-
+    loggedIn(){
+        const cookies = new Cookies();
+        
+        let name = '';
+        if (cookies.get('name')){
+            name = cookies.get('name')
+            //console.log('cookie name'+name)
+            return name
+        }else if (this.state.name && this.state.isLoggedIn){
+            name = this.state.name
+            //console.log('states name'+name)
+            return name
+        }else{
+            return false
+        }
+    }
+    logout(event){
+        const cookies = new Cookies();
+        cookies.remove('name')
+        cookies.remove('jwt')
+        cookies.remove('user_id')
+        this.setState({isLoggedIn: false});
+        
+    }
     render() {
         // todo: make a conditional render to just show "logged in" when logged in
         // todo: add a register button
-        const cookies = new Cookies();
+        //const cookies = new Cookies();
+        
+        
+        
         return (          
             <div className="App-banner">
               <div className='App-title'>
@@ -168,7 +201,7 @@ class Banner extends Component {
                   </BoxPanel>
                                     
                   <BoxPanel>
-                    { this.state.user_id==='' ? 
+                    { !this.loggedIn() ? 
                       <div>
                         {this.renderRedirect()}
                         <form>
@@ -187,7 +220,10 @@ class Banner extends Component {
                       
                       : 
                       
-                      <p>Logged in as: {this.state.name}</p>
+                      <div>
+                      <p>Logged in as: {this.loggedIn()}</p>
+                      <button type='button' onClick={this.logout}>LOGOUT</button>
+                      </div>
                     }
                   </BoxPanel>
                   
