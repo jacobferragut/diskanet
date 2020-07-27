@@ -26,8 +26,8 @@ import {Profile} from './Profile.js';
 import {BoxPanel, NavBar,  /*, ResultSites */ } from './Components/components.js';
 
 //flask url
-const APIURL = 'http://localhost:5000/';
-
+//const APIURL = 'http://localhost:5000/';
+const APIURL='';
 class App extends Component {
     constructor() {
         super();

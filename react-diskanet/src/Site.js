@@ -7,8 +7,8 @@ import { Redirect } from 'react-router-dom';
 import renderHTML from 'react-render-html';
 import { ResultButton } from './Components/components.js';
 
-const APIURL = 'http://localhost:5000/';
-
+//const APIURL = 'http://localhost:5000/';
+const APIURL='';
 const SiteTitle = styled.div`
     font-family: ${props => props.siteInfo.title_font !== "" ? props.siteInfo.title_font : ""};
     font-size: ${props => 

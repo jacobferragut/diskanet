@@ -29,8 +29,8 @@ const FilterPanel = styled.div`
 `;
 
 //genre_music, genre_art, genre_film, genre_writing
-const APIURL = 'http://localhost:5000/';
-
+//const APIURL = 'http://localhost:5000/';
+const APIURL='';
 export default class DiscoverScreen extends Component {
     constructor(props){
         super(props)
