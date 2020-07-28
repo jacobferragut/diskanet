@@ -2,3 +2,7 @@ dev_lite:
     DB: sqlite:///server/diskanet.db
     AUTH_DB: sqlite:///server/authenticate.db
 #    JWT_SECRET_KEY:   1234123487gjheroriuq3498ru
+
+heroku:
+    DB: env:DATABASE_URL
+    AUTH_DB: env:DATABASE_URL
