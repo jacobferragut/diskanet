@@ -28,7 +28,7 @@ app.config.update(
 # CORS(app)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-api = Api(app)
+api = Api(app, prefix="/api")
 
 print('App config:\n ', '\n  '.join([f'{k}: {v}' for k,v in sorted(app.config.items())]))
 
