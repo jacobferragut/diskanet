@@ -4,7 +4,7 @@ worker_processes auto;
 events {
     use epoll;
     accept_mutex on;
-    worker_connections <%= ENV['NGINX_WORKER_CONNECTIONS'] || 1024 %>
+    worker_connections <%= ENV['NGINX_WORKER_CONNECTIONS'] || 1024 %>;
     multi-accept on;
 }
 
