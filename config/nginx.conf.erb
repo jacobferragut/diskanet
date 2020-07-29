@@ -5,7 +5,7 @@ events {
     use epoll;
     accept_mutex on;
     worker_connections <%= ENV['NGINX_WORKER_CONNECTIONS'] || 1024 %>;
-    multi-accept on;
+    multi_accept on;
 }
 
 http {
