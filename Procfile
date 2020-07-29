@@ -1,1 +1,1 @@
-web: bin/start-nginx gunicorn --chdir server -c config/gunicorn.conf.py flask_app:app
+web: bin/start-nginx gunicorn -c config/gunicorn.conf.py server.flask_app:app
