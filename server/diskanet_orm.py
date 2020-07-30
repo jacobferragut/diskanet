@@ -45,7 +45,7 @@ class Site(base_app):
     name = Column(types.String(length=50), nullable=False)
     #site's title
     title = Column(types.String(length=50), nullable=False)
-    body = Column(types.Text(length=500), nullable=False)
+    body = Column(types.Text, nullable=False)
     #owner of site
     owner = relationship("User", back_populates="sites")
     #user id of who owns the site

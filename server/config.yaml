@@ -6,3 +6,7 @@ dev_lite:
 heroku:
     DB: env:DATABASE_URL
     AUTH_DB: env:DATABASE_URL
+
+dev_postgres:
+    DB: postgresql://localhost:5432/diskanet
+    AUTH_DB: postgresql://localhost:5432/diskanet
