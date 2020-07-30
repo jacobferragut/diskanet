@@ -18,6 +18,7 @@ python-dotenv = "*"
 joblib = "*"
 bs4 = "*"
 gunicorn = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.8"
