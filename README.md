@@ -89,6 +89,9 @@ discover.js
 
 npm run build
 git add -f build
-commit
+git commit -am "new build"
 git push heroku master
+heroku open
 heroku logs --tail
+
+
