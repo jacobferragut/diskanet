@@ -87,7 +87,8 @@ register.js
 profile.js
 discover.js
 
+npm run build
+git add -f build
 commit
 git push heroku master
-npm run build
 heroku logs --tail

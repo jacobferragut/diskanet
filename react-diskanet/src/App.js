@@ -48,7 +48,7 @@ class App extends Component {
         
     }
     login(username, password)  {
-
+        console.log("logging in: "+APIURL);
     axios.put(
             APIURL + 'user',
             { 'name':username, 'password':password})
