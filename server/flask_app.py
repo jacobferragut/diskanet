@@ -25,11 +25,11 @@ app = Flask(__name__)
 app.config.update(
     get_config(app.config['ENV'], app.open_resource('config.yaml'))
 )
-CORS(app)
-#CORS(app, resources={r'/*': {'origins': '*'}})
+#CORS(app)
+CORS(app, resources={r'/*': {'origins': '*'}})
 
-#api = Api(app, prefix="/api")
-api = Api(app)
+api = Api(app, prefix="/api")
+#api = Api(app)
 
 print('App config:\n ', '\n  '.join([f'{k}: {v}' for k,v in sorted(app.config.items())]))
 

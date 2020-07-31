@@ -79,3 +79,8 @@ npm start
 For react component shortcuts: https://reactjsexample.com/tag/slider/
 
 npm install universal-cookie
+
+APIURL changes
+flask_app.py
+app.js
+register.js
