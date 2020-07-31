@@ -9,41 +9,37 @@ from sqlalchemy.ext.declarative import declarative_base
 from server.diskanet_orm import User, Site
 from server.util import get_config
 
-# triples look like object-relation-object-'.' (actually 4-tuple)
-#triples = [ line.strip().split() for line in open('data/mappingbased-objects_lang=en.ttl') ]   # 3m
+if False:   # if you have the ttl file, create the artists, bands, and albums files
+    # triples look like object-relation-object-'.' (actually 4-tuple)
+    triples = [ line.strip().split() for line in open('data/mappingbased-objects_lang=en.ttl') ]   # 3m
+    middles = { t[1] for t in triples if len(t) == 4 }   # these are the distinct relations
+    num_quads = len([t for t in triples if len(t) == 5])  # ignore these rare exceptions (erb & ontario!)
+    print(len(middles), 'possible types of relationships')
 
-#middles = { t[1] for t in triples if len(t) == 4 }   # these are the distinct relations
+    good_relations = [
+        '<http://dbpedia.org/ontology/album>',                  # song <album> album
+        '<http://dbpedia.org/ontology/animator>',               # project <animator> animator
+        '<http://dbpedia.org/ontology/artist>',                 # song? <artist> artist
+        '<http://dbpedia.org/ontology/associatedBand>',
+        '<http://dbpedia.org/ontology/associatedMusicalArtist>',
+        '<http://dbpedia.org/ontology/bandMember>',
+        '<http://dbpedia.org/ontology/cinematography>',
+        '<http://dbpedia.org/ontology/composer>',
+        '<http://dbpedia.org/ontology/coverArtist>',
+        '<http://dbpedia.org/ontology/creativeDirector>',
+        '<http://dbpedia.org/ontology/director>',
+        '<http://dbpedia.org/ontology/format>',
+        '<http://dbpedia.org/ontology/formerBandMember>',
+        '<http://dbpedia.org/ontology/genre>',
+        '<http://dbpedia.org/ontology/illustrator>',
+        '<http://dbpedia.org/ontology/instrument>',
+    ]
 
-#num_quads = len([t for t in triples if len(t) == 5])  # ignore these rare exceptions (erb & ontario!)
+    good_triples = [ t for t in triples if t[1] in good_relations ]
+    albums = list({ t[2] for t in good_triples if t[1] == good_relations[0] })
+    bands = list({ t[0] for t in good_triples if t[1] == good_relations[5] })
+    artists = list({ t[2] for t in good_triples if t[1] in (good_relations[5], good_relations[14]) })
 
-#print(len(middles), 'possible types of relationships')
-
-good_relations = [
-    '<http://dbpedia.org/ontology/album>',                  # song <album> album
-    '<http://dbpedia.org/ontology/animator>',               # project <animator> animator
-    '<http://dbpedia.org/ontology/artist>',                 # song? <artist> artist
-    '<http://dbpedia.org/ontology/associatedBand>',
-    '<http://dbpedia.org/ontology/associatedMusicalArtist>',
-    '<http://dbpedia.org/ontology/bandMember>',
-    '<http://dbpedia.org/ontology/cinematography>',
-    '<http://dbpedia.org/ontology/composer>',
-    '<http://dbpedia.org/ontology/coverArtist>',
-    '<http://dbpedia.org/ontology/creativeDirector>',
-    '<http://dbpedia.org/ontology/director>',
-    '<http://dbpedia.org/ontology/format>',
-    '<http://dbpedia.org/ontology/formerBandMember>',
-    '<http://dbpedia.org/ontology/genre>',
-    '<http://dbpedia.org/ontology/illustrator>',
-    '<http://dbpedia.org/ontology/instrument>',
-]
-
-#good_triples = [ t for t in triples if t[1] in good_relations ]
-
-#albums = list({ t[2] for t in good_triples if t[1] == good_relations[0] })
-#bands = list({ t[0] for t in good_triples if t[1] == good_relations[5] })
-#artists = list({ t[2] for t in good_triples if t[1] in (good_relations[5], good_relations[14]) })
-
-if False:  # compute relationships that bands and artists are involved in
     sb = set(bands)
     band_rel = [ t for t in good_triples if t[0] in sb ]
 
@@ -53,7 +49,6 @@ if False:  # compute relationships that bands and artists are involved in
     # some weird ontology thing: format is used confusingly
     [ t for t in good_triples if t[1] == '<http://dbpedia.org/ontology/format>' ]
 
-if False:  # save the data
     with open('data/artists.txt', 'w') as fout:
         fout.write('\n'.join(artists) + '\n')
 
@@ -63,8 +58,8 @@ if False:  # save the data
     with open('bands.txt', 'w') as fout:
         fout.write('\n'.join(bands) + '\n')
 
-    
-    # load the data  (start here)
+
+# Once you have those txt files, you can load them and start web scraping here
 with open('data/artists.txt','r',encoding='utf-8') as fin:
     artists = [l.strip() for l in fin]
 #with open('albums.txt') as fin:

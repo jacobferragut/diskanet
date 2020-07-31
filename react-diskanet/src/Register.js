@@ -1,9 +1,8 @@
 import React from 'react';
 import { Component } from 'react';
 import axios from 'axios';
+import { APIURL } from 'apiurl';
 
-//const APIURL = 'http://localhost:5000/';
-const APIURL = 'api/';
 class RegisterScreen extends Component {
     constructor(props){
         super(props)

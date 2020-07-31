@@ -7,10 +7,6 @@ import { Redirect, NavLink } from 'react-router-dom';
 import { Container, Col, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-//import axios from 'axios';
-
-//const APIURL = 'http://localhost:5000/';
-
 const BoxPanel = styled.div`
     font-size: 30px;
     background-color: #444;
