@@ -10,8 +10,8 @@ import {
 } from "react-router-dom";
 
 
-const APIURL = 'http://localhost:5000/';
-//const APIURL='';
+//const APIURL = 'http://localhost:5000/';
+const APIURL='api/';
 
 //PROFILE COMPONENT
 class UserInformation extends Component {

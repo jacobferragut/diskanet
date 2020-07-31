@@ -84,3 +84,10 @@ APIURL changes
 flask_app.py
 app.js
 register.js
+profile.js
+discover.js
+
+commit
+git push heroku master
+npm run build
+heroku logs --tail
