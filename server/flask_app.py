@@ -21,14 +21,14 @@ from .diskanet_orm import Photo
 from .auth_orm import Auth
 from .util import get_config
 
-app = Flask(__name__)
+app = Flask(__name__, root_path="/api")
 app.config.update(
     get_config(app.config['ENV'], app.open_resource('config.yaml'))
 )
 #CORS(app)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-api = Api(app, prefix="/api")
+api = Api(app)
 #api = Api(app)
 
 print('App config:\n ', '\n  '.join([f'{k}: {v}' for k,v in sorted(app.config.items())]))
