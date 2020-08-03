@@ -3,8 +3,6 @@ import { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 
-
-
 import axios from 'axios';
 import {
   HashRouter,
@@ -25,9 +23,7 @@ import {Profile} from './Profile.js';
 //components imported
 import {BoxPanel, NavBar,  /*, ResultSites */ } from './Components/components.js';
 
-//flask url
-//const APIURL = 'http://localhost:5000/';
-const APIURL='api/';
+import { APIURL } from 'apiurl';
 
 class App extends Component {
     constructor() {

@@ -3,15 +3,12 @@ import { Component } from 'react';
 //import styled, { css } from 'styled-components'
 import axios from 'axios';
 import { withRouter } from "react-router";
+import { APIURL } from 'apiurl';
 
 import {
 // eslint-disable-next-line
   BrowserRouter as Router, Switch, Route, Link, useRouteMatch, useParams
 } from "react-router-dom";
-
-
-//const APIURL = 'http://localhost:5000/';
-const APIURL='api/';
 
 //PROFILE COMPONENT
 class UserInformation extends Component {

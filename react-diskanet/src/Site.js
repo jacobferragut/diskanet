@@ -6,8 +6,8 @@ import { withRouter /*,useHistory*/ } from "react-router";
 import { Redirect } from 'react-router-dom';
 import renderHTML from 'react-render-html';
 import { ResultButton } from './Components/components.js';
+import { APIURL } from 'apiurl';
 
-const APIURL = 'http://localhost:5000/';
 //const APIURL='';
 const SiteTitle = styled.div`
     font-family: ${props => props.siteInfo.title_font !== "" ? props.siteInfo.title_font : ""};

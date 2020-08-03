@@ -7,6 +7,8 @@ import './App.css';
 // import {SliderPage, ResultPanel, ResultSites} from './Components/components.js';
 import {SliderPage, ResultPanel} from './Components/components.js';
 import {SiteBox} from './Site.js';
+import { APIURL } from 'apiurl';
+
 //submit discover filter button
 const FilterButton = styled.button`
 	padding: 5px;
@@ -29,8 +31,6 @@ const FilterPanel = styled.div`
 `;
 
 //genre_music, genre_art, genre_film, genre_writing
-//const APIURL = 'http://localhost:5000/';
-const APIURL='api/';
 export default class DiscoverScreen extends Component {
     constructor(props){
         super(props)
