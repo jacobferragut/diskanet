@@ -21,14 +21,14 @@ from .diskanet_orm import Photo
 from .auth_orm import Auth
 from .util import get_config
 
-app = Flask(__name__, root_path="/api")
+app = Flask(__name__)
 app.config.update(
     get_config(app.config['ENV'], app.open_resource('config.yaml'))
 )
 #CORS(app)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
-api = Api(app)
+api = Api(app, prefix="/api")
 #api = Api(app)
 
 print('App config:\n ', '\n  '.join([f'{k}: {v}' for k,v in sorted(app.config.items())]))
@@ -378,7 +378,7 @@ class DiscoverResource(Resource):
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 
 # we're using a FLASK route rather than a resource (to avoid request mangling)
-@app.route('/photo', methods=['POST'])
+@app.route('/api/photo', methods=['POST'])
 def photo():
     file = request.files['file']
     #doesnt work
@@ -397,7 +397,7 @@ def photo():
     return "done"
 
 
-@app.route('/photo/<int:photo_id>', methods=['GET'])
+@app.route('/api/photo/<int:photo_id>', methods=['GET'])
 def photoget(photo_id):
     the_photo = g.db.query(Photo).get(photo_id).photo
     response = make_response(the_photo)
