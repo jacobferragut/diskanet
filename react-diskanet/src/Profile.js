@@ -3,7 +3,7 @@ import { Component } from 'react';
 //import styled, { css } from 'styled-components'
 import axios from 'axios';
 import { withRouter } from "react-router";
-import { APIURL } from 'apiurl';
+import { APIURL } from './apiurl.js';
 
 import {
 // eslint-disable-next-line

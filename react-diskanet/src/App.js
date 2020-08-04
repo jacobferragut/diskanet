@@ -23,7 +23,7 @@ import {Profile} from './Profile.js';
 //components imported
 import {BoxPanel, NavBar,  /*, ResultSites */ } from './Components/components.js';
 
-import { APIURL } from 'apiurl';
+import { APIURL } from './apiurl.js';
 
 class App extends Component {
     constructor() {
@@ -57,16 +57,15 @@ class App extends Component {
                     cookies.set('jwt', response['data']['jwt'], { path: '/', expires: new Date(Date.now()+3600000) });
                     cookies.set('name', username, { path: '/', expires: new Date(Date.now()+3600000) });
                     
-                } else{
-                    return false;
-                }
+                    
+                } 
         //store user's id and token into cookies
         
 		//console.log(response);
 	    });  // todo: add error-checking
         
         
-        return true;
+        
     }
     
     render(){
@@ -122,11 +121,11 @@ class Banner extends Component {
         this.renderRedirect = this.renderRedirect.bind(this);
         this.state = { name:'', password:'', user_id:'', redirect: false, isLoggedIn: false };
         
-        this.loggedIn = this.loggedIn.bind(this);
+        this.checkLogin = this.checkLogin.bind(this);
         this.logout = this.logout.bind(this);
     }
     
-    componentDidMount(){
+    componentDidUpdate(){
         //makes user_id the same as app (so if logged in on app, logged in on banner)
         
     }
@@ -151,28 +150,20 @@ class Banner extends Component {
 
     callLogin(event) {
         if (this.state.name !== 0 && this.state.password !== 0){
-            let r = this.props.login(this.state.name, this.state.password);
-            //check if logged in
-            //console.log(r);
-            if (r)
-                this.setState({isLoggedIn:true});
+            this.props.login(this.state.name, this.state.password);
         }
     }
-    loggedIn(){
+    checkLogin(){
         const cookies = new Cookies();
         
-        let name = '';
-        if (cookies.get('name')){
-            name = cookies.get('name')
-            //console.log('cookie name'+name)
-            return name
-        }else if (this.state.name && this.state.isLoggedIn){
-            name = this.state.name
-            //console.log('states name'+name)
-            return name
-        }else{
-            return false
+        console.log("user_id:"+this.props.user_id);
+        
+        if(cookies.get('name') && cookies.get('jwt') && cookies.get('user_id') && this.state.isLoggedIn === false) {
+            this.setState({user_id: this.props.user_id, isLoggedIn:true});
+            console.log('logged in successful');
         }
+        
+        
     }
     logout(event){
         const cookies = new Cookies();
@@ -185,9 +176,14 @@ class Banner extends Component {
     render() {
         // todo: make a conditional render to just show "logged in" when logged in
         // todo: add a register button
-        //const cookies = new Cookies();
-        
-        
+        const cookies = new Cookies();
+        //console.log("cookies"+cookies.get('name')+cookies.get('jwt')+cookies.get('user_id'));
+        if (this.state.user_id == ''){
+            console.log("logging in right now");
+            setInterval(this.checkLogin, 1000 );
+            //this.checkLogin();
+            //this.render()
+        }
         
         return (          
             <div className="App-banner">
@@ -198,7 +194,7 @@ class Banner extends Component {
                   </BoxPanel>
                                     
                   <BoxPanel>
-                    { !this.loggedIn() ? 
+                    { !this.state.isLoggedIn ? 
                       <div>
                         {this.renderRedirect()}
                         <form>
@@ -218,7 +214,7 @@ class Banner extends Component {
                       : 
                       
                       <div>
-                      <p>Logged in as: {this.loggedIn()}</p>
+                      <p>Logged in as: {cookies.get('name')}</p>
                       <button type='button' onClick={this.logout}>LOGOUT</button>
                       </div>
                     }

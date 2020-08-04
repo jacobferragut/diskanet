@@ -6,7 +6,7 @@ import { withRouter /*,useHistory*/ } from "react-router";
 import { Redirect } from 'react-router-dom';
 import renderHTML from 'react-render-html';
 import { ResultButton } from './Components/components.js';
-import { APIURL } from 'apiurl';
+import { APIURL } from './apiurl.js';
 
 //const APIURL='';
 const SiteTitle = styled.div`

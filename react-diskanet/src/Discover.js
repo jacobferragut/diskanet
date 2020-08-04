@@ -7,7 +7,7 @@ import './App.css';
 // import {SliderPage, ResultPanel, ResultSites} from './Components/components.js';
 import {SliderPage, ResultPanel} from './Components/components.js';
 import {SiteBox} from './Site.js';
-import { APIURL } from 'apiurl';
+import { APIURL } from './apiurl.js';
 
 //submit discover filter button
 const FilterButton = styled.button`
