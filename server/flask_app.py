@@ -25,11 +25,11 @@ app = Flask(__name__)
 app.config.update(
     get_config(app.config['ENV'], app.open_resource('config.yaml'))
 )
-CORS(app)
-#CORS(app, resources={r'/*': {'origins': '*'}})
+#CORS(app)
+CORS(app, resources={r'/*': {'origins': '*'}})
 
-#api = Api(app, prefix="/api")
-api = Api(app)
+api = Api(app, prefix="/api")
+#api = Api(app)
 
 print('App config:\n ', '\n  '.join([f'{k}: {v}' for k,v in sorted(app.config.items())]))
 
@@ -124,6 +124,10 @@ class UsersResource(Resource):
         
         #grab user
         auth = g.auth_db.execute(f"select * from auth where user_name='{d['name']}'").first()
+        
+        #bad login
+        if not auth:
+            return {'msg': 'login failed, account doesnt exist', 'jwt':''}
         
         #make fake copy because I cant call function on db object
         fake = Auth(user_name=auth.user_name, pass_hash=auth.pass_hash, pass_salt=auth.pass_salt)
@@ -382,9 +386,9 @@ uploads_dir = os.path.join(app.instance_path, 'uploads')
 def photo():
     file = request.files['file']
     #doesnt work
-    user_id = request.files['user_id']
+    user_id = request.form.get('user_id')
 
-    photo = Photo(photo=file.read())
+    photo = Photo(photo=file.read(),photo_id=user_id)
     
     #print(photo.photo)
     g.db.add(photo)

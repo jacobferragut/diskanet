@@ -35,19 +35,26 @@ class RegisterScreen extends Component {
     
     goRegister(event){
 	//console.log({msg:'successful button click'});
-	axios.post(APIURL + 'user', {
-	    name: this.state.username, 
-	    password: this.state.password, 
-	    email: this.state.email}).then( response => {
-		/*example of response---------
-		  { 
-		  1 : {title:'example title', body: 'example body', ... },
-		  2 : {title:'title example', body: 'body example', ... },
-		  }
-		*/
-		console.log(response);
-		//this.setState({['results'] : response});
-	    });
+        if (this.state.username && this.state.password && this.state.email){    
+            axios.post(APIURL + 'user', {
+                name: this.state.username, 
+                password: this.state.password, 
+                email: this.state.email}).then( response => {
+                /*example of response---------
+                  { 
+                  1 : {title:'example title', body: 'example body', ... },
+                  2 : {title:'title example', body: 'body example', ... },
+                  }
+                */
+                
+                alert("account successfully created");
+                
+                console.log(response);
+                //this.setState({['results'] : response});
+                });
+        }else{
+            alert("account register failed, please try again");
+        }
     }
     
     render(){

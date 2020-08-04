@@ -49,7 +49,10 @@ class App extends Component {
             APIURL + 'user',
             { 'name':username, 'password':password})
             .then( response => {
-                if (response['data']['jwt'].length > 0){
+                if (!response['data']){
+                    alert("incorrect password, please try again");
+                }
+                else if (response['data']['jwt'].length > 0){
                     this.setState({'loginToken' : response['data']['jwt'],
                                    'user_id':response['data']['id'] });
                     const cookies = new Cookies();
@@ -58,11 +61,18 @@ class App extends Component {
                     cookies.set('name', username, { path: '/', expires: new Date(Date.now()+3600000) });
                     
                     
-                } 
+                }else{
+                    alert("username is incorrect, please try again");
+                }                    
         //store user's id and token into cookies
         
 		//console.log(response);
-	    });  // todo: add error-checking
+	    }).catch(
+            function (error) {
+              console.log('Show error notification!')
+              return Promise.reject(error)
+            }
+        );  // todo: add error-checking
         
         
         
@@ -178,7 +188,7 @@ class Banner extends Component {
         // todo: add a register button
         const cookies = new Cookies();
         //console.log("cookies"+cookies.get('name')+cookies.get('jwt')+cookies.get('user_id'));
-        if (this.state.user_id == ''){
+        if (this.state.user_id === ''){
             console.log("logging in right now");
             setInterval(this.checkLogin, 1000 );
             //this.checkLogin();

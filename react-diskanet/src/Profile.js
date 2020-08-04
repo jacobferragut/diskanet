@@ -10,12 +10,13 @@ import {
   BrowserRouter as Router, Switch, Route, Link, useRouteMatch, useParams
 } from "react-router-dom";
 
+
 //PROFILE COMPONENT
 class UserInformation extends Component {
     constructor(props){
         super(props);
 	
-        this.state = {userInfo:{}, selectedFile: null, imageURL:'http://localhost:5000/photo/9'};
+        this.state = {userInfo:{}, selectedFile: null, imageURL:''};
     
         this.handleUploadImage = this.handleUploadImage.bind(this);
     }	
@@ -63,7 +64,7 @@ class UserInformation extends Component {
                 {userStuff}
               </div>
               <div>
-              <img src={this.state.imageURL} alt="img" />
+              <img src={APIURL+'/photo/'+this.state.userInfo.user_id} alt="img" />
               
               <form onSubmit={this.handleUploadImage}>
                 <div>
