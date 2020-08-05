@@ -1,10 +1,14 @@
+import time, random
+import urllib, urllib.request
+import urllib.error
+from bs4 import BeautifulSoup
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import delete
 from sqlalchemy import func
 from sqlalchemy import Column, types
 from sqlalchemy.ext.declarative import declarative_base
-
 
 from server.diskanet_orm import User, Site
 from server.util import get_config
@@ -59,80 +63,77 @@ if False:   # if you have the ttl file, create the artists, bands, and albums fi
         fout.write('\n'.join(bands) + '\n')
 
 
-# Once you have those txt files, you can load them and start web scraping here
-with open('data/artists.txt','r',encoding='utf-8') as fin:
-    artists = [l.strip() for l in fin]
-#with open('albums.txt') as fin:
-#    albums =  [l.strip() for l in fin]
-#with open('bands.txt') as fin:
-#    bands =  [l.strip() for l in fin]
-
-
-        
-import time
-import urllib, urllib.request
-import urllib.error
-from bs4 import BeautifulSoup
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-# get a database connection
-# store it in the db?
-db_conn_str = get_config('dev_lite', open('server/config.yaml'))['DB']
-# db_conn_str = 'sqlite:///temp.db'
-engine = create_engine(db_conn_str)
-db = sessionmaker(engine)()
-
-for artist in artists[:1000]:
-    if artist.startswith('<http://dbpedia.org/resource/'):
-        url = 'http://en.wikipedia.org/wiki/' + artist[29:-1]
-
-        url = 'http://' + urllib.parse.quote(url[7:])   # handle weird characters
-
-        try:
-            with urllib.request.urlopen(url) as response:
-                html = response.read()
-        except urllib.error.HTTPError as e:
-            print('Error', e, 'getting', url, '...skipping')
-            continue
-        
-        print("SUCCESS")
+if __name__ == '__main__':
+    env = 'dev_postgres'
+    throttle_seconds = 0.
     
-        soup = BeautifulSoup(html, 'html.parser')
-
-        for a in soup.findAll('a'):
-            a.replaceWith(a.text)
-
-        for s in soup.findAll('sup'):
-            s.replaceWith('')   #Put it where the A element is
-
-        # what about the headings?
-        paragraphs = '\n'.join([ p.decode() for p in soup.find_all('p') if len(p.text) > 1 ])
-
-
-        randuser = db.query(User).get(int(1))
-        
-        # randomly pick a font and color? -- assign owner of -1 or 0 or null (i.e., blank)
-        new_site = Site(
-            name='the universe',
-            title=soup.findAll('title')[0].text.rsplit('-', 1)[0].strip(),
-            body=paragraphs[:1000],
-            owner=randuser,
-            owner_id=randuser.user_id,
-            genre_music = True
-            # TODO: figure out if it should be:   genre_art = True (instead, or both, or whatever)
-        )
+    # Once you have those txt files, you can load them and start web scraping here
+    with open('data/artists.txt','r',encoding='utf-8') as fin:
+        artists = [l.strip() for l in fin]
+    with open('data/albums.txt', 'r', encoding='utf-8') as fin:
+        albums = [l.strip() for l in fin]
+    with open('data/bands.txt', 'r', encoding='utf-8') as fin:
+        bands = [l.strip() for l in fin]
     
-        db.add(new_site)
-        db.commit()
-        
-        # throttle the connection maybe
-        time.sleep(.01)
+    # get a database connection
+    # store it in the db?
+    db_conn_str = get_config(env, open('server/config.yaml'))['DB']
+    # db_conn_str = 'sqlite:///temp.db'
+    engine = create_engine(db_conn_str)
+    db = sessionmaker(engine)()
 
-    # In React use import renderHTML from 'react-render-html'; to render the strings as html
+    random.shuffle(artists)
     
-# close db
-db.close()
+    for artist in artists[:1000]:
+        if artist.startswith('<http://dbpedia.org/resource/'):
+            url = 'http://en.wikipedia.org/wiki/' + artist[29:-1]
+
+            url = 'http://' + urllib.parse.quote(url[7:])   # handle weird characters
+
+            try:
+                with urllib.request.urlopen(url) as response:
+                    html = response.read()
+            except urllib.error.HTTPError as e:
+                print('Error', e, 'getting', url, '...skipping')
+                continue
+
+            print("SUCCESS")
+
+            soup = BeautifulSoup(html, 'html.parser')
+
+            for a in soup.findAll('a'):
+                a.replaceWith(a.text)
+
+            for s in soup.findAll('sup'):
+                s.replaceWith('')   #Put it where the A element is
+
+            # what about the headings?
+            paragraphs = '\n'.join([ p.decode() for p in soup.find_all('p') if len(p.text) > 1 ])
+
+
+            randuser = db.query(User).get(int(1))
+
+            # randomly pick a font and color? -- assign owner of -1 or 0 or null (i.e., blank)
+            new_site = Site(
+                name='the universe',
+                title=soup.findAll('title')[0].text.rsplit('-', 1)[0].strip(),
+                body=paragraphs[:1000],
+                owner=randuser,
+                owner_id=randuser.user_id,
+                genre_music = True
+                # TODO: figure out if it should be:   genre_art = True (instead, or both, or whatever)
+            )
+
+            db.add(new_site)
+            db.commit()
+
+            # throttle the connection maybe
+            time.sleep(throttle_seconds)
+
+        # In React use import renderHTML from 'react-render-html'; to render the strings as html
+
+    # close db
+    db.close()
 
 
 
