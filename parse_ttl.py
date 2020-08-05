@@ -83,7 +83,8 @@ if __name__ == '__main__':
     db = sessionmaker(engine)()
 
     random.shuffle(artists)
-    
+    max = db.query(Site).order_by(Site.site_id.desc()).first().site_id
+
     for artist in artists[:1000]:
         if artist.startswith('<http://dbpedia.org/resource/'):
             url = 'http://en.wikipedia.org/wiki/' + artist[29:-1]
@@ -111,7 +112,7 @@ if __name__ == '__main__':
             paragraphs = '\n'.join([ p.decode() for p in soup.find_all('p') if len(p.text) > 1 ])
 
 
-            randuser = db.query(User).get(1).first()
+            randuser = db.query(User).get(1)
 
             # randomly pick a font and color? -- assign owner of -1 or 0 or null (i.e., blank)
             new_site = Site(
@@ -123,12 +124,15 @@ if __name__ == '__main__':
                 genre_music = True
                 # TODO: figure out if it should be:   genre_art = True (instead, or both, or whatever)
             )
-            max = db.query(Site).order_by(Site.site_id.desc()).first()
             if max is None:
                 new_site.site_id = 1
             else:
-                new_site.site_id = max.site_id + 1
+                new_site.site_id = max+1 #max.site_id + 1
             db.add(new_site)
+            print("max: ", max)
+            print("new_site: ", new_site.site_id)
+            max+=1
+            
             db.commit()
 
             # throttle the connection maybe
