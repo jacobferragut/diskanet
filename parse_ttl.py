@@ -111,7 +111,7 @@ if __name__ == '__main__':
             paragraphs = '\n'.join([ p.decode() for p in soup.find_all('p') if len(p.text) > 1 ])
 
 
-            randuser = db.query(User).get(int(1))
+            randuser = db.query(User).get(1).first()
 
             # randomly pick a font and color? -- assign owner of -1 or 0 or null (i.e., blank)
             new_site = Site(
@@ -123,7 +123,11 @@ if __name__ == '__main__':
                 genre_music = True
                 # TODO: figure out if it should be:   genre_art = True (instead, or both, or whatever)
             )
-
+            max = db.query(Site).order_by(Site.site_id.desc()).first()
+            if max is None:
+                new_site.site_id = 1
+            else:
+                new_site.site_id = max.site_id + 1
             db.add(new_site)
             db.commit()
 
