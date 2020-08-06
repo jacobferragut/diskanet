@@ -1,4 +1,4 @@
-import os
+import os, random
 from datetime import datetime
 import hashlib
 
@@ -363,6 +363,13 @@ class DiscoverResource(Resource):
             if key in filterArgs:
                 query = query.filter(getattr(Site, key) == filterArgs[key])
         rows = query.all()
+        
+        limit=10
+        #grab 10 random sites
+        if rows:
+            rows = random.sample(rows, limit)
+        
+        
         
         return {row.site_id: row._to_dict() for row in rows}
         
