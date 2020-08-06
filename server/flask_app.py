@@ -395,8 +395,13 @@ def photo():
     #doesnt work
     user_id = request.form.get('user_id')
 
-    photo = Photo(photo=file.read(),photo_id=user_id)
-    
+    # Update or create new photo
+    photo = g.db.query(Photo).get(user_id)
+    if photo is None:
+        photo = Photo(photo=file.read(),photo_id=user_id)
+    else:
+        photo.photo = file.read()
+        
     #print(photo.photo)
     g.db.add(photo)
     g.db.commit()
