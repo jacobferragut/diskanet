@@ -135,7 +135,6 @@ export default class DiscoverScreen extends Component {
 			 name="writing"
 			 onChange={this.updateMayContain.bind(this)}>
 		       </input><br/>	
-		//<SliderPage />
 	        
 		<FilterButton type="button" onClick={this.submitSearch}>
                   Discover!
