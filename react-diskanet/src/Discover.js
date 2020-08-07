@@ -36,14 +36,16 @@ export default class DiscoverScreen extends Component {
         super(props)
 	//at first there is no state to submit
 	//this.state = {}
-        this.state = { genre_music: "0", genre_art: "0", genre_film: "0",
+        this.state = { genre_music: "", genre_art: "0", genre_film: "0",
                        genre_writing: "0", results: {} };
 	
         this.updateFilter = this.updateFilter.bind(this);
 	    this.submitSearch = this.submitSearch.bind(this);
         this.updateMayContain = this.updateMayContain.bind(this);
     }
-    
+    componentDidMount(){
+        document.getElementsByName("music")[0].checked = true;
+    }
     updateFilter(event) {
 	if (event.target.checked) {
 	    //make may genre unchecked
@@ -133,7 +135,7 @@ export default class DiscoverScreen extends Component {
 			 name="writing"
 			 onChange={this.updateMayContain.bind(this)}>
 		       </input><br/>	
-		<SliderPage />
+		//<SliderPage />
 	        
 		<FilterButton type="button" onClick={this.submitSearch}>
                   Discover!
