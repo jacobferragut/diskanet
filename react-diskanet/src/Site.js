@@ -7,6 +7,7 @@ import { Redirect } from 'react-router-dom';
 import renderHTML from 'react-render-html';
 import { ResultButton } from './Components/components.js';
 import { APIURL } from './apiurl.js';
+import { Editor } from '@tinymce/tinymce-react';
 
 //const APIURL='';
 const SiteTitle = styled.div`
@@ -47,7 +48,6 @@ class SiteBox extends Component {
     changeSite(event){
         this.setState({redirect:true, site_id:event.target.id, user_id:event.target.key})
     }
-    
     render(){
         var results = this.props.results;
         
@@ -60,7 +60,8 @@ class SiteBox extends Component {
                 var siteInfo = results['data'][siteId];
                 
                 
-                
+             //html code detection on line 74: maybe there is a better way
+       
                 sites.push(
                     <div key={siteId}>
                       <SitePanel siteInfo = {siteInfo}>
@@ -70,7 +71,7 @@ class SiteBox extends Component {
                         
                         <SiteBody siteInfo = {siteInfo}>
                         
-                            {siteInfo['body'].includes("<p>") ? renderHTML(siteInfo['body']) : <p>{siteInfo['body']}</p> }
+                            {siteInfo['body'].includes("<") ? renderHTML(siteInfo['body']) : <p>{siteInfo['body']}</p> }
                             
                             
                           <ResultButton id={siteId} key={siteInfo['owner_id']}
@@ -113,6 +114,11 @@ class SiteCreation0 extends Component{
         this.createSite = this.createSite.bind(this);
         this.change = this.change.bind(this);
         this.changeCheckbox = this.changeCheckbox.bind(this);
+    }
+    
+    handleEditorChange = (content, editor) => {
+        console.log('Content was updated:', content);
+        this.setState({body: content});
     }
     
     componentDidMount(){
@@ -166,6 +172,26 @@ class SiteCreation0 extends Component{
     render(){
         return(
             <div>
+                <Editor
+                    apiKey='lvwpf2nbss83ux7xe0d0fardg0q3ddmna7wx5b62clsisnjn' 
+                    initialValue="<p>This is the initial content of the editor</p>"
+                    init={{
+                    
+                        height: 500,
+                        menubar: true,
+                        plugins: [
+                         'advlist autolink lists link image charmap print preview anchor',
+                         'searchreplace visualblocks code fullscreen',
+                         'insertdatetime media table paste code help wordcount'
+                        ],
+                        toolbar:
+                         'undo redo | formatselect | bold italic backcolor | \
+                         alignleft aligncenter alignright alignjustify | \
+                         bullist numlist outdent indent | removeformat | help'
+                    }}
+                    onEditorChange={this.handleEditorChange}
+                />
+            
               <p>These are your created sites:</p>
               <SiteBox results={this.state.sites} />
               <form>
@@ -327,7 +353,7 @@ class SiteScreen0 extends Component {
     
     render(){
         var site = this.state.site;
-        
+        //IS THERE A BETTER WAY TO DETECT HTML CODE
         return (
             
             <div>	     
@@ -336,8 +362,8 @@ class SiteScreen0 extends Component {
 		  <h2> {site['title']} </h2>
 		</SiteTitle>
 		
-		<SiteBody siteInfo = {site}>   
-          {site['body'].includes("<p>") ? renderHTML(site['body']) : <p>{site['body']}</p> }
+		<SiteBody siteInfo = {site}>
+          {site['body'].includes("<") ? renderHTML(site['body']) : <p>{site['body']}</p> }
 
           <div>
           <br />

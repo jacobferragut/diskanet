@@ -94,4 +94,5 @@ git push heroku master
 heroku open
 heroku logs --tail
 
+npm install --save @tinymce/tinymce-react
 
