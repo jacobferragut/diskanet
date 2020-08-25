@@ -325,13 +325,14 @@ class SiteResource(Resource):
             elif k != 'user_id':
                 return {'msg': f'ERROR: you cannot change {k}'}
         
+        #set returned site because it becomes empty after committing
+        d = site._to_dict()
         #update and commit the changes
         #g.db.update(site)
-        print(site._to_dict())
         g.db.commit()
         
         
-        return {'msg': f'{site.name}s site has been updated'} 
+        return d
         
     @JWT.jwt_required
     def delete(self, site_id):

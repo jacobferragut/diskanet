@@ -139,14 +139,20 @@ class SiteCreation0 extends Component{
             callEdit:false
         };
         this.createSite = this.createSite.bind(this);
-        this.change = this.change.bind(this);
+        this.changeColor = this.changeColor.bind(this);
         this.changeCheckbox = this.changeCheckbox.bind(this);
         this.editSite = this.editSite.bind(this);
+        this.handleEditorInit = this.handleEditorInit.bind(this);
     }
-    
+    handleEditorInit(e, editor){
+        this.setState({editor:editor});
+        this.state.editor.getBody().style.backgroundColor = this.state.background_color;
+    }
     handleEditorChange = (content, editor) => {
-        console.log('Content was updated:', content);
+        //console.log('Content was updated:', content);
+        //console.log('real editor:', editor);
         this.setState({body: content});
+        //editor.getBody().style.backgroundColor = this.state.background_color;
     }
     editHandler = (isEditing,site_id) => {
         axios.get(APIURL + 'site/'.concat(site_id)).then( response => {
@@ -181,14 +187,17 @@ class SiteCreation0 extends Component{
         axios.get(APIURL + 'user/'.concat(user_id)).then( response => {
             this.setState({'name' : response['data'].name});
         });
+        
     }
     componentDidUpdate(){
-        //if (this.state.callEdit===true){
-        //    this.editSite();
-       // }
+        if(this.state.editor) this.state.editor.getBody().style.backgroundColor = this.state.background_color;
     }
     editSite(){
         const site_id = this.state.site_id;
+        
+        
+        
+        
         axios.put(APIURL+"site/"+site_id, {
             background_color:this.state.background_color,
             name:this.state.name,
@@ -203,7 +212,20 @@ class SiteCreation0 extends Component{
                 'Authorization': `Bearer ${this.props.jwt}` 
             }
         }).then(response => {
+            
+            console.log('edit site response',response);
+            const newSite = response['data'];
+            console.log("SITE TO BE ADDED",newSite);
+            
+            const sites = this.state.sites;
+            console.log("CURRENT SITES",sites);
+            
+            sites['data'][newSite.site_id] = newSite;
+            console.log("NEW SITES",sites);
+            
             this.setState({
+                sites:sites,
+                
                 background_color:'White',
                 name:'',
                 body:'', 
@@ -215,15 +237,15 @@ class SiteCreation0 extends Component{
                 site_id:'',
                 callEdit:false
             });
-            console.log(response);
+            
         });
             
         
-        console.log('test');
         this.setState({callEdit:false});
         
         
     }
+    
     createSite(){
         const user_id = this.props.match.params.user_id;
         axios.post(APIURL+"sites/"+user_id, {
@@ -244,26 +266,16 @@ class SiteCreation0 extends Component{
         });
     }
     
-    change(event){
-        this.setState({ [event.target.name] : event.target.value });
+    changeColor(event){
+        this.setState({ [event.target.name] : event.target.value });        
     }
     
     changeCheckbox(event){
-        //event.target.value = event.target.checked;
-        //this.change(event);
         this.setState({ [event.target.name] : event.target.checked });
-
     }
-    initCheckbox(event){
-        //event.target.value = event.target.checked;
-        if (this.state.getAttribute(event.target.name))
-            event.target.checked = true;
-        //this.change(event);
-        //this.setState({ [event.target.name] : event.target.checked });
-
-    }
+    
     render(){
-        
+        console.log('editor in the state',this.state.editor);
         return(
             
 
@@ -275,7 +287,7 @@ class SiteCreation0 extends Component{
                 <br />
                 Background Color
                 <select name='background_color' value={this.state.background_color}
-                        onChange={this.change}>            
+                        onChange={this.changeColor}>            
                   <option value="Maroon">Maroon</option>
                   <option value="Red">Red</option>
                   <option value="Orange">Orange</option>
@@ -325,10 +337,10 @@ class SiteCreation0 extends Component{
                     <ResultButton onClick={this.createSite}> Create Site </ResultButton>
                 }
                 <Editor
+                    id='myeditor'
                     apiKey='lvwpf2nbss83ux7xe0d0fardg0q3ddmna7wx5b62clsisnjn' 
                     value={this.state.body}
                     init={{
-                    
                         height: 500,
                         menubar: true,
                         plugins: [
@@ -341,8 +353,9 @@ class SiteCreation0 extends Component{
                          alignleft aligncenter alignright alignjustify | \
                          bullist numlist outdent indent | removeformat | help'
                     }}
+                    onInit={this.handleEditorInit}
                     onEditorChange={this.handleEditorChange}
-                />
+                />;
             
               <p>These are your created sites:</p>
               <SiteBox results={this.state.sites} page={'mysites'} jwt={this.props.jwt} editHandler={this.editHandler} />
