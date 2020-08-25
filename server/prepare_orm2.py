@@ -55,19 +55,19 @@ def init_db():
             siteData.append( Site(
                 site_id = int(row[0]),
                 name    = row[1],
-                title   = row[2],
+                #title   = row[2],
                 body    = row[3],
                 owner_id = int(row[5]),
                 owner   = session.query(User).get(int(row[5])),
-                title_font = row[6],
-                body_font = row[7],
-                body_font_size = int(row[8]),
-                title_font_size = row[9],
-    		background_color = row[10],
-    		genre_music = bool(row[11]),
-    		genre_art = bool(row[12]),
+                #title_font = row[6],
+                #body_font = row[7],
+                #body_font_size = int(row[8]),
+                #title_font_size = row[9],
+                background_color = row[10],
+                genre_music = bool(row[11]),
+                genre_art = bool(row[12]),
     	        genre_film = bool(row[13]),
-    		genre_writing = bool(row[14])
+                genre_writing = bool(row[14])
             ))
         session.add_all(siteData)
         session.commit()

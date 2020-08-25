@@ -10,17 +10,6 @@ import { APIURL } from './apiurl.js';
 import { Editor } from '@tinymce/tinymce-react';
 
 //const APIURL='';
-const SiteTitle = styled.div`
-    font-family: ${props => props.siteInfo.title_font !== "" ? props.siteInfo.title_font : ""};
-    font-size: ${props => 
-        props.siteInfo.title_font_size !== "" ? props.siteInfo.title_font_size + 'px' : ""};
-`;
-
-const SiteBody = styled.div`
-    font-family: ${props => props.siteInfo.body_font.length ? props.siteInfo.body_font : "Comic Sans"};
-    font-size: ${props => 
-        props.siteInfo.body_font_size !== "" ? props.siteInfo.body_font_size + 'px' : ""};
-`;
 
 const SitePanel = styled.div`
     background-color: ${props => 
@@ -30,10 +19,13 @@ const SitePanel = styled.div`
 //component displays all of a user's sites WITH CSS
 class SiteBox extends Component {
     constructor(props){
-        super(props); //results (multiple sites)
+        super(props); //results (multiple sites) and page='discover' or page='mysites'
+        //and this.props.editSite(site_id);
         this.visitSite = this.visitSite.bind(this);
         this.changeSite = this.changeSite.bind(this);
-        this.state = {redirect: false, site_id:''};
+        this.deleteSite = this.deleteSite.bind(this);
+        //this.callEdit = this.callEdit.bind(this);
+        this.state = {redirect: false, site_id:'', user_id:''};
         this.render = this.render.bind(this);
     }
     visitSite(){
@@ -44,10 +36,34 @@ class SiteBox extends Component {
         );        
         //console.log(id);
     }
+    deleteSite(event){
+        const site_id = event.target.value;
+        const user_id = event.target.name;
+        
+        const url = APIURL.concat('site/', site_id);
+        var r=window.confirm("are you sure you want to delete your site?");        
+        if (r) {
+            
+            axios.delete(url, {
+                headers: {
+                    'Authorization': `Bearer ${this.props.jwt}` 
+                }
+            }).then( response => {
+                alert("Site was deleted!");
+                window.location.reload();
+            }).catch(error => {
+                alert("Error, authorization failed");
+                console.log(error.response.data.error)
+            });
+        } 
+    } 
     
     changeSite(event){
-        this.setState({redirect:true, site_id:event.target.id, user_id:event.target.key})
+        const sid = event.target.value;
+        const uid = event.target.name;
+        this.setState({redirect:true, site_id:sid, user_id:uid})
     }
+
     render(){
         var results = this.props.results;
         
@@ -55,95 +71,165 @@ class SiteBox extends Component {
         if (Object.keys(results).length > 0){
             for (var key of Object.keys(results['data'])){
                 //sites's id
-                var siteId = key;
+                const siteId = key;
                 //all a site info
-                var siteInfo = results['data'][siteId];
-                
+                const siteInfo = results['data'][siteId];
+                //site owner id
+                const userId = siteInfo.owner_id;
                 
              //html code detection on line 74: maybe there is a better way
-       
+                
+                
                 sites.push(
                     <div key={siteId}>
                       <SitePanel siteInfo = {siteInfo}>
-                        <SiteTitle siteInfo = {siteInfo}>
-                          <h2> {siteInfo['title']} </h2>
-                        </SiteTitle>
-                        
-                        <SiteBody siteInfo = {siteInfo}>
-                        
                             {siteInfo['body'].includes("<") ? renderHTML(siteInfo['body']) : <p>{siteInfo['body']}</p> }
-                            
-                            
-                          <ResultButton id={siteId} key={siteInfo['owner_id']}
+                          
+                          
+                                       
+                        {this.props.page === 'mysites' ? 
+                            <div>
+                            <ResultButton value={siteId} name={userId} 
                                         onClick={this.changeSite}>Visit</ResultButton>
-                        </SiteBody>
-                      </SitePanel>                  
+                            <ResultButton value={siteId} onClick = {
+                                () => this.props.editHandler(true,siteId)
+                                
+                                }>Edit</ResultButton>
+                            <ResultButton value={siteId} name={userId} onClick={this.deleteSite}>Delete</ResultButton>
+                            
+                            </div>
+                        : <ResultButton site_id={siteId} name={userId} value={siteId}
+                                        onClick={this.changeSite}>Visit</ResultButton>}
+                        
+                        
+                      </SitePanel>    
+                      
                     </div>
                 );
             }
         }
         
         return(
+        
             <div>
               {this.visitSite()}
               {sites}
             </div>
+        
         );
     }
 }
 
 //displays sitebox (user's sites) AND site creation form
+//and update sites
 class SiteCreation0 extends Component{
     constructor(props){
         super(props);
         this.state = {
             sites:{}, 
-            background_color:'Gray',
+            background_color:'White',
             name:'',
-            title:'', 
-            title_font:'Times New Roman', 
-            title_font_size:'', 
             body:'', 
-            body_font:'Times New Roman', 
-            body_font_size:'',
             genre_music:false,
             genre_art:false,
             genre_film:false,
-            genre_writing:false
+            genre_writing:false,
+            isEditing:false,
+            site_id:'',
+            callEdit:false
         };
         this.createSite = this.createSite.bind(this);
         this.change = this.change.bind(this);
         this.changeCheckbox = this.changeCheckbox.bind(this);
+        this.editSite = this.editSite.bind(this);
     }
     
     handleEditorChange = (content, editor) => {
         console.log('Content was updated:', content);
         this.setState({body: content});
     }
-    
+    editHandler = (isEditing,site_id) => {
+        axios.get(APIURL + 'site/'.concat(site_id)).then( response => {
+            //this.setState({'sites' : response});
+                
+            const editedSite = response['data'][Object.keys(response.data)[0]];
+            console.log('editthis:'+editedSite['body']);
+            this.setState({
+                body:editedSite['body'], 
+                name:editedSite['name'],
+                background_color:editedSite['background_color'],
+                genre_art:editedSite['genre_art'],
+                genre_film:editedSite['genre_film'],
+                genre_music:editedSite['genre_music'],
+                genre_writing:editedSite['genre_writing']
+            });
+            //this.handleEditorChange(editedSite['body']);
+             
+        });
+        this.setState({
+            isEditing: isEditing,
+            site_id: site_id
+        })
+    }
     componentDidMount(){
         const user_id = this.props.match.params.user_id;
         axios.get(APIURL + 'sites/'.concat(user_id)).then( response => {
             this.setState({'sites' : response});
-            console.log(response);
+            //console.log(response);
         });
         
         axios.get(APIURL + 'user/'.concat(user_id)).then( response => {
             this.setState({'name' : response['data'].name});
         });
     }
-    
+    componentDidUpdate(){
+        //if (this.state.callEdit===true){
+        //    this.editSite();
+       // }
+    }
+    editSite(){
+        const site_id = this.state.site_id;
+        axios.put(APIURL+"site/"+site_id, {
+            background_color:this.state.background_color,
+            name:this.state.name,
+            body:this.state.body,
+            genre_music:this.state.genre_music,
+            genre_art:this.state.genre_art,
+            genre_film:this.state.genre_film,
+            genre_writing:this.state.genre_writing,
+            user_id:this.props.match.params.user_id
+        }, {
+            headers: {
+                'Authorization': `Bearer ${this.props.jwt}` 
+            }
+        }).then(response => {
+            this.setState({
+                background_color:'White',
+                name:'',
+                body:'', 
+                genre_music:false,
+                genre_art:false,
+                genre_film:false,
+                genre_writing:false,
+                isEditing:false,
+                site_id:'',
+                callEdit:false
+            });
+            console.log(response);
+        });
+            
+        
+        console.log('test');
+        this.setState({callEdit:false});
+        
+        
+    }
     createSite(){
         const user_id = this.props.match.params.user_id;
         axios.post(APIURL+"sites/"+user_id, {
             background_color:this.state.background_color,
             name:this.state.name,
-            title:this.state.title,
-            title_font:this.state.title_font,
-            title_font_size:this.state.title_font_size,
             body:this.state.body,
-            body_font:this.state.body_font,
-            body_font_size:this.state.body_font_size,
             genre_music:this.state.genre_music,
             genre_art:this.state.genre_art,
             genre_film:this.state.genre_film,
@@ -168,13 +254,79 @@ class SiteCreation0 extends Component{
         this.setState({ [event.target.name] : event.target.checked });
 
     }
-    
+    initCheckbox(event){
+        //event.target.value = event.target.checked;
+        if (this.state.getAttribute(event.target.name))
+            event.target.checked = true;
+        //this.change(event);
+        //this.setState({ [event.target.name] : event.target.checked });
+
+    }
     render(){
+        
         return(
+            
+
             <div>
+                <form>
+
+                <p>Create a new site below:</p>
+              
+                <br />
+                Background Color
+                <select name='background_color' value={this.state.background_color}
+                        onChange={this.change}>            
+                  <option value="Maroon">Maroon</option>
+                  <option value="Red">Red</option>
+                  <option value="Orange">Orange</option>
+                  <option value="Yellow">Yellow</option>
+                  <option value="Olive">Olive</option>
+                  <option value="Green">Green</option>
+                  <option value="Purple">Purple</option>
+                  <option value="Fuchsia">Fuchsia</option>
+                  <option value="Lime">Lime</option>
+                  <option value="Teal">Teal</option>
+                  <option value="Gray">Gray</option>
+                  <option value="White">White</option>
+                </select>
+                <br />
+                <div>
+                
+                    Genre: 
+                    Music<input 
+                    type="checkbox" 
+                    name="genre_music"
+                    onChange={this.changeCheckbox} checked={this.state.genre_music}>
+                    </input>
+
+                    Art<input 
+                    type="checkbox" 
+                    name="genre_art"
+                    onChange={this.changeCheckbox} checked={this.state.genre_art}>
+                    </input>
+		       
+                    Film<input 
+                    type="checkbox" 
+                    name="genre_film"
+                    onChange={this.changeCheckbox} checked={this.state.genre_film}>
+                    </input>
+		       
+                    Writing<input 
+                    type="checkbox" 
+                    name="genre_writing"
+                    onChange={this.changeCheckbox} checked={this.state.genre_writing}>
+                    </input>
+		        </div>
+		        <br/>
+                </form>
+                {this.state.isEditing ? 
+                    <ResultButton onClick={this.editSite}> Submit Edited Site </ResultButton>
+                :
+                    <ResultButton onClick={this.createSite}> Create Site </ResultButton>
+                }
                 <Editor
                     apiKey='lvwpf2nbss83ux7xe0d0fardg0q3ddmna7wx5b62clsisnjn' 
-                    initialValue="<p>This is the initial content of the editor</p>"
+                    value={this.state.body}
                     init={{
                     
                         height: 500,
@@ -193,82 +345,8 @@ class SiteCreation0 extends Component{
                 />
             
               <p>These are your created sites:</p>
-              <SiteBox results={this.state.sites} />
-              <form>
-              Title:
-              <select name='title_font' value={this.state.title_font} onChange={this.change}>
-                <option value="American Typewriter">American Typewriter</option>
-                <option value="Impact">Impact</option>
-                <option value="Fantasy">Fantasy</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Comic Sans MS">Comic Sans MS</option>
-              </select>
-              <input type="text" name="title" value={this.state.title}
-                            onChange={this.change}/>
-              <br />
-                Title Font Size:<input type="text" name="title_font_size"
-                                       value={this.state.title_font_size} onChange={this.change}/>
-              <br />Body:
-              <select name='body_font' value={this.state.body_font} onChange={this.change}>            
-                <option value="American Typewriter">American Typewriter</option>
-                <option value="Impact">Impact</option>
-                <option value="Fantasy">Fantasy</option>
-                <option value="Times New Roman">Times New Roman</option>
-                <option value="Comic Sans MS">Comic Sans MS</option>
-              </select>
-              <textarea name="body" value={this.state.body}
-                            onChange={this.change}/>
-              <br />
-                Body Font Size:<input type="text" name="body_font_size"
-                                      value={this.state.body_font_size}
-                                      onChange={this.change}/>
-              <br />
-              Background Color
-                <select name='background_color' value={this.state.background_color}
-                        onChange={this.change}>            
-                  <option value="Maroon">Maroon</option>
-                  <option value="Red">Red</option>
-                  <option value="Orange">Orange</option>
-                  <option value="Yellow">Yellow</option>
-                  <option value="Olive">Olive</option>
-                  <option value="Green">Green</option>
-                  <option value="Purple">Purple</option>
-                  <option value="Fuchsia">Fuchsia</option>
-                  <option value="Lime">Lime</option>
-                  <option value="Teal">Teal</option>
-                  <option value="Gray">Gray</option>
-                </select>
-              <br />
-            <div>
-              Genre: Music<input 
-		       type="checkbox" 
-		       name="genre_music"
-		       onChange={this.changeCheckbox}>
-		       </input>
-		       
-               Art<input 
-		       type="checkbox" 
-		       name="genre_art"
-		       onChange={this.changeCheckbox}>
-		       </input>
-		       
-               Film<input 
-		       type="checkbox" 
-		       name="genre_film"
-		       onChange={this.changeCheckbox}>
-		       </input>
-		       
-               Writing<input 
-		       type="checkbox" 
-		       name="genre_writing"
-		       onChange={this.changeCheckbox}>
-		       </input>
-		    </div>
-		     <br/>
+              <SiteBox results={this.state.sites} page={'mysites'} jwt={this.props.jwt} editHandler={this.editHandler} />
               
-              
-              </form>
-              <ResultButton onClick={this.createSite}> Create Site </ResultButton>
             </div>
         );
     }
@@ -283,20 +361,14 @@ class SiteScreen0 extends Component {
             title: '',
                 body: '',
                 background_color: 'white',
-                body_font_size: '48',
-                title_font_size: '30',
-                body_font: 'Comic Sans MS',
-                title_font: 'Arial',
                 genre_music: '',
                 genre_art: '',
                 genre_film: '',
                 genre_writing: '',
                 owner_id: ''
-        }, site_id:'', showDelete:false, redirect:false };
+        }, site_id:'', redirect:false };
         
-        this.putSite = this.putSite.bind(this);
-        this.activateDelete = this.activateDelete.bind(this);
-        this.deleteSite = this.deleteSite.bind(this);
+        
     }
     
     componentDidMount(){
@@ -308,78 +380,41 @@ class SiteScreen0 extends Component {
             const id = Object.keys(response['data'])[0];
             const ret = response['data'][id];
             //console.log(ret);
-            this.setState({ 'site': ret, 'site_id': site_id });
-            
-            //render delete button
-            if (ret.owner_id.toString() === this.props.user_id.toString()){
-                this.setState({ 'showDelete': true });
-            }
-            
+            this.setState({ 'site': ret, 'site_id': site_id });         
         });
         
         
-    }
-    
-    putSite(){
-	
-    }
-    activateDelete(){
-        const site_id = this.props.match.params.site_id;
-        const url = APIURL.concat('site/', site_id);
-        
-        if(this.props.user_id.toString() === this.state.site.owner_id.toString()){
-            console.log(this.props.jwt);
-            axios.delete(url, {
-                headers: {
-                    'Authorization': `Bearer ${this.props.jwt}` 
-                }
-            }).then( response => {
-                console.log("Site was deleted!");
-                this.setState({redirect:true});
-            });
-        }
-    }
-    
-    deleteSite(){
-        //const site_id = this.props.match.params.site_id;
-        //const url = APIURL.concat('site/', site_id);
-        var r=window.confirm("are you sure you want to delete your site?");        
-        if (r) {
-            this.activateDelete();        
-        } else {
-            alert("You are not the owner of this site");
-        }
     }
     
     render(){
         var site = this.state.site;
         //IS THERE A BETTER WAY TO DETECT HTML CODE
         return (
-            
-            <div>	     
-	      <SitePanel siteInfo = {site}>
-		<SiteTitle siteInfo = {site}>
-		  <h2> {site['title']} </h2>
-		</SiteTitle>
+        <div>
+        
+        <div> 	     
+	      <SitePanel siteInfo = {this.state.site}>
 		
-		<SiteBody siteInfo = {site}>
-          {site['body'].includes("<") ? renderHTML(site['body']) : <p>{site['body']}</p> }
+		
+          {this.state.site['body'].includes("<") ? renderHTML(this.state.site['body']) : <p>{this.state.site['body']}</p> }
 
           <div>
           <br />
           Genres:
-          {site['genre_music'].toString() === 'true' ? <li>Music</li>  : ''}
-          {site['genre_art'].toString() === 'true' ? <li> Art </li> : ''}
-          {site['genre_film'].toString() === 'true' ? <li> Film </li> : ''}
-          {site['genre_writing'].toString() === 'true' ? <li> Writing </li> : ''}
+          {this.state.site['genre_music'].toString() === 'true' ? <li>Music</li>  : ''}
+          {this.state.site['genre_art'].toString() === 'true' ? <li> Art </li> : ''}
+          {this.state.site['genre_film'].toString() === 'true' ? <li> Film </li> : ''}
+          {this.state.site['genre_writing'].toString() === 'true' ? <li> Writing </li> : ''}
           <br />
           </div>
-          <p> site created by: {site.name} </p>
+          <p> site created by: {this.state.site.name} </p>
           
+          {this.state.showEdit ? <ResultButton onClick={this.editSite}> Edit</ResultButton> : '' }
           {this.state.showDelete ? <ResultButton onClick={this.deleteSite}> Delete</ResultButton> : '' }
           {this.state.redirect ? <Redirect to={"/sites/"+this.state.site.owner_id} /> : ''}
-		</SiteBody>
-	      </SitePanel>                    
+	      </SitePanel> 
+          </div>
+                
 	    </div>
         );
     }   
@@ -387,4 +422,4 @@ class SiteScreen0 extends Component {
 
 const SiteCreation = withRouter(SiteCreation0);
 const SiteScreen = withRouter(SiteScreen0);
-export {SiteBox, SiteScreen, SiteBody, SitePanel, SiteTitle, SiteCreation};
+export {SiteBox, SiteScreen, SitePanel, SiteCreation};

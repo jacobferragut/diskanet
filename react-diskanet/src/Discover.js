@@ -76,8 +76,10 @@ export default class DiscoverScreen extends Component {
     
     submitSearch() {
         //erase old results before creating new ones (if there is any)  console.log(response);
-        this.setState({'results' : {}});
-        axios.post(APIURL + 'discover', this.state).then( response => {
+        //this.setState({'results' : {}});
+        const payload = {...this.state};
+        delete payload.results;
+        axios.post(APIURL + 'discover', payload).then( response => {
             /*example of response---------
               { 
               1 : {title:'example title', body: 'example body', ... },
@@ -142,7 +144,7 @@ export default class DiscoverScreen extends Component {
 	      </FilterPanel>
 	      <br />
 	      <ResultPanel>
-		<SiteBox results={this.state.results} />
+		<SiteBox results={this.state.results} page={'discover'} />
 	      </ResultPanel>
 	    </div>
 	);

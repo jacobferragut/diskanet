@@ -236,10 +236,9 @@ class SitesResource(Resource):
                 
         #first do required column entries...
         #and do allowed columns
-        allowed = ['title_font','title_font_size','body_font','body_font_size',
-                   'background_color','genre_music','genre_art','genre_film',
+        allowed = ['background_color','genre_music','genre_art','genre_film',
                    'genre_writing']
-        required = ['title','body']
+        required = ['body']
         reqNum = 0
         for k,v in d.items():
             if k in required:
@@ -295,37 +294,44 @@ class SiteResource(Resource):
         return {s.site_id: s._to_dict()}
         
     @JWT.jwt_required
-    def put(self, user_id, site_id):
+    def put(self, site_id):
         '''update a site's info'''
-        #Use JWT authentication to verify user is logged in to post a site
-        if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
-            return {'msg': f'You are not authorized to edit site'}
         
         #grabs fields to create site
         d = api.payload
         if d is None: return {'msg': 'No change submitted'}
+        
+        #dangerously get user id
+        user_id = d.get('user_id')
+        
+        #Use JWT authentication to verify user is logged in to post a site
+        if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
+            return {'msg': f'You are not authorized to edit site'}
+        
         
         #gets site
         site = g.db.query(Site).get(site_id)
                 
         #first do required column entries...
         #and do allowed columns
-        allowed = ['name','title','body','title_font','title_font_size','body_font','body_font_size','background_color','genre_music','genre_art','genre_film','genre_writing']
+        allowed = ['name','body','background_color','genre_music','genre_art','genre_film','genre_writing']
         #notAllowed = ['site_id','owner_id','owner']
         for k,v in d.items():
             if k in allowed:
-                setattr(site, k, v)
-                if v == 'True' and k[0] == 'g':
-                    setattr(site,k,True)
-            else:
+                if k[0] == 'g':
+                    setattr(site,k,bool(v))
+                else:
+                    setattr(site, k, v)
+            elif k != 'user_id':
                 return {'msg': f'ERROR: you cannot change {k}'}
         
         #update and commit the changes
         #g.db.update(site)
+        print(site._to_dict())
         g.db.commit()
         
         
-        return {'msg': f'site {site.name} has been updated'} 
+        return {'msg': f'{site.name}s site has been updated'} 
         
     @JWT.jwt_required
     def delete(self, site_id):
@@ -364,7 +370,7 @@ class DiscoverResource(Resource):
                 query = query.filter(getattr(Site, key) == filterArgs[key])
         rows = query.all()
         
-        limit=10
+        limit=min(10,len(rows))
         #grab 10 random sites
         if rows:
             rows = random.sample(rows, limit)

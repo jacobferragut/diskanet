@@ -44,7 +44,7 @@ class Site(base_app):
     #site name
     name = Column(types.String(length=50), nullable=False)
     #site's title
-    title = Column(types.String(length=50), nullable=False)
+    #title = Column(types.String(length=50), nullable=False)
     body = Column(types.Text, nullable=False)
     #owner of site
     owner = relationship("User", back_populates="sites")
@@ -53,10 +53,10 @@ class Site(base_app):
     #other members of the site (implement later)
     # members = relationship("User", back_populates="site")
     #potential other fields
-    title_font = Column(types.String(length=25), default='Times New Roman')
-    body_font = Column(types.String(length=25), default='Times New Roman')
-    body_font_size = Column(types.Integer, default='14')
-    title_font_size = Column(types.Integer, default='14')
+    #title_font = Column(types.String(length=25), default='Times New Roman')
+    #body_font = Column(types.String(length=25), default='Times New Roman')
+    #body_font_size = Column(types.Integer, default='14')
+    #title_font_size = Column(types.Integer, default='14')
     background_color = Column(types.String(length=25), default='white')
     genre_music = Column(types.Boolean, default=False)
     genre_art = Column(types.Boolean, default=False)
