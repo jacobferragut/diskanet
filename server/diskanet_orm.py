@@ -79,5 +79,10 @@ class Photo(base_app):
     photo = Column(types.LargeBinary)
     
 
-
+#class Follow(base_app):
+  #  __tablename__ = 'follows'
+  #  follower = relationship("User", back_populates="follows")
+    #following = relationship("User", back_populates="follows")
+    #follower_id =
+   # following_id =
 

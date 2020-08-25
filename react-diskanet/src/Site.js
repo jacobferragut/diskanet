@@ -159,7 +159,7 @@ class SiteCreation0 extends Component{
             //this.setState({'sites' : response});
                 
             const editedSite = response['data'][Object.keys(response.data)[0]];
-            console.log('editthis:'+editedSite['body']);
+            //console.log('editthis:'+editedSite['body']);
             this.setState({
                 body:editedSite['body'], 
                 name:editedSite['name'],
@@ -194,10 +194,7 @@ class SiteCreation0 extends Component{
     }
     editSite(){
         const site_id = this.state.site_id;
-        
-        
-        
-        
+
         axios.put(APIURL+"site/"+site_id, {
             background_color:this.state.background_color,
             name:this.state.name,
@@ -213,15 +210,15 @@ class SiteCreation0 extends Component{
             }
         }).then(response => {
             
-            console.log('edit site response',response);
+            //console.log('edit site response',response);
             const newSite = response['data'];
-            console.log("SITE TO BE ADDED",newSite);
+            //console.log("SITE TO BE ADDED",newSite);
             
             const sites = this.state.sites;
-            console.log("CURRENT SITES",sites);
+            //console.log("CURRENT SITES",sites);
             
             sites['data'][newSite.site_id] = newSite;
-            console.log("NEW SITES",sites);
+            //console.log("NEW SITES",sites);
             
             this.setState({
                 sites:sites,
@@ -262,7 +259,7 @@ class SiteCreation0 extends Component{
             }
         }).then(response => {
             this.setState({'sites' : response});
-            console.log(response);
+            //console.log(response);
         });
     }
     
@@ -275,7 +272,7 @@ class SiteCreation0 extends Component{
     }
     
     render(){
-        console.log('editor in the state',this.state.editor);
+        //console.log('editor in the state',this.state.editor);
         return(
             
 

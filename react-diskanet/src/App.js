@@ -166,7 +166,7 @@ class Banner extends Component {
     checkLogin(){
         const cookies = new Cookies();
         
-        console.log("user_id:"+this.props.user_id);
+        //console.log("user_id:"+this.props.user_id);
         
         if(cookies.get('name') && cookies.get('jwt') && cookies.get('user_id') && this.state.isLoggedIn === false) {
             this.setState({user_id: this.props.user_id, isLoggedIn:true});
