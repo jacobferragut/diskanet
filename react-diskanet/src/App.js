@@ -234,7 +234,7 @@ class Banner extends Component {
                   
                 </Container>
               </div>
-            </div>
+           </div>
             
         );
     }
