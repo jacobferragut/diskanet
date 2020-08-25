@@ -18,8 +18,13 @@ from werkzeug.utils import secure_filename
 from .diskanet_orm import User
 from .diskanet_orm import Site
 from .diskanet_orm import Photo
+<<<<<<< HEAD
 from .diskanet_orm import Follow
+=======
+from .diskanet_orm import base_app
+>>>>>>> b7890e9e45a05d868b2a1bd35a723cc1f8b12d2e
 from .auth_orm import Auth
+from .auth_orm import base as base_auth
 from .util import get_config
 
 app = Flask(__name__)
@@ -511,3 +516,23 @@ def close_db(exception):
     if hasattr(g, 'auth_db'):
         g.auth_db.close()
         _ = g.pop('auth_db')
+
+
+
+# Command to initialize the DB and AUTH_DB tables
+@app.cli.command('init-auth')
+def init_auth():
+    print('Executing init-auth: creating auth table(s) for', os.environ['FLASK_ENV'],
+          'if necessary')
+    config = get_config(os.environ['FLASK_ENV'], open('server/config.yaml'))
+    db = create_engine(config['AUTH_DB'])
+    base_auth.metadata.create_all(db)
+
+#in p.81 the session is made in diskanet_orm.py and not here.
+@app.cli.command('init-db')
+def init_db():
+    print('Executing init-db: creating db table(s) for', os.environ['FLASK_ENV'],
+          'if necessary')
+    config = get_config(os.environ['FLASK_ENV'], open('server/config.yaml'))
+    db = create_engine(config['DB'])
+    base_app.metadata.create_all(db)
