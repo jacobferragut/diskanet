@@ -18,6 +18,7 @@ from werkzeug.utils import secure_filename
 from .diskanet_orm import User
 from .diskanet_orm import Site
 from .diskanet_orm import Photo
+from .diskanet_orm import Follow
 from .auth_orm import Auth
 from .util import get_config
 
@@ -429,7 +430,60 @@ def photoget(photo_id):
     #    'Content-Disposition', 'attachment', filename='name.jpg')
     return response
 
+@api.route('/follow')
+class FollowResource(Resource):
+    def post(self):
+    
+        #grabs fields to create site
+        d = api.payload
+        if d is None: return {'msg': 'No follower'}
+        
+        ###########
+        follow = Follow()
+        ##############
 
+        #check if the right keys are in payload
+        if 'follower_id' in d.keys() and 'following_id' in d.keys():
+            user_id = d['follower_id']#since you are following, you are the follower_id
+        else:
+            return {'msg': 'No follower'}
+        
+        #Use JWT authentication to verify user is logged in to follow someone
+        if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
+            return {'msg': 'You must be logged in to follow someone'}
+        
+        #first do required column entries...
+        #and do allowed columns
+        follower_id = int(d['follower_id'])
+        following_id = int(d['following_id'])
+        follow.follower_id = follower_id
+        follow.following_id = following_id
+        follow.follower = g.db.query(User).get(follower_id)
+        follow.following = g.db.query(User).get(following_id)
+
+        #commit the changes
+        g.db.add(follow)
+        g.db.commit()
+
+        return {'msg': f'follow success: {follower.name} is now following {following.name}'}
+        
+    def delete(self):
+        #unfollow someone
+        d = api.payload
+        if d is None or d['following_id'] is None or d['follower_id'] is None: return {'msg': 'Error: cannot unfollow'}
+        #jwt auth b4 del
+        user_id = int(d['follower_id'])
+        following_id = int(d['following_id'])
+        
+        f = g.db.query(Follow).filter(Follow.follower_id==user_id).filter(Follow.following_id==following_id).first()
+
+        
+        if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
+            return {'msg': 'You are not authorized to unfollow this user'}
+        
+        g.db.delete(f)
+        g.db.commit()
+        return {'msg':'unfollow success'}
 @app.before_request
 def init_db():
     '''start db by creating global db_session'''

@@ -79,10 +79,9 @@ class Photo(base_app):
     photo = Column(types.LargeBinary)
     
 
-#class Follow(base_app):
-  #  __tablename__ = 'follows'
-  #  follower = relationship("User", back_populates="follows")
-    #following = relationship("User", back_populates="follows")
-    #follower_id =
-   # following_id =
-
+class Follow(base_app):
+    __tablename__ = 'follows'
+    follower = relationship("User", back_populates="follows")
+    following = relationship("User", back_populates="follows")
+    follower_id = Column(types.Integer, ForeignKey('follows.follower_id'), nullable=False)
+    following_id = Column(types.Integer, ForeignKey('follows.following_id'), nullable=False)
