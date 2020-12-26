@@ -25,7 +25,20 @@ class User(base_app):
     #site is for members of a site (user is member of site)
     #implement later with association table
     #site = relationship("Site", back_populates="members")
-
+    #followed = relationship("User",
+    #                    secondary=followers,
+    #                    primaryjoin=(followers.c.follower_id == id),
+    #                    secondaryjoin=(followers.c.followed_id == id),
+    #                    backref="followers"
+    #)
+    
+    
+    #every user has followers
+    #followers = relationship("User", secondary="follows", back_populates="followee")
+    #every user has people they are following
+    #following = relationship("User", secondary="follows", back_populates="follower")
+    #I commented above because we can just query follow table for this - Nathan
+    
     def _to_dict(self):
         skips = ['sites']
         to_str = ['creation_date']
@@ -80,8 +93,11 @@ class Photo(base_app):
     
 
 class Follow(base_app):
-    __tablename__ = 'follows'
-    follower = relationship("User", back_populates="follows")
-    following = relationship("User", back_populates="follows")
-    follower_id = Column(types.Integer, ForeignKey('follows.follower_id'), nullable=False)
-    following_id = Column(types.Integer, ForeignKey('follows.following_id'), nullable=False)
+    __tablename__ = 'followers'
+    follow_id = Column(types.Integer, primary_key=True)
+    
+    follower_id = Column(types.Integer, ForeignKey('users.user_id'), primary_key=True)
+    followed_id = Column(types.Integer, ForeignKey('users.user_id'), primary_key=True)
+    
+    follower = relationship("User", foreign_keys=[follower_id])
+    followed = relationship("User", foreign_keys=[followed_id])

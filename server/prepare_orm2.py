@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 import click
 from flask import Flask
 
-from .diskanet_orm import base_app, User, Site, Photo
+from .diskanet_orm import base_app, User, Site, Photo, Follow
 from .auth_orm import base as base_auth
 from .util import get_config
 
@@ -45,7 +45,20 @@ def init_db():
         print('Adding', len(data), 'rows to Usage table')
         session.add_all(data)
         session.commit()
-        
+    if session.query(Follow).count() == 0:
+        data = []
+        data.append( Follow(
+            follow_id  = 1,
+            follower = session.query(User).get(1),
+            followed = session.query(User).get(2),
+            follower_id = 1,
+            followed_id = 2
+        ))
+
+        print('Adding', len(data), 'rows to followers table')
+        session.add_all(data)
+        session.commit()
+            
     if session.query(Site).count() == 0:
         siteData = []
         ROWS = csv.reader(open('server/sites.csv', encoding='utf8'))

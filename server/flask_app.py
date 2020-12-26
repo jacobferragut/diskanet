@@ -18,11 +18,8 @@ from werkzeug.utils import secure_filename
 from .diskanet_orm import User
 from .diskanet_orm import Site
 from .diskanet_orm import Photo
-<<<<<<< HEAD
 from .diskanet_orm import Follow
-=======
 from .diskanet_orm import base_app
->>>>>>> b7890e9e45a05d868b2a1bd35a723cc1f8b12d2e
 from .auth_orm import Auth
 from .auth_orm import base as base_auth
 from .util import get_config
@@ -437,8 +434,8 @@ def photoget(photo_id):
 
 @api.route('/follow')
 class FollowResource(Resource):
-    def post(self):
-    
+    @JWT.jwt_required
+    def post(self): 
         #grabs fields to create site
         d = api.payload
         if d is None: return {'msg': 'No follower'}
@@ -446,9 +443,17 @@ class FollowResource(Resource):
         ###########
         follow = Follow()
         ##############
-
+        
+        #inc follow id
+        max = g.db.query(Follow).order_by(Follow.follow_id.desc()).first()
+        #print(max.site_id)
+        if max is None:
+            follow.follow_id = 1
+        else:
+            follow.follow_id = max.follow_id + 1
+            
         #check if the right keys are in payload
-        if 'follower_id' in d.keys() and 'following_id' in d.keys():
+        if 'follower_id' in d.keys() and 'followed_id' in d.keys():
             user_id = d['follower_id']#since you are following, you are the follower_id
         else:
             return {'msg': 'No follower'}
@@ -460,35 +465,45 @@ class FollowResource(Resource):
         #first do required column entries...
         #and do allowed columns
         follower_id = int(d['follower_id'])
-        following_id = int(d['following_id'])
-        follow.follower_id = follower_id
-        follow.following_id = following_id
+        followed_id = int(d['followed_id'])
         follow.follower = g.db.query(User).get(follower_id)
-        follow.following = g.db.query(User).get(following_id)
+        follow.followed = g.db.query(User).get(followed_id)
+        follow.follower_id = follower_id
+        follow.followed_id = followed_id
+        
 
         #commit the changes
         g.db.add(follow)
         g.db.commit()
 
-        return {'msg': f'follow success: {follower.name} is now following {following.name}'}
-        
+        return {'msg': f'follow success: {follow.follower.name} is now following {follow.followed.name}'}
+    @JWT.jwt_required    
     def delete(self):
         #unfollow someone
         d = api.payload
-        if d is None or d['following_id'] is None or d['follower_id'] is None: return {'msg': 'Error: cannot unfollow'}
+        if d is None or d['follow_id'] is None: return {'msg': 'Error: follow_id not found'}
         #jwt auth b4 del
-        user_id = int(d['follower_id'])
-        following_id = int(d['following_id'])
         
-        f = g.db.query(Follow).filter(Follow.follower_id==user_id).filter(Follow.following_id==following_id).first()
+        #grab the relationship
+        f = g.db.query(Follow).get(int(d['follow_id']))
 
-        
-        if int(JWT.get_jwt_identity()) != int(user_id):# or JWT.get_jwt_claims()['access'] != 'mod':
+        #you must be the followee to unfollow
+        if int(JWT.get_jwt_identity()) != int(f.followee_id):# or JWT.get_jwt_claims()['access'] != 'mod':
             return {'msg': 'You are not authorized to unfollow this user'}
         
         g.db.delete(f)
         g.db.commit()
         return {'msg':'unfollow success'}
+    def get(self):
+        #payload says what followers we want
+        d = api.payload
+        if d is None: return {'msg': 'Error, you must submit what follows you need'}
+        
+        
+        
+        
+        return {'msg':'not done'}
+        
 @app.before_request
 def init_db():
     '''start db by creating global db_session'''
