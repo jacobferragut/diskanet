@@ -1,0 +1,18 @@
+mvp crucial:
+1. virtual currency
+2. trading/transactions
+3. communications(mail/message)
+4. following/followers
+5. forum
+
+not crucial:
+1. fix login (its kinda buggy)
+2. email verification
+3. better UI for creating adverts
+4. discover for different genres of rap
+5. create groups/organizations
+
+what I am working on now:
+1. following/followers
+2. forums (use the help of fiverr)
+

@@ -19,6 +19,8 @@ joblib = "*"
 bs4 = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
+flask-restplus = "*"
+vim = "*"
 
 [requires]
 python_version = "3.8"

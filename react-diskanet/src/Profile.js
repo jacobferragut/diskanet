@@ -4,7 +4,7 @@ import { Component } from 'react';
 import axios from 'axios';
 import { withRouter } from "react-router";
 import { APIURL } from './apiurl.js';
-
+import Cookies from 'universal-cookie';
 import {
 // eslint-disable-next-line
   BrowserRouter as Router, Switch, Route, Link, useRouteMatch, useParams
@@ -16,7 +16,7 @@ class UserInformation extends Component {
     constructor(props){
         super(props);
 	
-        this.state = {userInfo:{}, selectedFile: null, imageURL:''};
+        this.state = {userInfo:{}, selectedFile: null, imageURL:'', isUser: null};
     
         this.handleUploadImage = this.handleUploadImage.bind(this);
     }	
@@ -24,12 +24,21 @@ class UserInformation extends Component {
     componentDidMount(){
 	//const id = this.props.match.params.id;
 	const user_id = this.props.match.params.user_id;
-        
+	const cookies = new Cookies();
+
 	axios.get(APIURL + 'user/'.concat(user_id)).then( response => {
-	    this.setState({'userInfo' : response['data']});
-	    console.log(response);
-	});
+	    if (cookies.get('user_id') === user_id){
+	        this.setState({'userInfo' : response['data'], isUser:true});
+		console.log("user is on their own profile");
+	    }else{ //is looking at another user's profile
+		this.setState({'userInfo' : response['data']});
+	    }
+		console.log(response);//disp response
+		
+	});    	                                             
+
     }
+
     handleUploadImage(ev) {
         ev.preventDefault();
 
@@ -42,9 +51,6 @@ class UserInformation extends Component {
         .then(res => console.log(res))
         .catch(err => console.warn(err));
     }
-    
-    
-    
     
     render(){		
         //getting every key of user's info
